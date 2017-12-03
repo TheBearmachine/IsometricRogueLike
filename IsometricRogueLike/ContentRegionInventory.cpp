@@ -15,16 +15,16 @@ ContentRegionInventory::ContentRegionInventory(size_t inventorySlots, size_t slo
 	}
 
 	// Space out the slots evenly
-	sf::Vector2f regionSize = getRegionUsableSize();
 	sf::Vector2f slotSize = mInventoryslots->getSize();
 	size_t nrColumns = (size_t)std::ceil((float)inventorySlots / (float)slotsPerRow);
-	sf::Vector2f contentSize((float)slotsPerRow * (slotSize.x + PADDING), (float)nrColumns * (slotSize.x + PADDING));
+	sf::Vector2f contentSize((float)slotsPerRow * (slotSize.x + PADDING) + PADDING,
+							 (float)nrColumns * (slotSize.x + PADDING) + PADDING);
 	setRegionSize(contentSize);
 
 	for (size_t i = 0; i < inventorySlots; i++)
 	{
-		float xPos = float(i % slotsPerRow) * (slotSize.x + PADDING);
-		float yPos = float(i / slotsPerRow) * (slotSize.x + PADDING);
+		float xPos = float(i % slotsPerRow) * (slotSize.x + PADDING) + PADDING;
+		float yPos = float(i / slotsPerRow) * (slotSize.x + PADDING) + PADDING;
 		mInventoryslots[i].setParentTransform(this);
 		mInventoryslots[i].setID(i);
 		mInventoryslots[i].setPosition(xPos, yPos);

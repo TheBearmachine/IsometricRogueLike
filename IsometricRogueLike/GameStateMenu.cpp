@@ -22,7 +22,7 @@ void GameStateMenu::initalize(sf::RenderWindow * window, EventManager * eventMan
 
 	//sf::Vector2f halfSize = testWindow.getContentSize();
 	//halfSize.y = halfSize.y / 2.0f - 3.0f;
-	ContentRegion* cr = new ContentRegionInventory(12, 5);
+	ContentRegionInventory* cr = new ContentRegionInventory(12, 5);
 	testWindow.setWindowContentSize(cr->getRegionSize());
 	testWindow.addContentRegion(cr);
 	//cr = new ContentRegion(halfSize);
