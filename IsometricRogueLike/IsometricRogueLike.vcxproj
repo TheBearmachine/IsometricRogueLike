@@ -118,12 +118,56 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CameraController.cpp" />
+    <ClCompile Include="Clickable.cpp" />
+    <ClCompile Include="ContentRegion.cpp" />
+    <ClCompile Include="ContentRegionInventory.cpp" />
+    <ClCompile Include="Dragable.cpp" />
+    <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameStateMenu.cpp" />
+    <ClCompile Include="GameStateSimulation.cpp" />
+    <ClCompile Include="Inventoryslot.cpp" />
     <ClCompile Include="IsometricConversion.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="TestButtonContainer.cpp" />
+    <ClCompile Include="TestTransform.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Transformabetter.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="CameraController.h" />
+    <ClInclude Include="Clickable.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="ContentRegion.h" />
+    <ClInclude Include="ContentRegionInventory.h" />
+    <ClInclude Include="Dragable.h" />
+    <ClInclude Include="DynamicArray.h" />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="EventObserver.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateMenu.h" />
+    <ClInclude Include="GameStateSimulation.h" />
+    <ClInclude Include="Inventoryslot.h" />
     <ClInclude Include="IsometricConversion.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="TestButtonContainer.h" />
+    <ClInclude Include="TestTransform.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="Transformabetter.h" />
+    <ClInclude Include="VectorFunctions.h" />
+    <ClInclude Include="VectorRotation.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
