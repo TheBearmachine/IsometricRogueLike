@@ -7,6 +7,8 @@ static const float TOP_THICKNESS = 30.0f;
 static const float BORDER_THICKNESS = 2.0f;
 static const float CONTENT_INDENTATION = 4.0f;
 
+static const std::string CLOSE_BUTTON_TEX = Constants::Filepaths::ImagesFolder + "CrossIcon.png";
+
 static const sf::Vector2f DEFAULT_WINDOW_SIZE(300.0f, 200.0f);
 static const std::string DOTS = "...";
 
@@ -19,7 +21,8 @@ Window::Window() :
 Window::Window(const std::string &windowName, const sf::Vector2f & position, const sf::Vector2f & size) :
 	mWindowName(windowName, ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont), (unsigned)(TOP_THICKNESS - (2.0f * BORDER_THICKNESS))),
 	mBorder(size), mTop(sf::Vector2f(size.x, TOP_THICKNESS)),
-	mDragable(this, sf::FloatRect(0.0f, 0.0f, size.x, TOP_THICKNESS))
+	mDragable(this, sf::FloatRect(0.0f, 0.0f, size.x, TOP_THICKNESS)),
+	mCloseButton(this, CLOSE_BUTTON_TEX, 0)
 {
 	setPosition(position);
 
@@ -34,6 +37,10 @@ Window::Window(const std::string &windowName, const sf::Vector2f & position, con
 
 	mWindowName.setPosition(BORDER_THICKNESS * BORDER_THICKNESS, BORDER_THICKNESS);
 	mWindowName.setFillColor(sf::Color::White);
+
+	float iconWidth = mCloseButton.getSpriteBounds().width;
+	mCloseButton.setPosition(size.x - iconWidth, 0.0f);
+	mCloseButton.setTextString("");
 
 	// Shorten strings that are too long
 	if (mWindowName.getGlobalBounds().width > size.x - BORDER_THICKNESS * 3.0f)
@@ -134,7 +141,21 @@ void Window::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(mBorder, states);
 	target.draw(mTop, states);
 	target.draw(mWindowName, states);
+	target.draw(mCloseButton, states);
 
 	for (size_t i = 0; i < mContentRegions.size(); i++)
 		target.draw(*mContentRegions[i], states);
+}
+
+void Window::buttonAction(unsigned int action)
+{
+	switch (action)
+	{
+	case 0:
+		// Close window
+		break;
+
+	default:
+		break;
+	}
 }

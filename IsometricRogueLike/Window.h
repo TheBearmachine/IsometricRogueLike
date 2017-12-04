@@ -7,7 +7,7 @@
 #include "ContentRegion.h"
 #include "Transformabetter.h"
 
-class Window : public IDragListener, public Transformabetter, public sf::Drawable
+class Window : public IDragListener, public IButtonListener, public Transformabetter, public sf::Drawable
 {
 public:
 	Window();
@@ -27,6 +27,7 @@ public:
 
 	void setup(EventManager* eventManager, sf::RenderTarget* window);
 	virtual void onDrag(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos) override;
+	virtual void buttonAction(unsigned int action) override;
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 private:
@@ -35,4 +36,6 @@ private:
 	sf::RectangleShape mTop;
 	sf::Text mWindowName;
 	std::vector<ContentRegion*> mContentRegions;
+	Button mCloseButton;
+
 };
