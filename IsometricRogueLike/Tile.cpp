@@ -2,12 +2,14 @@
 
 Tile::Tile() :
 	mTextureID(-1),
+	mWallTextureID(-1),
 	mWorldPos()
 {
 }
 
 Tile::Tile(int textureID, const sf::Vector2f &worldPos) :
 	mTextureID(textureID),
+	mWallTextureID(textureID),
 	mWorldPos(worldPos)
 {
 }
@@ -24,6 +26,16 @@ void Tile::setTextureID(int texID)
 int Tile::getTextureID() const
 {
 	return mTextureID;
+}
+
+void Tile::setWallTextureID(int texID)
+{
+	mWallTextureID = texID;
+}
+
+int Tile::getWallTextureID() const
+{
+	return mWallTextureID;
 }
 
 void Tile::setWorldPos(const sf::Vector2f & worldPos)

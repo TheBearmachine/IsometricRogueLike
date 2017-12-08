@@ -1,12 +1,14 @@
 #include "GameStateMenu.h"
+#include "GameStateSimulation.h"
 #include "ContentRegionInventory.h"
+#include "Constants.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
-GameStateMenu::GameStateMenu(Game* owner, GameState* currentGameState) :
-	GameState(owner, currentGameState),
-	testWindow("Test Window", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(330.0f, 200.0f))
+static const std::string GUI_BUTTON = Constants::Filepaths::ImagesFolder + "GUIButton.png";
+
+GameStateMenu::GameStateMenu(Game* owner, GameState** currentGameState) :
+	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f))
 {
-	//testWindow.setPosition(100, 20);
 }
 
 GameStateMenu::~GameStateMenu()
@@ -18,51 +20,92 @@ void GameStateMenu::initalize(sf::RenderWindow * window, EventManager * eventMan
 {
 	mWindow = window;
 	mEventManager = eventManager;
-	testWindow.setup(mEventManager, mWindow);
 
-	//sf::Vector2f halfSize = testWindow.getContentSize();
-	//halfSize.y = halfSize.y / 2.0f - 3.0f;
+	sf::Vector2f menuPos;
+	menuPos.x = ((float)window->getSize().x - mMainMenu.getBackgroundSize().x) / 2.0f;
+	menuPos.y = ((float)window->getSize().y - mMainMenu.getBackgroundSize().y) / 2.0f;
+	mMainMenu.setPosition(menuPos);
+
+	sf::Vector2f buttonPos;
+	Button* button = new Button(this, GUI_BUTTON, 0);
+	buttonPos.x = (mMainMenu.getBackgroundSize().x - button->getSize().x) / 2.0f;
+	//buttonPos.y = (mMainMenu.getBackgroundSize().y - button->getSize().y) / 2.0f;
+	buttonPos.y = 20.0f;
+	button->setPosition(buttonPos);
+	button->setTextSize(15);
+	button->setTextString("Play");
+	//button->setActive(false);
+	mMainMenu.addButton(button);
+	mMainMenu.registerEvents();
+
+
+	// Test window
+	/*Window* testWindow = new Window("Test Window", sf::Vector2f(100.0f, 50.0f), sf::Vector2f());
 	ContentRegionInventory* cr = new ContentRegionInventory(12, 5);
-	testWindow.setWindowContentSize(cr->getRegionSize());
-	testWindow.addContentRegion(cr);
-	//cr = new ContentRegion(halfSize);
-	//cr->move(0.0f, halfSize.y + 6.0f);
-	//testWindow.addContentRegion(cr);
-	testWindow.registerEvents();
+	mWindowManager.addWindow(testWindow);
+	testWindow->setWindowContentSize(cr->getRegionSize());
+	testWindow->addContentRegion(cr);
+	testWindow->registerEvents();*/
 
 }
 
 void GameStateMenu::registerEvents()
 {
-
+	mMainMenu.registerEvents();
+	mWindowManager.registerEvents();
 }
 
 void GameStateMenu::unregisterEvents()
 {
-
+	mMainMenu.unregisterEvents();
+	mWindowManager.unregisterEvents();
 }
 
-void GameStateMenu::observe(const sf::Event & _event)
+bool GameStateMenu::observe(const sf::Event & _event)
 {
-
+	return false;
 }
 
 void GameStateMenu::exit()
 {
-
+	unregisterEvents();
 }
 
 void GameStateMenu::entry()
 {
-
+	registerEvents();
 }
 
 void GameStateMenu::update(const sf::Time & deltaTime)
 {
-
+	mWindowManager.clearGarbage();
 }
 
-void GameStateMenu::draw(sf::RenderTarget * window)
+void GameStateMenu::drawPrep(DrawingManager* drawingMan)
 {
-	window->draw(testWindow);
+	mMainMenu.drawPrep(drawingMan);
+	mWindowManager.drawPrep(drawingMan);
+}
+
+void GameStateMenu::buttonAction(unsigned int action)
+{
+	switch (action)
+	{
+	case MainMenuButtonActions::StartGame:
+		startSimulation(0);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void GameStateMenu::startSimulation(size_t level)
+{
+	transition(this, mGameStateSimulation);
+}
+
+void GameStateMenu::setGameStates(GameStateSimulation * gameStateSimulation)
+{
+	mGameStateSimulation = gameStateSimulation;
 }

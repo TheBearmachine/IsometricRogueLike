@@ -15,10 +15,11 @@ CameraController::~CameraController()
 
 void CameraController::initalize(sf::FloatRect size, sf::RenderWindow* window)
 {
-	m_cameraView.reset(size);
 	m_renderWindow = window;
 	m_center.x = (size.width + size.left) / 2.0f;
 	m_center.y = (size.height + size.top) / 2.0f;
+	m_cameraView.reset(size);
+	updateCamera();
 }
 
 void CameraController::moveCamera(const sf::Vector2f &offset)
@@ -29,7 +30,9 @@ void CameraController::moveCamera(const sf::Vector2f &offset)
 void CameraController::positionCamera(const sf::Vector2f & position)
 {
 	m_center = position;
-	sf::Vector2f roundedPos = IsometricConversion::toIsometric(m_center);
+	sf::Vector2f roundedPos = m_center;
+	// IsometricConversion::toIsometric(m_center);
+
 	//printf("X: %f, Y: %f\n", m_center.x, m_center.y);
 	// Round off to nearest integer or it will look ugly as fuck
 	roundedPos.x = (int)(roundedPos.x);

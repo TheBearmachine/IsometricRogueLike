@@ -1,5 +1,6 @@
 #include "ContentRegionInventory.h"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "DrawingManager.h"
 
 static const float PADDING = 2.0f;
 
@@ -39,12 +40,38 @@ ContentRegionInventory::~ContentRegionInventory()
 		delete[mSlotsNr] mInventoryslots;
 }
 
+void ContentRegionInventory::registerEvents()
+{
+	if (mSlotsNr != 0)
+	{
+		for (size_t i = 0; i < mSlotsNr; i++)
+		{
+			mInventoryslots[i].registerEvents();
+		}
+	}
+}
+
+void ContentRegionInventory::unregisterEvents()
+{
+	if (mSlotsNr != 0)
+	{
+		for (size_t i = 0; i < mSlotsNr; i++)
+		{
+			mInventoryslots[i].unregisterEvents();
+		}
+	}
+}
+
+void ContentRegionInventory::drawPrep(DrawingManager * drawingMan)
+{
+
+}
+
 void ContentRegionInventory::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	ContentRegion::draw(target, states);
-	states.transform *= getTransform();
+
+	states.transform = getGlobalTransform();
 	for (size_t i = 0; i < mSlotsNr; i++)
-	{
 		target.draw(mInventoryslots[i], states);
-	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Clickable.h"
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Drawable.hpp>
+#include "DrawThis.h"
 
 __interface IInventoryslotListener
 {
@@ -9,7 +9,7 @@ __interface IInventoryslotListener
 	void onHover(/*Should contain some parameter (item type in the item slot?)*/);
 };
 
-class Inventoryslot : public Clickable, public sf::Drawable
+class Inventoryslot : public Clickable, public DrawThis
 {
 public:
 	Inventoryslot();
@@ -21,11 +21,13 @@ public:
 
 	sf::Vector2f getSize() const;
 
-	virtual void observe(const sf::Event & _event) override;
+	virtual bool observe(const sf::Event & _event) override;
 	virtual void onMouseOver(bool mouseOver) override;
 	virtual void onClickInside() override;
 	virtual void onReleaseInside() override;
+	virtual void onDragInside(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos);
 
+	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 private:

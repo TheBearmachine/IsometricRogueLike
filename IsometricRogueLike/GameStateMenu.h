@@ -1,7 +1,7 @@
 #pragma once
 #include "GameState.h"
-#include "Window.h"
-
+#include "WindowManager.h"
+#include "Menu.h"
 
 namespace sf
 {
@@ -9,11 +9,12 @@ namespace sf
 }
 class Game;
 class EventManager;
+class GameStateSimulation;
 
-class GameStateMenu : public GameState
+class GameStateMenu : public GameState, public IButtonListener
 {
 public:
-	GameStateMenu(Game* owner, GameState* currentGameState);
+	GameStateMenu(Game* owner, GameState** currentGameState);
 	~GameStateMenu();
 
 	void initalize(sf::RenderWindow* window, EventManager* eventManager);
@@ -21,20 +22,34 @@ public:
 	// Event Observer
 	virtual void registerEvents() override;
 	virtual void unregisterEvents() override;
-	virtual void observe(const sf::Event& _event) override;
+	virtual bool observe(const sf::Event& _event) override;
 
 	virtual void update(const sf::Time &deltaTime) override;
-	virtual void draw(sf::RenderTarget* window) override;
+	virtual void drawPrep(DrawingManager* drawingMan) override;
+
+	void buttonAction(unsigned int action) override;
 
 	// Transition functions
+	virtual void startSimulation(size_t level) override;
 
 	// Game State
+	void setGameStates(GameStateSimulation* gameStateSimulation);
+
 protected:
 	virtual void exit();
 	virtual void entry();
 
 private:
-	Window testWindow;
+	enum MainMenuButtonActions
+	{
+		StartGame
+	};
+
+	WindowManager mWindowManager;
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;
+
+	Menu mMainMenu;
+
+	GameStateSimulation* mGameStateSimulation;
 };

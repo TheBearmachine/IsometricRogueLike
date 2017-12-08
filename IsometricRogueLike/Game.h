@@ -5,6 +5,7 @@
 #include "GameStateSimulation.h"
 #include "GameStateMenu.h"
 #include "EventManager.h"
+#include "DrawingManager.h"
 
 class Game
 {
@@ -16,9 +17,11 @@ public:
 
 private:
 	void handleEvents();
+	void initialize();
 
 	sf::RenderWindow mWindow;
 	EventManager mEventManager;
+	DrawingManager mDrawingManager;
 
 	GameState* mCurrentState;
 	GameStateSimulation mGameStateSimulation;

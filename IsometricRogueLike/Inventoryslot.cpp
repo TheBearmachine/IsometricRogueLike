@@ -1,5 +1,6 @@
 #include "Inventoryslot.h"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "DrawingManager.h"
 #include "Constants.h"
 #include "ResourceManager.h"
 
@@ -32,8 +33,9 @@ sf::Vector2f Inventoryslot::getSize() const
 	return sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
 }
 
-void Inventoryslot::observe(const sf::Event & _event)
+bool Inventoryslot::observe(const sf::Event & _event)
 {
+	return false;
 }
 
 void Inventoryslot::onMouseOver(bool mouseOver)
@@ -48,8 +50,17 @@ void Inventoryslot::onReleaseInside()
 {
 }
 
+void Inventoryslot::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
+{
+}
+
+void Inventoryslot::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
+}
+
 void Inventoryslot::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
+	states.transform = getGlobalTransform();
 	target.draw(mSprite, states);
 }

@@ -2,10 +2,16 @@
 #include "ResourceManager.h"
 #include "IsometricConversion.h"
 #include "Constants.h"
+#include "DrawingManager.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#define TileWidth Constants::World::Tile::Width
-#define TileHeight Constants::World::Tile::Height
+#define FloorTileWidth Constants::World::Tile::Width
+#define FloorTileHeight Constants::World::Tile::Height
+#define WallTileWidth Constants::World::Wall::Width
+#define WallTileHeight Constants::World::Wall::Height
+
+static const std::string FLOOR_TILES = Constants::Filepaths::ImagesFolder + "FloorTiles.png";
+static const std::string WALL_TILES = Constants::Filepaths::ImagesFolder + "WallTiles.png";
 
 Map::Map()
 {
@@ -15,21 +21,25 @@ Map::~Map()
 {
 }
 
-void Map::setupMap(const std::string & tileset, const int * tiles, unsigned int width, unsigned int height)
+void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 {
-	mTilemapTex = &ResourceManager::getInstance().getTexture(tileset);
+	mFloorTex = &ResourceManager::getInstance().getTexture(FLOOR_TILES);
+	mWallTex = &ResourceManager::getInstance().getTexture(WALL_TILES);
+
 	mMapWidth = width;
 	mMapHeight = height;
 	mTiles.clear();
 
-	mVertices.setPrimitiveType(sf::Quads);
+	mFloorVertices.setPrimitiveType(sf::Quads);
+	mWallVertices.setPrimitiveType(sf::Quads);
 
 	for (unsigned int i = 0; i < width; i++)
 	{
 		for (unsigned int j = 0; j < height; j++)
 		{
 			int textureID = tiles[i + j * width];
-			sf::Vector2f worldPos = IsometricConversion::toIsometric(sf::Vector2f(i * TileWidth, j * TileWidth));
+			sf::Vector2f worldPos = sf::Vector2f(i * FloorTileWidth, j * FloorTileHeight);
+			worldPos = IsometricConversion::toIsometric(sf::Vector2f(i * FloorTileWidth, j * FloorTileWidth));
 
 			mTiles.push_back(Tile(textureID, worldPos));
 		}
@@ -38,46 +48,118 @@ void Map::setupMap(const std::string & tileset, const int * tiles, unsigned int 
 
 void Map::updateVertexArray(const sf::Vector2f cameraPos)
 {
-	std::vector<Tile*> closeTiles;
+	// The int is: 0 no wall attached, 1 a wall to the left, 2 a wall above, 3 if both
+	std::vector<std::pair< Tile*, int>> closeTiles;
+	size_t walls = 0;
 
 	// Temp solution
 	for (size_t i = 0; i < mTiles.size(); i++)
 	{
 		if (mTiles[i].getTextureID() >= 0)
-			closeTiles.push_back(&mTiles[i]);
+		{
+			int hasAWall = 0;
+			// See if the tile texture ID in array position -1 or -mMapWidth is equal to -1
+			int left = i - 1;
+			int above = i - mMapWidth;
+			if (i % mMapWidth == 0 || mTiles[left].getTextureID() == -1)
+			{
+				hasAWall += 1;
+				walls++;
+			}
+			if (i / mMapWidth == 0 || mTiles[above].getTextureID() == -1)
+			{
+				hasAWall += 2;
+				walls++;
+			}
+
+			closeTiles.push_back(std::make_pair(&mTiles[i], hasAWall));
+		}
 	}
 
 	//TODO: populate closeTiles
+	size_t wallCurIndex = 0;
 
-
-	mVertices.resize(closeTiles.size() * 4);
-	int tilemapWidth = (int)mTilemapTex->getSize().x;
-	int tilemapHeight = (int)mTilemapTex->getSize().y;
+	mFloorVertices.resize((closeTiles.size()) * 4);
+	mWallVertices.resize(walls * 4);
+	int floorTilemapWidth = (int)mFloorTex->getSize().x;
+	int wallTilemapWidth = (int)mWallTex->getSize().x;
 
 	for (size_t i = 0; i < closeTiles.size(); i++)
 	{
-		int ID = closeTiles[i]->getTextureID();
-		sf::Vertex* quad = &mVertices[i * 4];
-		sf::Vector2f tempPos = closeTiles[i]->getWorldPos();
+		int ID = closeTiles[i].first->getTextureID();
+		sf::Vertex* quad = &mFloorVertices[i * 4];
+		sf::Vector2f tempPos = closeTiles[i].first->getWorldPos();
 
 
-		int tu = ID % (tilemapWidth / (int)TileWidth);
-		int tv = ID / (tilemapWidth / (int)TileWidth);
+		int tu = ID % (floorTilemapWidth / (int)FloorTileWidth);
+		int tv = ID / (floorTilemapWidth / (int)FloorTileWidth);
 
 		quad[0].position = sf::Vector2f(tempPos.x, tempPos.y);
-		quad[1].position = sf::Vector2f(tempPos.x + TileWidth, tempPos.y);
-		quad[2].position = sf::Vector2f(tempPos.x + TileWidth, tempPos.y + TileHeight);
-		quad[3].position = sf::Vector2f(tempPos.x, tempPos.y + TileHeight);
+		quad[1].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y);
+		quad[2].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y + FloorTileHeight);
+		quad[3].position = sf::Vector2f(tempPos.x, tempPos.y + FloorTileHeight);
 
-		quad[0].texCoords = sf::Vector2f(tu * TileWidth, tv * TileHeight);
-		quad[1].texCoords = sf::Vector2f((tu + 1) * TileWidth, tv * TileHeight);
-		quad[2].texCoords = sf::Vector2f((tu + 1) * TileWidth, (tv + 1) * TileHeight);
-		quad[3].texCoords = sf::Vector2f(tu * TileWidth, (tv + 1) * TileHeight);
+		quad[0].texCoords = sf::Vector2f(tu * FloorTileWidth, tv * FloorTileHeight);
+		quad[1].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, tv * FloorTileHeight);
+		quad[2].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, (tv + 1) * FloorTileHeight);
+		quad[3].texCoords = sf::Vector2f(tu * FloorTileWidth, (tv + 1) * FloorTileHeight);
+
+		ID *= 2;
+		if ((closeTiles[i].second & 0b01) == 0b01)
+		{
+			sf::Vector2f tempPos2 = tempPos;
+			tempPos2.x += WallTileWidth;
+			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
+			quad = &mWallVertices[wallCurIndex];
+			wallCurIndex += 4;
+
+			tu = (ID) % (wallTilemapWidth / (int)WallTileWidth);
+			tv = (ID) / (wallTilemapWidth / (int)WallTileWidth);
+
+			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
+			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
+			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
+			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
+
+			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
+			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
+			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
+			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+		}
+
+		int test = closeTiles[i].second & 0b10;
+		if ((closeTiles[i].second & 0b10) == 0b10)
+		{
+			sf::Vector2f tempPos2 = tempPos;
+			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
+			quad = &mWallVertices[wallCurIndex];
+			wallCurIndex += 4;
+
+			tu = (ID + 1) % (wallTilemapWidth / (int)WallTileWidth);
+			tv = (ID + 1) / (wallTilemapWidth / (int)WallTileWidth);
+
+			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
+			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
+			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
+			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
+
+			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
+			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
+			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
+			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+		}
 	}
+}
+
+void Map::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
 }
 
 void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.texture = mTilemapTex;
-	target.draw(mVertices, states);
+	states.texture = mFloorTex;
+	target.draw(mFloorVertices, states);
+	states.texture = mWallTex;
+	target.draw(mWallVertices, states);
 }

@@ -1,5 +1,6 @@
 #include "EventManager.h"
 #include "EventObserver.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 EventManager::EventManager() :
 	mObservers()
@@ -20,7 +21,7 @@ void EventManager::registerObserver(EventObserver* observer, const std::vector<s
 
 void EventManager::registerObserver(EventObserver* observer, const sf::Event::EventType& type)
 {
-	mObservers[type].insert(observer);
+	mObservers[type].push_back(observer);
 }
 
 void EventManager::unregisterObserver(EventObserver* observer, const std::vector<sf::Event::EventType>& types)
@@ -31,15 +32,54 @@ void EventManager::unregisterObserver(EventObserver* observer, const std::vector
 
 void EventManager::unregisterObserver(EventObserver* observer, const sf::Event::EventType& type)
 {
-	mObservers[type].erase(observer);
+	size_t size = mObservers[type].size();
+	ObserverVec newVec;
+	for (size_t i = 0; i < size; i++)
+	{
+		EventObserver* compare = mObservers[type][i];
+		if (compare != observer) newVec.push_back(mObservers[type][i]);
+	}
+	mObservers[type] = newVec;
 }
 
-void EventManager::notify(const sf::Event & _event) const
+void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) const
 {
 	if (mObservers.find(_event.type) != mObservers.end())
 	{
-		const ObserverSet& observers = mObservers.at(_event.type);
-		for (auto o : observers)
-			o->observe(_event);
+		bool onlyOneClick = false;
+		const ObserverVec &observers = mObservers.at(_event.type);
+		sf::View prevView = target->getView();
+		sf::View GUIView = target->getDefaultView();
+
+		target->setView(GUIView);
+		for (auto rit = observers.rbegin(); rit != observers.rend(); ++rit)
+		{
+			if ((*rit)->getStaticEventPosition())
+			{
+				onlyOneClick = (*rit)->observe(_event);
+				if (onlyOneClick && (
+					_event.type == sf::Event::MouseButtonPressed ||
+					_event.type == sf::Event::MouseButtonReleased))
+				{
+					target->setView(prevView);
+					return;
+				}
+			}
+		}
+
+		target->setView(prevView);
+		for (auto rit = observers.rbegin(); rit != observers.rend(); ++rit)
+		{
+			if (!(*rit)->getStaticEventPosition())
+			{
+				onlyOneClick = (*rit)->observe(_event);
+				if (onlyOneClick && (
+					_event.type == sf::Event::MouseButtonPressed ||
+					_event.type == sf::Event::MouseButtonReleased))
+				{
+					return;
+				}
+			}
+		}
 	}
 }

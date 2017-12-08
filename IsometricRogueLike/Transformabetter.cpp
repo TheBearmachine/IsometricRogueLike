@@ -19,7 +19,7 @@ void Transformabetter::setParentTransform(Transformabetter * parentTransform)
 	m_parentTransform = parentTransform;
 }
 
-sf::Transform Transformabetter::getGlobalTransform()
+sf::Transform Transformabetter::getGlobalTransform() const
 {
 	sf::Transform trans = getTransform();
 	if (m_parentTransform)

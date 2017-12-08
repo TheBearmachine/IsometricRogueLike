@@ -1,5 +1,6 @@
 #include "ContentRegion.h"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "DrawingManager.h"
 
 static const float BORDER_THICKNESS = 1.5f;
 
@@ -48,8 +49,13 @@ sf::Vector2f ContentRegion::getRegionUsableSize() const
 	return retSize;
 }
 
+void ContentRegion::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
+}
+
 void ContentRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
+	states.transform = getGlobalTransform();
 	target.draw(mRegionBG, states);
 }

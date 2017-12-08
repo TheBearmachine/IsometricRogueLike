@@ -1,9 +1,6 @@
 #pragma once
-#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Rect.hpp>
-#include <vector>
-#include "Transformabetter.h"
-#include "EventObserver.h"
+#include "Clickable.h"
 
 __interface IDragListener
 {
@@ -16,28 +13,19 @@ namespace sf
 }
 class EventManager;
 
-class Dragable : public EventObserver, public Transformabetter
+class Dragable : public Clickable
 {
 public:
 	Dragable();
-	Dragable(IDragListener* listener, const sf::FloatRect &area);
+	Dragable(IDragListener* listener, const sf::Vector2f &size, size_t action);
 	~Dragable();
 
 	void setListener(IDragListener* listener);
 	void setAction(size_t action);
 
-	virtual void registerEvents();
-	virtual void unregisterEvents();
-	virtual void observe(const sf::Event & _event) override;
-	void setup(EventManager* eventManager, sf::RenderTarget* window);
+	virtual void onDragInside(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos) override;
 
 private:
 	IDragListener* mListener;
-	sf::FloatRect mInteractArea;
-	sf::RenderTarget* mWindow;
-	EventManager* mEventManager;
-	std::vector<sf::Event::EventType> mInterestedEvents;
-	bool mDrag;
-	sf::Vector2f previousMousePos;
 	size_t mAction;
 };

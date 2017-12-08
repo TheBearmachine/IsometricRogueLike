@@ -125,6 +125,8 @@
     <ClCompile Include="ContentRegion.cpp" />
     <ClCompile Include="ContentRegionInventory.cpp" />
     <ClCompile Include="Dragable.cpp" />
+    <ClCompile Include="DrawingManager.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -134,12 +136,14 @@
     <ClCompile Include="IsometricConversion.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TestButtonContainer.cpp" />
     <ClCompile Include="TestTransform.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Transformabetter.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -150,7 +154,10 @@
     <ClInclude Include="ContentRegion.h" />
     <ClInclude Include="ContentRegionInventory.h" />
     <ClInclude Include="Dragable.h" />
+    <ClInclude Include="DrawingManager.h" />
+    <ClInclude Include="DrawThis.h" />
     <ClInclude Include="DynamicArray.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventObserver.h" />
     <ClInclude Include="Game.h" />
@@ -160,6 +167,7 @@
     <ClInclude Include="Inventoryslot.h" />
     <ClInclude Include="IsometricConversion.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="TestButtonContainer.h" />
     <ClInclude Include="TestTransform.h" />
@@ -168,6 +176,7 @@
     <ClInclude Include="VectorFunctions.h" />
     <ClInclude Include="VectorRotation.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

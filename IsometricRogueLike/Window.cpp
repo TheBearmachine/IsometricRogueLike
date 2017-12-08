@@ -1,6 +1,7 @@
 #include "Window.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "ResourceManager.h"
+#include "DrawingManager.h"
 #include "Constants.h"
 
 static const float TOP_THICKNESS = 30.0f;
@@ -12,6 +13,8 @@ static const std::string CLOSE_BUTTON_TEX = Constants::Filepaths::ImagesFolder +
 static const sf::Vector2f DEFAULT_WINDOW_SIZE(300.0f, 200.0f);
 static const std::string DOTS = "...";
 
+static sf::RenderTarget* mRenderTarget;
+
 Window::Window() :
 	Window("Window", sf::Vector2f(), DEFAULT_WINDOW_SIZE)
 {
@@ -19,51 +22,46 @@ Window::Window() :
 }
 
 Window::Window(const std::string &windowName, const sf::Vector2f & position, const sf::Vector2f & size) :
+	mWIndowNameString(windowName),
 	mWindowName(windowName, ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont), (unsigned)(TOP_THICKNESS - (2.0f * BORDER_THICKNESS))),
 	mBorder(size), mTop(sf::Vector2f(size.x, TOP_THICKNESS)),
-	mDragable(this, sf::FloatRect(0.0f, 0.0f, size.x, TOP_THICKNESS)),
-	mCloseButton(this, CLOSE_BUTTON_TEX, 0)
+	mTopDragable(this, sf::Vector2f(size.x, TOP_THICKNESS), 0),
+	mCloseButton(this, CLOSE_BUTTON_TEX, 0), mVisible(true)
 {
 	setPosition(position);
+	setStaticDrawPosition(true);
 
-	mDragable.setParentTransform(this);
+	mTopDragable.setParentTransform(this);
 	mBorder.setOutlineThickness(-BORDER_THICKNESS);
-	mBorder.setOutlineColor(sf::Color(0, 0, 220));
-	mBorder.setFillColor(sf::Color(0, 0, 170));
+	mBorder.setOutlineColor(Constants::Game::WindowBorderColor);
+	mBorder.setFillColor(Constants::Game::WindowFillColor);
 
 	mTop.setOutlineThickness(-BORDER_THICKNESS);
-	mTop.setOutlineColor(sf::Color(0, 40, 200));
-	mTop.setFillColor(sf::Color(0, 20, 170));
+	mTop.setOutlineColor(Constants::Game::WindowTopBorderColor);
+	mTop.setFillColor(Constants::Game::WindowTopFillColor);
 
 	mWindowName.setPosition(BORDER_THICKNESS * BORDER_THICKNESS, BORDER_THICKNESS);
 	mWindowName.setFillColor(sf::Color::White);
 
-	float iconWidth = mCloseButton.getSpriteBounds().width;
-	mCloseButton.setPosition(size.x - iconWidth, 0.0f);
+	float iconWidth = mCloseButton.getSize().x;
+	mCloseButton.setParentTransform(this);
 	mCloseButton.setTextString("");
+	mCloseButton.setPosition(size.x - iconWidth, 0.0f);
 
 	// Shorten strings that are too long
-	if (mWindowName.getGlobalBounds().width > size.x - BORDER_THICKNESS * 3.0f)
-	{
-		sf::Text dots(DOTS, ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont));
-		while ((mWindowName.getGlobalBounds().width + dots.getGlobalBounds().width) > size.x - BORDER_THICKNESS * 3.0f)
-		{
-			std::string newString = mWindowName.getString();
-			newString.pop_back();
-			mWindowName.setString(newString);
-		}
-		mWindowName.setString(mWindowName.getString() + dots.getString());
-	}
+	restructureText();
 }
 
 Window::~Window()
 {
+	unregisterEvents();
 	clearContentRegions();
 }
 
 void Window::registerEvents()
 {
-	mDragable.registerEvents();
+	mCloseButton.registerEvents();
+	mTopDragable.registerEvents();
 	for (auto cr : mContentRegions)
 	{
 		cr->registerEvents();
@@ -72,7 +70,8 @@ void Window::registerEvents()
 
 void Window::unregisterEvents()
 {
-	mDragable.unregisterEvents();
+	mCloseButton.unregisterEvents();
+	mTopDragable.unregisterEvents();
 	for (auto cr : mContentRegions)
 	{
 		cr->unregisterEvents();
@@ -96,10 +95,20 @@ void Window::clearContentRegions()
 	}
 }
 
+void Window::setVisibility(bool visible)
+{
+	mVisible = visible;
+	if (visible)
+		registerEvents();
+	else
+		unregisterEvents();
+}
+
 void Window::setWindowSize(const sf::Vector2f & size)
 {
 	mBorder.setSize(size);
 	mTop.setSize(sf::Vector2f(size.x, TOP_THICKNESS));
+	restructureText();
 }
 
 void Window::setWindowContentSize(const sf::Vector2f & size)
@@ -110,6 +119,8 @@ void Window::setWindowContentSize(const sf::Vector2f & size)
 
 	mBorder.setSize(newSize);
 	mTop.setSize(sf::Vector2f(newSize.x, TOP_THICKNESS));
+	//mDragable.set
+	restructureText();
 }
 
 sf::Vector2f Window::getContentSize() const
@@ -125,18 +136,47 @@ sf::Vector2f Window::getWindowSize() const
 	return sf::Vector2f(mTop.getSize());
 }
 
-void Window::setup(EventManager * eventManager, sf::RenderTarget * window)
+void Window::setWindowListener(IWindowListener * windowListener)
 {
-	mDragable.setup(eventManager, window);
+	mWindowListener = windowListener;
+}
+
+void Window::setup(sf::RenderTarget * window)
+{
+	mRenderTarget = window;
 }
 
 void Window::onDrag(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
 {
 	move(mouseDelta);
+
+	// Limit movement to inside the render window
+	if (!mRenderTarget) return;
+	const sf::Vector2f &pos = getPosition();
+	const sf::Vector2f &winSize = getWindowSize();
+	const sf::Vector2f renderWinSize(mRenderTarget->getDefaultView().getSize());
+
+	if (pos.x < 0.0f)
+		setPosition(0.0f, pos.y);
+	else if (pos.x + winSize.x > renderWinSize.x)
+		setPosition(renderWinSize.x - winSize.x, pos.y);
+
+	if (pos.y < 0.0f)
+		setPosition(pos.x, 0.0f);
+	else if (pos.y + winSize.y > renderWinSize.y)
+		setPosition(pos.x, renderWinSize.y - winSize.y);
+
+}
+
+void Window::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
 }
 
 void Window::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
+	if (!mVisible) return;
+
 	states.transform *= getTransform();
 	target.draw(mBorder, states);
 	target.draw(mTop, states);
@@ -147,12 +187,44 @@ void Window::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(*mContentRegions[i], states);
 }
 
+void Window::onClose()
+{
+	if (mWindowListener)
+		mWindowListener->onWindowClose(this);
+}
+
+void Window::restructureText()
+{
+	float iconWidth = mCloseButton.getSize().x;
+	float topWidth = mTop.getSize().x - BORDER_THICKNESS * 3.0f - iconWidth;
+	mWindowName.setString(mWIndowNameString);
+	if (topWidth < 50.0f)
+	{
+		mWindowName.setString("");
+		return;
+	}
+	if (mWindowName.getGlobalBounds().width > topWidth)
+	{
+		sf::Text dots(DOTS, ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont));
+		while ((mWindowName.getGlobalBounds().width + dots.getGlobalBounds().width) > topWidth)
+		{
+			std::string newString = mWindowName.getString();
+			newString.pop_back();
+			mWindowName.setString(newString);
+		}
+		mWindowName.setString(mWindowName.getString() + dots.getString());
+	}
+	mTopDragable.setSize(sf::Vector2f(topWidth, TOP_THICKNESS));
+	mCloseButton.setPosition(mTop.getSize().x - iconWidth, 0.0f);
+}
+
 void Window::buttonAction(unsigned int action)
 {
 	switch (action)
 	{
 	case 0:
 		// Close window
+		onClose();
 		break;
 
 	default:
