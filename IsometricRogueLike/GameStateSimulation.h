@@ -2,6 +2,8 @@
 #include "GameState.h"
 #include "Map.h"
 #include "CameraController.h"
+#include "SimulationController.h"
+#include "MapManager.h"
 #include "Entity.h"
 #include "WindowManager.h"
 
@@ -39,12 +41,13 @@ protected:
 	virtual void entry() override;
 
 private:
-	Map testMap;
 	Entity testEntity;
 	CameraController testCamController;
+	SimulationController testSimController;
 	std::vector<sf::Event::EventType> mInterestedEvents;
 
 	WindowManager mWindowManager;
+	MapManager mMapManager;
 
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;

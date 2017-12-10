@@ -10,4 +10,5 @@ public:
 	static sf::Vector2f toIsometric(const sf::Vector2f &vec);
 	static sf::Vector2f fromIsometric(const sf::Vector2f &vec);
 
+	static sf::Vector2i fromIsometricTile(const sf::Vector2f &vec);
 };

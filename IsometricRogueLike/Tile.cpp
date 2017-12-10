@@ -47,3 +47,13 @@ sf::Vector2f Tile::getWorldPos() const
 {
 	return mWorldPos;
 }
+
+void Tile::setArrayIndex(const sf::Vector2i & arrayIndex)
+{
+	mArrayIndex = arrayIndex;
+}
+
+sf::Vector2i Tile::getArrayIndex() const
+{
+	return mArrayIndex;
+}

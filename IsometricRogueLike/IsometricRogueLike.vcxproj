@@ -136,11 +136,15 @@
     <ClCompile Include="IsometricConversion.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SimulationController.cpp" />
     <ClCompile Include="TestButtonContainer.cpp" />
     <ClCompile Include="TestTransform.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileGraph.cpp" />
     <ClCompile Include="Transformabetter.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -153,6 +157,9 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="ContentRegion.h" />
     <ClInclude Include="ContentRegionInventory.h" />
+    <ClInclude Include="MapManager.h" />
+    <ClInclude Include="Movement.h" />
+    <ClInclude Include="SimulationController.h" />
     <ClInclude Include="Dragable.h" />
     <ClInclude Include="DrawingManager.h" />
     <ClInclude Include="DrawThis.h" />
@@ -172,6 +179,7 @@
     <ClInclude Include="TestButtonContainer.h" />
     <ClInclude Include="TestTransform.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileGraph.h" />
     <ClInclude Include="Transformabetter.h" />
     <ClInclude Include="VectorFunctions.h" />
     <ClInclude Include="VectorRotation.h" />

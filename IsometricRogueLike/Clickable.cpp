@@ -1,6 +1,6 @@
 #include "Clickable.h"
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include "EventManager.h"
 
 static sf::RenderTarget* mWindow;
@@ -86,24 +86,30 @@ bool Clickable::observe(const sf::Event & _event)
 		break;
 
 	case sf::Event::MouseButtonPressed:
-		if (mMouseInside)
+		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
-			onClickInside();
-			mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
-			mPreviousMousePos = mousePos;
-			mDrag = true;
+			if (mMouseInside)
+			{
+				onClickInside();
+				mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
+				mPreviousMousePos = mousePos;
+				mDrag = true;
 
-			retVal = true;
+				retVal = true;
+			}
 		}
 		break;
 
 	case sf::Event::MouseButtonReleased:
-		if (mMouseInside && mDrag)
+		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
-			onReleaseInside();
-			retVal = true;
+			if (mMouseInside && mDrag)
+			{
+				onReleaseInside();
+				retVal = true;
+			}
+			mDrag = false;
 		}
-		mDrag = false;
 		break;
 	}
 	return retVal;

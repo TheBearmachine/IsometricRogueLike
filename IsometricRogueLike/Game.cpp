@@ -2,6 +2,7 @@
 #include <SFML/System/Clock.hpp>
 #include "IsometricConversion.h"
 #include "Clickable.h"
+#include "SimulationController.h"
 
 static const char* APP_TITLE = "Isometrica";
 
@@ -50,6 +51,7 @@ void Game::initialize()
 {
 	Clickable::setup(&mEventManager, &mWindow);
 	Window::setup(&mWindow);
+	SimulationController::setup(&mWindow, &mEventManager);
 
 	mGameStateSimulation.initalize(&mWindow, &mEventManager);
 	mGameStateMenu.initalize(&mWindow, &mEventManager);

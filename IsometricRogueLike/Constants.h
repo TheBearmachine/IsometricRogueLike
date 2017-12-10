@@ -32,6 +32,12 @@ namespace Constants
 		}
 	}
 
+	namespace Entities
+	{
+		static const float DefaultSpeed = 100.0f;
+
+	}
+
 	namespace Camera
 	{
 		static const float Speed = 120.0f;

@@ -37,21 +37,23 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 {
 	mWindow = window;
 	mEventManager = eventManager;
-	testMap.setupMap(TEST_LEVEL, 10, 10);
-	testMap.updateVertexArray(sf::Vector2f(0.0f, 0.0f));
+	mMapManager.setupMap(TEST_LEVEL, 10, 10);
 	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
 	testCamController.initalize(screenSize, window);
+	testSimController.setCurrentMap(mMapManager.getCurrentMap());
 }
 
 void GameStateSimulation::registerEvents()
 {
 	mEventManager->registerObserver(this, mInterestedEvents);
+	testSimController.registerEvents();
 	mWindowManager.registerEvents();
 }
 
 void GameStateSimulation::unregisterEvents()
 {
 	mEventManager->unregisterObserver(this, mInterestedEvents);
+	testSimController.unregisterEvents();
 	mWindowManager.unregisterEvents();
 }
 
@@ -132,7 +134,7 @@ void GameStateSimulation::update(const sf::Time & deltaTime)
 
 void GameStateSimulation::drawPrep(DrawingManager* drawingMan)
 {
-	testMap.drawPrep(drawingMan);
+	mMapManager.drawPrep(drawingMan);
 	testEntity.drawPrep(drawingMan);
 	mWindowManager.drawPrep(drawingMan);
 }
