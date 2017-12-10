@@ -13,7 +13,7 @@ public:
 
 	virtual void update(const sf::Time &deltaTime);
 	void setPath(std::stack<TileNode*> path);
-
+	sf::Vector2f getCurrentMoveTarget() const;
 
 	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;

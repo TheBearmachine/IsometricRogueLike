@@ -231,12 +231,28 @@ bool containsElement(const std::vector<T*> &vector, T* element)
 
 std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)
 {
+	int startI = startIndex.y + startIndex.x * mMapWidth,
+		endI = endIndex.y + endIndex.x * mMapWidth;
+	if (startI >= mTiles.size() || startI < 0 ||
+		endI >= mTiles.size() || endI < 0 ||
+		endIndex.x >= mMapWidth || endIndex.x < 0 ||
+		endIndex.y >= mMapHeight || endIndex.y < 0)
+	{
+		printf("Target out of bounds!\n");
+		return std::stack<TileNode*>();
+	}
+
 	std::vector<TileNode*>closedList;
 	std::stack<TileNode*> finalPath;
 	std::priority_queue<TileNode*, std::vector<TileNode*>, CompareTileNodeCosts> openList;
-	TileNode *startTile = mTileGraph.getNode(&mTiles[startIndex.x + startIndex.y * mMapWidth]),
-		*finalTile = nullptr;
-	if (!startTile) return std::stack<TileNode*>();
+	TileNode *startTile = mTileGraph.getNode(&mTiles[startI]),
+		*finalTile = mTileGraph.getNode(&mTiles[endI]);
+
+	if (!startTile || startTile == finalTile)
+	{
+		printf("Start same as goal.\n");
+		return std::stack<TileNode*>();
+	}
 
 	startTile->mAccumulatedCost = 0;
 	startTile->mParent = nullptr;
@@ -267,8 +283,9 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 					 !containsElement(closedList, neighbor) &&
 					 !containsElement(openList, neighbor))
 			{
-				int manhattanDist = abs(currentTile->mTile->getArrayIndex().x - neighbor->mTile->getArrayIndex().x)
-					+ abs(currentTile->mTile->getArrayIndex().y - neighbor->mTile->getArrayIndex().y);
+				int manhattanDist =
+					abs(finalTile->mTile->getArrayIndex().x - neighbor->mTile->getArrayIndex().x) +
+					abs(finalTile->mTile->getArrayIndex().y - neighbor->mTile->getArrayIndex().y);
 				int cost = currentTile->mAccumulatedCost + manhattanDist + 1;
 
 				neighbor->mAccumulatedCost = cost;
@@ -277,7 +294,7 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 			}
 		}
 	}
-	if (finalTile == nullptr)
+	if (!done)
 	{
 		printf("No path found!\n", finalPath.size());
 		return std::stack<TileNode*>();
@@ -288,8 +305,7 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 		finalPath.push(currentTile);
 		currentTile = currentTile->mParent;
 	}
-	printf("Final list size: %i\n", finalPath.size());
-	printf("Closed list size: %i\n", closedList.size());
+	finalPath.push(currentTile);
 
 	return finalPath;
 }

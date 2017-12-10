@@ -8,6 +8,8 @@ Entity::Entity(const std::string & textureName) :
 	mSprite(ResourceManager::getInstance().getTexture(textureName)),
 	mMovementComponent(this, Constants::Entities::DefaultSpeed)
 {
+	mSprite.setOrigin(mSprite.getTextureRect().width / 2.0f,
+					  mSprite.getTextureRect().height - Constants::World::Tile::HalfHeight);
 }
 
 Entity::~Entity()
@@ -22,6 +24,11 @@ void Entity::update(const sf::Time & deltaTime)
 void Entity::setPath(std::stack<TileNode*> path)
 {
 	mMovementComponent.setPath(path);
+}
+
+sf::Vector2f Entity::getCurrentMoveTarget() const
+{
+	return mMovementComponent.getCurrentTarget();
 }
 
 void Entity::drawPrep(DrawingManager * drawingMan)

@@ -4,19 +4,21 @@
 #include <vector>
 
 class Map;
+class Entity;
 class EventManager;
 namespace sf
 {
 	class RenderTarget;
 }
 
-class SimulationController: public EventObserver
+class SimulationController : public EventObserver
 {
 public:
 	SimulationController();
 	~SimulationController();
 
 	void setCurrentMap(Map* map);
+	void setControllableEntity(Entity* controllableEntity);
 
 	virtual bool observe(const sf::Event& _event) override;
 	virtual void registerEvents() override;
@@ -27,4 +29,5 @@ public:
 private:
 	std::vector<sf::Event::EventType> mInterestedEvents;
 	Map* mCurrentMap;
+	Entity* mControllableEntity;
 };

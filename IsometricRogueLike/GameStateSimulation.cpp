@@ -39,8 +39,11 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	mEventManager = eventManager;
 	mMapManager.setupMap(TEST_LEVEL, 10, 10);
 	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
+	testEntity.setPosition(IsometricConversion::toIsometric(
+		sf::Vector2f(Constants::World::Tile::Width * 2.0f, Constants::World::Tile::Width * 2.0f)));
 	testCamController.initalize(screenSize, window);
 	testSimController.setCurrentMap(mMapManager.getCurrentMap());
+	testSimController.setControllableEntity(&testEntity);
 }
 
 void GameStateSimulation::registerEvents()
@@ -129,6 +132,7 @@ void GameStateSimulation::update(const sf::Time & deltaTime)
 		testCamController.updateCamera();
 	}
 
+	testEntity.update(deltaTime);
 	mWindowManager.clearGarbage();
 }
 

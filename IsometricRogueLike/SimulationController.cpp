@@ -2,6 +2,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "EventManager.h"
 #include "Map.h"
+#include "Entity.h"
 
 static sf::RenderTarget* mWindow;
 static EventManager* mEventManager;
@@ -23,6 +24,11 @@ void SimulationController::setCurrentMap(Map * map)
 	mCurrentMap = map;
 }
 
+void SimulationController::setControllableEntity(Entity * controllableEntity)
+{
+	mControllableEntity = controllableEntity;
+}
+
 bool SimulationController::observe(const sf::Event & _event)
 {
 	bool retVal = false;
@@ -31,9 +37,15 @@ bool SimulationController::observe(const sf::Event & _event)
 	case sf::Event::MouseButtonPressed:
 		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
+			if (!mControllableEntity || !mCurrentMap) break;
+			retVal = true;
 			sf::Vector2f mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
-			sf::Vector2i derp = mCurrentMap->getTileIndexFromCoords(mousePos);
-			mCurrentMap->findPath(sf::Vector2i(2, 2), derp);
+			sf::Vector2f entityPos = mControllableEntity->getCurrentMoveTarget();
+			sf::Vector2i targetPos = mCurrentMap->getTileIndexFromCoords(mousePos);
+			sf::Vector2i currentPos = mCurrentMap->getTileIndexFromCoords(entityPos);
+
+			mControllableEntity->setPath(mCurrentMap->findPath(currentPos, targetPos));
+
 			//printf("Tile index x: %i, y: %i\n", derp.x, derp.y);
 		}
 		break;

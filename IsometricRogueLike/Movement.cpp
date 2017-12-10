@@ -26,7 +26,10 @@ sf::Vector2f Movement::getCurrentTarget() const
 	sf::Vector2f retVec = mClient->getPosition();
 
 	if (!mPath.empty())
+	{
 		retVec = mPath.top()->mTile->getWorldPos();
+		retVec.x += Constants::World::Tile::HalfWidth;
+	}
 
 	return retVec;
 }
@@ -44,6 +47,7 @@ void Movement::update(const sf::Time & deltaTime)
 		bool goalReached = false;
 
 		sf::Vector2f curPos = mClient->getPosition(), targetPos = mPath.top()->mTile->getWorldPos();
+		targetPos.x += Constants::World::Tile::HalfWidth;
 		sf::Vector2f newPos = VectorFunctions::lerp(curPos, targetPos, speed, goalReached);
 		mClient->setPosition(newPos);
 
