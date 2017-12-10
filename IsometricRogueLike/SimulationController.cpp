@@ -7,6 +7,8 @@
 static sf::RenderTarget* mWindow;
 static EventManager* mEventManager;
 
+static const int TempDist = 170;
+
 SimulationController::SimulationController()
 {
 	setStaticEventPosition(false);
@@ -22,11 +24,13 @@ SimulationController::~SimulationController()
 void SimulationController::setCurrentMap(Map * map)
 {
 	mCurrentMap = map;
+	mCurrentMap->updateVertexArray(mControllableEntity->getPosition(), TempDist);
 }
 
 void SimulationController::setControllableEntity(Entity * controllableEntity)
 {
 	mControllableEntity = controllableEntity;
+	mControllableEntity->getMovementComponent()->registerMovementListener(this);
 }
 
 bool SimulationController::observe(const sf::Event & _event)
@@ -40,14 +44,27 @@ bool SimulationController::observe(const sf::Event & _event)
 			if (!mControllableEntity || !mCurrentMap) break;
 			retVal = true;
 			sf::Vector2f mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
-			sf::Vector2f entityPos = mControllableEntity->getCurrentMoveTarget();
+			sf::Vector2f entityPos = mControllableEntity->getMovementComponent()->getCurrentTarget();
 			sf::Vector2i targetPos = mCurrentMap->getTileIndexFromCoords(mousePos);
 			sf::Vector2i currentPos = mCurrentMap->getTileIndexFromCoords(entityPos);
 
-			mControllableEntity->setPath(mCurrentMap->findPath(currentPos, targetPos));
+			mControllableEntity->getMovementComponent()->setPath(mCurrentMap->findPath(currentPos, targetPos));
 
 			//printf("Tile index x: %i, y: %i\n", derp.x, derp.y);
 		}
+		break;
+
+	case sf::Event::KeyPressed:
+		switch (_event.key.code)
+		{
+		case sf::Keyboard::Space:
+			mControllableEntity->getMovementComponent()->halt();
+			break;
+
+		default:
+			break;
+		}
+
 		break;
 
 	default:
@@ -65,6 +82,11 @@ void SimulationController::registerEvents()
 void SimulationController::unregisterEvents()
 {
 	mEventManager->unregisterObserver(this, mInterestedEvents);
+}
+
+void SimulationController::onReachTile(const sf::Vector2f & clientPos)
+{
+	mCurrentMap->updateVertexArray(clientPos, TempDist);
 }
 
 void SimulationController::setup(sf::RenderTarget * target, EventManager * eventManager)

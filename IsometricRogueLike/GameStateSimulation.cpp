@@ -42,8 +42,8 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	testEntity.setPosition(IsometricConversion::toIsometric(
 		sf::Vector2f(Constants::World::Tile::Width * 2.0f, Constants::World::Tile::Width * 2.0f)));
 	testCamController.initalize(screenSize, window);
-	testSimController.setCurrentMap(mMapManager.getCurrentMap());
 	testSimController.setControllableEntity(&testEntity);
+	testSimController.setCurrentMap(mMapManager.getCurrentMap());
 }
 
 void GameStateSimulation::registerEvents()

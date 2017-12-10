@@ -15,7 +15,6 @@ MapManager::~MapManager()
 void MapManager::setupMap(const int * tiles, unsigned int width, unsigned int height)
 {
 	mCurrentMap.setupMap(tiles, width, height);
-	mCurrentMap.updateVertexArray(sf::Vector2f(0.0f, 0.0f));
 }
 
 Map * MapManager::getCurrentMap()

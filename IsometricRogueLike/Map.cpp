@@ -4,6 +4,7 @@
 #include "TileGraph.h"
 #include "Constants.h"
 #include "DrawingManager.h"
+#include "VectorFunctions.h"
 #include <queue>
 
 #define FloorTileWidth Constants::World::Tile::Width
@@ -53,7 +54,7 @@ void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 	updateTileGraph();
 }
 
-void Map::updateVertexArray(const sf::Vector2f cameraPos)
+void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
 {
 	// The int is: 0 no wall attached, 1 a wall to the left, 2 a wall above, 3 if both
 	std::vector<std::pair< Tile*, int>> closeTiles;
@@ -64,6 +65,11 @@ void Map::updateVertexArray(const sf::Vector2f cameraPos)
 	{
 		if (mTiles[i].getTextureID() >= 0)
 		{
+			sf::Vector2f tilePos = mTiles[i].getWorldPos();
+			tilePos.x += Constants::World::Tile::HalfWidth;
+			int distFromPos = (int)VectorFunctions::vectorMagnitude(tilePos - worldPos);
+			if (distFromPos > distance) continue;
+
 			int hasAWall = 0;
 			// See if the tile texture ID in array position -1 or -mMapWidth is equal to -1
 			int left = i - 1;
@@ -84,6 +90,8 @@ void Map::updateVertexArray(const sf::Vector2f cameraPos)
 	}
 
 	//TODO: populate closeTiles
+
+
 	size_t wallCurIndex = 0;
 
 	mFloorVertices.resize((closeTiles.size()) * 4);

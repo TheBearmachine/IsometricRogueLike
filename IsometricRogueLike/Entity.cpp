@@ -21,14 +21,9 @@ void Entity::update(const sf::Time & deltaTime)
 	mMovementComponent.update(deltaTime);
 }
 
-void Entity::setPath(std::stack<TileNode*> path)
+Movement * Entity::getMovementComponent()
 {
-	mMovementComponent.setPath(path);
-}
-
-sf::Vector2f Entity::getCurrentMoveTarget() const
-{
-	return mMovementComponent.getCurrentTarget();
+	return &mMovementComponent;
 }
 
 void Entity::drawPrep(DrawingManager * drawingMan)

@@ -157,6 +157,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="ContentRegion.h" />
     <ClInclude Include="ContentRegionInventory.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="SimulationController.h" />

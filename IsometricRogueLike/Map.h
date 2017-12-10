@@ -16,7 +16,7 @@ public:
 	~Map();
 
 	void setupMap(const int* tiles, unsigned int width, unsigned int height);
-	void updateVertexArray(const sf::Vector2f cameraPos);
+	void updateVertexArray(const sf::Vector2f worldPos, int distance);
 
 	sf::Vector2i getTileIndexFromCoords(const sf::Vector2f &coords);
 

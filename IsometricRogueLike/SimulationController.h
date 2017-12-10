@@ -1,5 +1,6 @@
 #pragma once
 #include "EventObserver.h"
+#include "Movement.h"
 #include <SFML/Window/Event.hpp>
 #include <vector>
 
@@ -11,7 +12,7 @@ namespace sf
 	class RenderTarget;
 }
 
-class SimulationController : public EventObserver
+class SimulationController : public EventObserver, public IMovementListener
 {
 public:
 	SimulationController();
@@ -23,6 +24,8 @@ public:
 	virtual bool observe(const sf::Event& _event) override;
 	virtual void registerEvents() override;
 	virtual void unregisterEvents() override;
+
+	void onReachTile(const sf::Vector2f &clientPos) override;
 
 	static void setup(sf::RenderTarget* target, EventManager* eventManager);
 

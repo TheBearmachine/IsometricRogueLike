@@ -6,7 +6,7 @@
 #include <SFML/System/Time.hpp>
 
 Movement::Movement(Transformabetter * client, float moveSpeed) :
-	mClient(client), mMoveSpeed(moveSpeed)
+	mClient(client), mMoveSpeed(moveSpeed), mHalt(false)
 {
 
 }
@@ -18,7 +18,10 @@ Movement::~Movement()
 
 void Movement::setPath(std::stack<TileNode*> path)
 {
+	if (path.empty()) return;
 	mPath = path;
+	mHalt = false;
+
 }
 
 sf::Vector2f Movement::getCurrentTarget() const
@@ -34,9 +37,30 @@ sf::Vector2f Movement::getCurrentTarget() const
 	return retVec;
 }
 
+void Movement::registerMovementListener(IMovementListener * listener)
+{
+	mListeners.push_back(listener);
+}
+
+void Movement::unregisterMovementListener(IMovementListener * listener)
+{
+	std::vector<IMovementListener*> temp;
+	for (auto l : mListeners)
+	{
+		if (l != listener)
+			temp.push_back(l);
+	}
+	mListeners = temp;
+}
+
 void Movement::setMoveSpeed(float moveSpeed)
 {
 	mMoveSpeed = moveSpeed;
+}
+
+void Movement::halt()
+{
+	mHalt = true;
 }
 
 void Movement::update(const sf::Time & deltaTime)
@@ -52,7 +76,18 @@ void Movement::update(const sf::Time & deltaTime)
 		mClient->setPosition(newPos);
 
 		if (goalReached)
+		{
+			printf("Movement goal reached.\n");
+			for (auto l : mListeners)
+				l->onReachTile(mClient->getPosition());
+
 			mPath.pop();
+			if (mHalt)
+			{
+				mHalt = false;
+				while (!mPath.empty()) mPath.pop();
+			}
+		}
 	}
 
 
