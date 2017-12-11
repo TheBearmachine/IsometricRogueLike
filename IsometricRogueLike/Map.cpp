@@ -56,11 +56,19 @@ void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 
 void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
 {
+	for (auto t : mCloseTiles)
+	{
+		if (mMemorizedTiles.find(t) != mMemorizedTiles.cend())
+		{
+			mMemorizedTiles.insert(t);
+			t;
+		}
+	}
+
 	// The int is: 0 no wall attached, 1 a wall to the left, 2 a wall above, 3 if both
 	std::vector<std::pair< Tile*, int>> closeTiles;
 	size_t walls = 0;
 
-	// Temp solution
 	for (size_t i = 0; i < mTiles.size(); i++)
 	{
 		if (mTiles[i].getTextureID() >= 0)
@@ -86,11 +94,9 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
 			}
 
 			closeTiles.push_back(std::make_pair(&mTiles[i], hasAWall));
+			mCloseTiles.push_back(&mTiles[i]);
 		}
 	}
-
-	//TODO: populate closeTiles
-
 
 	size_t wallCurIndex = 0;
 
@@ -241,10 +247,10 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 {
 	int startI = startIndex.y + startIndex.x * mMapWidth,
 		endI = endIndex.y + endIndex.x * mMapWidth;
-	if (startI >= mTiles.size() || startI < 0 ||
-		endI >= mTiles.size() || endI < 0 ||
-		endIndex.x >= mMapWidth || endIndex.x < 0 ||
-		endIndex.y >= mMapHeight || endIndex.y < 0)
+	if (startI >= (int)mTiles.size() || startI < 0 ||
+		endI >= (int)mTiles.size() || endI < 0 ||
+		endIndex.x >= (int)mMapWidth || endIndex.x < 0 ||
+		endIndex.y >= (int)mMapHeight || endIndex.y < 0)
 	{
 		printf("Target out of bounds!\n");
 		return std::stack<TileNode*>();

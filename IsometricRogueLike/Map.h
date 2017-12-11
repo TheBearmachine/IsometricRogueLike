@@ -6,6 +6,7 @@
 #include "TileGraph.h"
 #include <vector>
 #include <stack>
+#include <unordered_set>
 
 class TileGraph;
 
@@ -33,6 +34,9 @@ private:
 	sf::Texture *mWallTex;
 
 	std::vector<Tile> mTiles;
+	std::vector<Tile*> mCloseTiles;
+	std::unordered_set<Tile*> mMemorizedTiles;
+
 	TileGraph mTileGraph;
 
 	unsigned int mMapWidth;
