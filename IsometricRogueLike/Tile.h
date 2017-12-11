@@ -25,9 +25,14 @@ public:
 	void setArrayIndex(const sf::Vector2i &arrayIndex);
 	sf::Vector2i getArrayIndex() const;
 
+	void setFadeMax(float val);
+	void reduceFadeCurrent(float deltaVal);
+	float getFadeRatio() const;
+
 private:
 	int mTextureID;
 	int mWallTextureID;
 	sf::Vector2f mWorldPos;
 	sf::Vector2i mArrayIndex;
+	float mFadeMax, mFadeCurrent;
 };

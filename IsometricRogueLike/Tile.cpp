@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include <cmath>
 
 Tile::Tile() :
 	mTextureID(-1),
@@ -56,4 +57,19 @@ void Tile::setArrayIndex(const sf::Vector2i & arrayIndex)
 sf::Vector2i Tile::getArrayIndex() const
 {
 	return mArrayIndex;
+}
+
+void Tile::setFadeMax(float val)
+{
+	mFadeMax = mFadeCurrent = val;
+}
+
+void Tile::reduceFadeCurrent(float deltaVal)
+{
+	mFadeCurrent = std::fmaxf(0.0f, mFadeCurrent - deltaVal);
+}
+
+float Tile::getFadeRatio() const
+{
+	return mFadeCurrent / mFadeMax;
 }

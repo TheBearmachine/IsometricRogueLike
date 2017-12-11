@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "DrawingManager.h"
 #include "VectorFunctions.h"
+#include <SFML/System/Time.hpp>
 #include <queue>
 
 #define FloorTileWidth Constants::World::Tile::Width
@@ -14,6 +15,28 @@
 
 static const std::string FLOOR_TILES = Constants::Filepaths::ImagesFolder + "FloorTiles.png";
 static const std::string WALL_TILES = Constants::Filepaths::ImagesFolder + "WallTiles.png";
+
+bool containsElement(std::priority_queue<TileNode*, std::vector<TileNode*>, CompareTileNodeCosts> queue, TileNode* element)
+{
+	while (!queue.empty())
+	{
+		TileNode* temp = queue.top();
+		if (temp == element) return true;
+		queue.pop();
+	}
+	return false;
+}
+
+template <typename T>
+bool containsElement(const std::vector<T*> &vector, T* element)
+{
+	for (size_t i = 0; i < vector.size(); i++)
+	{
+		if (vector[i] == element)
+			return true;
+	}
+	return false;
+}
 
 Map::Map()
 {
@@ -54,14 +77,14 @@ void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 	updateTileGraph();
 }
 
-void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
+void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int duration)
 {
 	for (auto t : mCloseTiles)
 	{
-		if (mMemorizedTiles.find(t) != mMemorizedTiles.cend())
+		t->setFadeMax((float)duration);
+		if (containsElement(mMemorizedTiles, t))
 		{
-			mMemorizedTiles.insert(t);
-			t;
+			mMemorizedTiles.push_back(t);
 		}
 	}
 
@@ -100,7 +123,8 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
 
 	size_t wallCurIndex = 0;
 
-	mFloorVertices.resize((closeTiles.size()) * 4);
+	size_t vertices = mCloseTiles.size() * 4 + mMemorizedTiles.size() * 4;
+	mFloorVertices.resize(vertices);
 	mWallVertices.resize(walls * 4);
 	int floorTilemapWidth = (int)mFloorTex->getSize().x;
 	int wallTilemapWidth = (int)mWallTex->getSize().x;
@@ -170,11 +194,94 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance)
 			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
 		}
 	}
+
+	for (size_t i = mCloseTiles.size(); i < vertices; i++)
+	{
+		int ID = mMemorizedTiles[i]->getTextureID();
+		sf::Vertex* quad = &mFloorVertices[i * 4];
+		sf::Vector2f tempPos = closeTiles[i].first->getWorldPos();
+
+
+		int tu = ID % (floorTilemapWidth / (int)FloorTileWidth);
+		int tv = ID / (floorTilemapWidth / (int)FloorTileWidth);
+
+		quad[0].position = sf::Vector2f(tempPos.x, tempPos.y);
+		quad[1].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y);
+		quad[2].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y + FloorTileHeight);
+		quad[3].position = sf::Vector2f(tempPos.x, tempPos.y + FloorTileHeight);
+
+		quad[0].texCoords = sf::Vector2f(tu * FloorTileWidth, tv * FloorTileHeight);
+		quad[1].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, tv * FloorTileHeight);
+		quad[2].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, (tv + 1) * FloorTileHeight);
+		quad[3].texCoords = sf::Vector2f(tu * FloorTileWidth, (tv + 1) * FloorTileHeight);
+
+		ID *= 2;
+		if ((closeTiles[i].second & 0b01) == 0b01)
+		{
+			sf::Vector2f tempPos2 = tempPos;
+			tempPos2.x += WallTileWidth;
+			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
+			quad = &mWallVertices[wallCurIndex];
+			wallCurIndex += 4;
+
+			tu = (ID) % (wallTilemapWidth / (int)WallTileWidth);
+			tv = (ID) / (wallTilemapWidth / (int)WallTileWidth);
+
+			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
+			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
+			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
+			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
+
+			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
+			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
+			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
+			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+		}
+
+		int test = closeTiles[i].second & 0b10;
+		if ((closeTiles[i].second & 0b10) == 0b10)
+		{
+			sf::Vector2f tempPos2 = tempPos;
+			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
+			quad = &mWallVertices[wallCurIndex];
+			wallCurIndex += 4;
+
+			tu = (ID + 1) % (wallTilemapWidth / (int)WallTileWidth);
+			tv = (ID + 1) / (wallTilemapWidth / (int)WallTileWidth);
+
+			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
+			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
+			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
+			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
+
+			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
+			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
+			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
+			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+		}
+	}
 }
 
 sf::Vector2i Map::getTileIndexFromCoords(const sf::Vector2f & coords)
 {
 	return IsometricConversion::fromIsometricTile(coords);
+}
+
+template <typename T>
+void removeElement(std::vector<T*> &vector, const T* element)
+{
+
+}
+
+void Map::update(const sf::Time & deltaTime)
+{
+	for (auto t : mMemorizedTiles)
+	{
+		t->reduceFadeCurrent(deltaTime.asSeconds());
+		//if (t->getFadeRatio() == 0.0f)
+			//removeElement
+	}
+
 }
 
 void Map::updateTileGraph()
@@ -219,28 +326,6 @@ void Map::updateTileGraph()
 
 		}
 	}
-}
-
-bool containsElement(std::priority_queue<TileNode*, std::vector<TileNode*>, CompareTileNodeCosts> queue, TileNode* element)
-{
-	while (!queue.empty())
-	{
-		TileNode* temp = queue.top();
-		if (temp == element) return true;
-		queue.pop();
-	}
-	return false;
-}
-
-template <typename T>
-bool containsElement(const std::vector<T*> &vector, T* element)
-{
-	for (size_t i = 0; i < vector.size(); i++)
-	{
-		if (vector[i] == element)
-			return true;
-	}
-	return false;
 }
 
 std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)

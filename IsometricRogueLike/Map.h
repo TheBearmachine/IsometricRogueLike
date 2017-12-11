@@ -9,6 +9,10 @@
 #include <unordered_set>
 
 class TileGraph;
+namespace sf
+{
+	class Time;
+}
 
 class Map : public DrawThis
 {
@@ -17,9 +21,11 @@ public:
 	~Map();
 
 	void setupMap(const int* tiles, unsigned int width, unsigned int height);
-	void updateVertexArray(const sf::Vector2f worldPos, int distance);
+	void updateVertexArray(const sf::Vector2f worldPos, int distance, int duration);
 
 	sf::Vector2i getTileIndexFromCoords(const sf::Vector2f &coords);
+
+	void update(const sf::Time &deltaTime);
 
 	void updateTileGraph();
 	std::stack<TileNode*> findPath(const sf::Vector2i &startIndex, const sf::Vector2i &endIndex);
@@ -35,7 +41,7 @@ private:
 
 	std::vector<Tile> mTiles;
 	std::vector<Tile*> mCloseTiles;
-	std::unordered_set<Tile*> mMemorizedTiles;
+	std::vector<Tile*> mMemorizedTiles;
 
 	TileGraph mTileGraph;
 
