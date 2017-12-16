@@ -5,7 +5,7 @@
 #include <vector>
 
 class Map;
-class Entity;
+class Creature;
 class EventManager;
 namespace sf
 {
@@ -18,8 +18,7 @@ public:
 	SimulationController();
 	~SimulationController();
 
-	void setCurrentMap(Map* map);
-	void setControllableEntity(Entity* controllableEntity);
+	void initalize(Map* map, Creature* controllableEntity);
 
 	virtual bool observe(const sf::Event& _event) override;
 	virtual void registerEvents() override;
@@ -32,5 +31,5 @@ public:
 private:
 	std::vector<sf::Event::EventType> mInterestedEvents;
 	Map* mCurrentMap;
-	Entity* mControllableEntity;
+	Creature* mControllableEntity;
 };

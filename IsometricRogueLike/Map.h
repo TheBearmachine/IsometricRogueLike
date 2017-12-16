@@ -24,6 +24,7 @@ public:
 	void updateVertexArray(const sf::Vector2f worldPos, int distance, int duration);
 
 	sf::Vector2i getTileIndexFromCoords(const sf::Vector2f &coords);
+	Tile* getTileFromIndex(const sf::Vector2i index);
 
 	void update(const sf::Time &deltaTime);
 
@@ -38,10 +39,10 @@ private:
 	sf::Texture *mFloorTex;
 	sf::VertexArray mWallVertices;
 	sf::Texture *mWallTex;
+	std::vector<std::pair< size_t, Tile*>> mDarkFloorIndices;
+	std::vector<std::pair< size_t, Tile*>> mDarkWallIndices;
 
 	std::vector<Tile> mTiles;
-	std::vector<Tile*> mCloseTiles;
-	std::vector<Tile*> mMemorizedTiles;
 
 	TileGraph mTileGraph;
 

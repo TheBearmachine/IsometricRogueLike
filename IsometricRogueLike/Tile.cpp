@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include "Constants.h"
 #include <cmath>
 
 Tile::Tile() :
@@ -11,8 +12,12 @@ Tile::Tile() :
 Tile::Tile(int textureID, const sf::Vector2f &worldPos) :
 	mTextureID(textureID),
 	mWallTextureID(textureID),
-	mWorldPos(worldPos)
+	mWorldPos(worldPos),
+	mWorldPosCenter(worldPos),
+	mFadeCurrent(0.0f), mFadeMax(1.0f),
+	mOccupant(nullptr)
 {
+	mWorldPosCenter.x += Constants::World::Tile::HalfWidth;
 }
 
 Tile::~Tile()
@@ -41,12 +46,18 @@ int Tile::getWallTextureID() const
 
 void Tile::setWorldPos(const sf::Vector2f & worldPos)
 {
-	mWorldPos = worldPos;
+	mWorldPosCenter = mWorldPos = worldPos;
+	mWorldPosCenter.x += Constants::World::Tile::HalfWidth;
 }
 
 sf::Vector2f Tile::getWorldPos() const
 {
 	return mWorldPos;
+}
+
+sf::Vector2f Tile::getWorldPosCenter() const
+{
+	return mWorldPosCenter;
 }
 
 void Tile::setArrayIndex(const sf::Vector2i & arrayIndex)
@@ -72,4 +83,14 @@ void Tile::reduceFadeCurrent(float deltaVal)
 float Tile::getFadeRatio() const
 {
 	return mFadeCurrent / mFadeMax;
+}
+
+void Tile::setOccupant(Entity * occupant)
+{
+	mOccupant = occupant;
+}
+
+const Entity * Tile::getOccupant() const
+{
+	return mOccupant;
 }

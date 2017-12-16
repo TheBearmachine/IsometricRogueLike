@@ -26,9 +26,10 @@ public:
 	// 0 right, 1 down, 2 left, 3 up
 	TileNode* mNeighbors[4];
 	TileNode* mParent;
-	const Tile* mTile;
+	Tile* mTile;
 
 	int mAccumulatedCost;
+	int mDistanceFromTarget;
 };
 
 struct CompareTileNodeCosts

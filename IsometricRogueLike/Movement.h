@@ -8,6 +8,8 @@ __interface IMovementListener
 	void onReachTile(const sf::Vector2f &clientPos);
 };
 
+class Entity;
+class Map;
 struct TileNode;
 namespace sf
 {
@@ -17,7 +19,7 @@ namespace sf
 class Movement
 {
 public:
-	Movement(Transformabetter* client, float moveSpeed);
+	Movement(Entity* client, float moveSpeed);
 	~Movement();
 
 	void setPath(std::stack<TileNode*> path);
@@ -26,13 +28,16 @@ public:
 	void registerMovementListener(IMovementListener* listener);
 	void unregisterMovementListener(IMovementListener* listener);
 
+	void setCurrentMap(Map* currentMap);
+
 	void setMoveSpeed(float moveSpeed);
 	void halt();
 
 	virtual void update(const sf::Time& deltaTime);
 
 private:
-	Transformabetter* mClient;
+	Entity* mClient;
+	Map* mCurrentMap;
 	std::stack<TileNode*> mPath;
 	std::vector<IMovementListener*> mListeners;
 

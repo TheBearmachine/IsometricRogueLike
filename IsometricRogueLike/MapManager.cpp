@@ -32,6 +32,11 @@ void MapManager::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(mCurrentMap, states);
 }
 
+void MapManager::update(const sf::Time & deltaTime)
+{
+	mCurrentMap.update(deltaTime);
+}
+
 std::stack<TileNode*> MapManager::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)
 {
 	return mCurrentMap.findPath(startIndex, endIndex);

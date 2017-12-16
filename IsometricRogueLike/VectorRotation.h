@@ -16,7 +16,7 @@ public:
 
 	static VectorRotation inDegrees(float degrees)
 	{
-		return VectorRotation(degrees * PI / 180.f);
+		return VectorRotation(degrees * (float)PI / 180.f);
 	}
 
 	VectorRotation operator+(const VectorRotation &vr2) { return VectorRotation(mReal + vr2.mReal, mImaginary + vr2.mImaginary); }

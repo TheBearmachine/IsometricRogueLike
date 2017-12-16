@@ -4,7 +4,7 @@
 #include "CameraController.h"
 #include "SimulationController.h"
 #include "MapManager.h"
-#include "Entity.h"
+#include "EntityManager.h"
 #include "WindowManager.h"
 
 namespace sf
@@ -41,13 +41,13 @@ protected:
 	virtual void entry() override;
 
 private:
-	Entity testEntity;
 	CameraController testCamController;
 	SimulationController testSimController;
 	std::vector<sf::Event::EventType> mInterestedEvents;
 
 	WindowManager mWindowManager;
 	MapManager mMapManager;
+	EntityManager mEntityManager;
 
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;

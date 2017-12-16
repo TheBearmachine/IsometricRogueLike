@@ -2,12 +2,14 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "EventManager.h"
 #include "Map.h"
-#include "Entity.h"
+#include "Creature.h"
+#include "Constants.h"
 
 static sf::RenderTarget* mWindow;
 static EventManager* mEventManager;
 
 static const int TempDist = 170;
+static const int TempTime = 10;
 
 SimulationController::SimulationController()
 {
@@ -21,16 +23,13 @@ SimulationController::~SimulationController()
 
 }
 
-void SimulationController::setCurrentMap(Map * map)
+void SimulationController::initalize(Map * map, Creature * controllableEntity)
 {
 	mCurrentMap = map;
-	mCurrentMap->updateVertexArray(mControllableEntity->getPosition(), TempDist);
-}
-
-void SimulationController::setControllableEntity(Entity * controllableEntity)
-{
 	mControllableEntity = controllableEntity;
+	mCurrentMap->updateVertexArray(mControllableEntity->getPosition(), TempDist, TempTime);
 	mControllableEntity->getMovementComponent()->registerMovementListener(this);
+	mControllableEntity->getMovementComponent()->setCurrentMap(mCurrentMap);
 }
 
 bool SimulationController::observe(const sf::Event & _event)
@@ -86,7 +85,7 @@ void SimulationController::unregisterEvents()
 
 void SimulationController::onReachTile(const sf::Vector2f & clientPos)
 {
-	mCurrentMap->updateVertexArray(clientPos, TempDist);
+	mCurrentMap->updateVertexArray(clientPos, TempDist, TempTime);
 }
 
 void SimulationController::setup(sf::RenderTarget * target, EventManager * eventManager)

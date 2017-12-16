@@ -6,9 +6,13 @@
 class VectorFunctions
 {
 public:
+	static float vectorMagnitudeSquared(const sf::Vector2f &vector)
+	{
+		return (vector.x * vector.x + vector.y * vector.y);
+	}
 	static float vectorMagnitude(const sf::Vector2f &vector)
 	{
-		return (std::powf(vector.x * vector.x + vector.y * vector.y, .5f));
+		return (std::powf(vectorMagnitudeSquared(vector), 0.5f));
 	}
 
 	static void normalizeVector(sf::Vector2f &vector)

@@ -34,7 +34,10 @@ namespace Constants
 
 	namespace Entities
 	{
-		static const float DefaultSpeed = 100.0f;
+		static const float DefaultTraversalSpeed = 100.0f;
+
+		static const float RecollectionTimeBase = 100.0f;
+		static const float RecollectionTimeMemoryEffect = 20.0f;
 
 	}
 

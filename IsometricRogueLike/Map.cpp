@@ -79,28 +79,32 @@ void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 
 void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int duration)
 {
-	for (auto t : mCloseTiles)
-	{
-		t->setFadeMax((float)duration);
-		if (containsElement(mMemorizedTiles, t))
-		{
-			mMemorizedTiles.push_back(t);
-		}
-	}
 
 	// The int is: 0 no wall attached, 1 a wall to the left, 2 a wall above, 3 if both
-	std::vector<std::pair< Tile*, int>> closeTiles;
+	std::vector<std::pair< Tile*, int>> visibleTiles;
 	size_t walls = 0;
+	size_t floorTiles = 0;
 
+	mDarkFloorIndices.clear();
+	mDarkWallIndices.clear();
+	// Find visible tiles
 	for (size_t i = 0; i < mTiles.size(); i++)
 	{
 		if (mTiles[i].getTextureID() >= 0)
 		{
-			sf::Vector2f tilePos = mTiles[i].getWorldPos();
-			tilePos.x += Constants::World::Tile::HalfWidth;
+			sf::Vector2f tilePos = mTiles[i].getWorldPosCenter();
 			int distFromPos = (int)VectorFunctions::vectorMagnitude(tilePos - worldPos);
-			if (distFromPos > distance) continue;
+			if (distFromPos > distance)
+			{
+				mDarkFloorIndices.push_back(std::make_pair(floorTiles, &mTiles[i]));
+			}
+			else
+			{
+				mTiles[i].setFadeMax((float)duration);
+			}
 
+
+			floorTiles++;
 			int hasAWall = 0;
 			// See if the tile texture ID in array position -1 or -mMapWidth is equal to -1
 			int left = i - 1;
@@ -108,33 +112,34 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 			if (i % mMapWidth == 0 || mTiles[left].getTextureID() == -1)
 			{
 				hasAWall += 1;
+				if (distFromPos > distance)
+					mDarkWallIndices.push_back(std::make_pair(walls, &mTiles[i]));
 				walls++;
 			}
 			if (i / mMapWidth == 0 || mTiles[above].getTextureID() == -1)
 			{
 				hasAWall += 2;
+				if (distFromPos > distance)
+					mDarkWallIndices.push_back(std::make_pair(walls, &mTiles[i]));
 				walls++;
 			}
-
-			closeTiles.push_back(std::make_pair(&mTiles[i], hasAWall));
-			mCloseTiles.push_back(&mTiles[i]);
+			visibleTiles.push_back(std::make_pair(&mTiles[i], hasAWall));
 		}
 	}
 
 	size_t wallCurIndex = 0;
 
-	size_t vertices = mCloseTiles.size() * 4 + mMemorizedTiles.size() * 4;
-	mFloorVertices.resize(vertices);
+	mFloorVertices.resize(visibleTiles.size() * 4);
 	mWallVertices.resize(walls * 4);
 	int floorTilemapWidth = (int)mFloorTex->getSize().x;
 	int wallTilemapWidth = (int)mWallTex->getSize().x;
 
-	for (size_t i = 0; i < closeTiles.size(); i++)
+	for (size_t i = 0; i < visibleTiles.size(); i++)
 	{
-		int ID = closeTiles[i].first->getTextureID();
+		int ID = visibleTiles[i].first->getTextureID();
 		sf::Vertex* quad = &mFloorVertices[i * 4];
-		sf::Vector2f tempPos = closeTiles[i].first->getWorldPos();
-
+		sf::Vector2f tempPos = visibleTiles[i].first->getWorldPos();
+		int colorVal = (int)(visibleTiles[i].first->getFadeRatio() * 255.0f);
 
 		int tu = ID % (floorTilemapWidth / (int)FloorTileWidth);
 		int tv = ID / (floorTilemapWidth / (int)FloorTileWidth);
@@ -149,8 +154,13 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 		quad[2].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, (tv + 1) * FloorTileHeight);
 		quad[3].texCoords = sf::Vector2f(tu * FloorTileWidth, (tv + 1) * FloorTileHeight);
 
+		quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
+
 		ID *= 2;
-		if ((closeTiles[i].second & 0b01) == 0b01)
+		if ((visibleTiles[i].second & 0b01) == 0b01)
 		{
 			sf::Vector2f tempPos2 = tempPos;
 			tempPos2.x += WallTileWidth;
@@ -170,10 +180,14 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
 			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
 			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+
+			quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		}
 
-		int test = closeTiles[i].second & 0b10;
-		if ((closeTiles[i].second & 0b10) == 0b10)
+		if ((visibleTiles[i].second & 0b10) == 0b10)
 		{
 			sf::Vector2f tempPos2 = tempPos;
 			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
@@ -192,72 +206,11 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
 			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
 			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
-		}
-	}
 
-	for (size_t i = mCloseTiles.size(); i < vertices; i++)
-	{
-		int ID = mMemorizedTiles[i]->getTextureID();
-		sf::Vertex* quad = &mFloorVertices[i * 4];
-		sf::Vector2f tempPos = closeTiles[i].first->getWorldPos();
-
-
-		int tu = ID % (floorTilemapWidth / (int)FloorTileWidth);
-		int tv = ID / (floorTilemapWidth / (int)FloorTileWidth);
-
-		quad[0].position = sf::Vector2f(tempPos.x, tempPos.y);
-		quad[1].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y);
-		quad[2].position = sf::Vector2f(tempPos.x + FloorTileWidth, tempPos.y + FloorTileHeight);
-		quad[3].position = sf::Vector2f(tempPos.x, tempPos.y + FloorTileHeight);
-
-		quad[0].texCoords = sf::Vector2f(tu * FloorTileWidth, tv * FloorTileHeight);
-		quad[1].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, tv * FloorTileHeight);
-		quad[2].texCoords = sf::Vector2f((tu + 1) * FloorTileWidth, (tv + 1) * FloorTileHeight);
-		quad[3].texCoords = sf::Vector2f(tu * FloorTileWidth, (tv + 1) * FloorTileHeight);
-
-		ID *= 2;
-		if ((closeTiles[i].second & 0b01) == 0b01)
-		{
-			sf::Vector2f tempPos2 = tempPos;
-			tempPos2.x += WallTileWidth;
-			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
-			quad = &mWallVertices[wallCurIndex];
-			wallCurIndex += 4;
-
-			tu = (ID) % (wallTilemapWidth / (int)WallTileWidth);
-			tv = (ID) / (wallTilemapWidth / (int)WallTileWidth);
-
-			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
-			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
-			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
-			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
-
-			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
-			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
-			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
-			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
-		}
-
-		int test = closeTiles[i].second & 0b10;
-		if ((closeTiles[i].second & 0b10) == 0b10)
-		{
-			sf::Vector2f tempPos2 = tempPos;
-			tempPos2.y -= WallTileHeight - FloorTileHeight / 2.0f;
-			quad = &mWallVertices[wallCurIndex];
-			wallCurIndex += 4;
-
-			tu = (ID + 1) % (wallTilemapWidth / (int)WallTileWidth);
-			tv = (ID + 1) / (wallTilemapWidth / (int)WallTileWidth);
-
-			quad[0].position = sf::Vector2f(tempPos2.x, tempPos2.y);
-			quad[1].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y);
-			quad[2].position = sf::Vector2f(tempPos2.x + WallTileWidth, tempPos2.y + WallTileHeight);
-			quad[3].position = sf::Vector2f(tempPos2.x, tempPos2.y + WallTileHeight);
-
-			quad[0].texCoords = sf::Vector2f(tu * WallTileWidth, tv * WallTileHeight);
-			quad[1].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, tv * WallTileHeight);
-			quad[2].texCoords = sf::Vector2f((tu + 1) * WallTileWidth, (tv + 1) * WallTileHeight);
-			quad[3].texCoords = sf::Vector2f(tu * WallTileWidth, (tv + 1) * WallTileHeight);
+			quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
+			quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		}
 	}
 }
@@ -267,21 +220,39 @@ sf::Vector2i Map::getTileIndexFromCoords(const sf::Vector2f & coords)
 	return IsometricConversion::fromIsometricTile(coords);
 }
 
-template <typename T>
-void removeElement(std::vector<T*> &vector, const T* element)
+Tile * Map::getTileFromIndex(const sf::Vector2i index)
 {
-
+	if (index.x >= (int)mMapWidth ||
+		index.x < 0 ||
+		index.y >= (int)mMapHeight ||
+		index.y < 0) return nullptr;
+	return &mTiles[index.y + index.x * mMapWidth];
 }
 
 void Map::update(const sf::Time & deltaTime)
 {
-	for (auto t : mMemorizedTiles)
+	for (size_t i = 0; i < mDarkFloorIndices.size(); i++)
 	{
-		t->reduceFadeCurrent(deltaTime.asSeconds());
-		//if (t->getFadeRatio() == 0.0f)
-			//removeElement
+		mDarkFloorIndices[i].second->reduceFadeCurrent(deltaTime.asSeconds());
+		int colorVal = (int)(mDarkFloorIndices[i].second->getFadeRatio() * 255.0f);
+		sf::Vertex* quad = &mFloorVertices[mDarkFloorIndices[i].first * 4];
+
+		quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
 	}
 
+	for (size_t i = 0; i < mDarkWallIndices.size(); i++)
+	{
+		int colorVal = (int)(mDarkWallIndices[i].second->getFadeRatio() * 255.0f);
+		sf::Vertex* quad = &mWallVertices[mDarkWallIndices[i].first * 4];
+
+		quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
+		quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
+	}
 }
 
 void Map::updateTileGraph()
@@ -353,7 +324,13 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 		return std::stack<TileNode*>();
 	}
 
+	int manhattanDist =
+		abs(finalTile->mTile->getArrayIndex().x - startTile->mTile->getArrayIndex().x) +
+		abs(finalTile->mTile->getArrayIndex().y - startTile->mTile->getArrayIndex().y);
+
 	startTile->mAccumulatedCost = 0;
+	startTile->mDistanceFromTarget = manhattanDist;
+
 	startTile->mParent = nullptr;
 	bool done = false;
 
@@ -369,36 +346,53 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 		// Expand all neighboring tiles
 		for (int i = 0; i < 4; i++)
 		{
-
 			neighbor = currentTile->mNeighbors[i];
 
-			if (neighbor != nullptr && neighbor->mTile->getArrayIndex() == endIndex)
+			if (neighbor && neighbor->mTile->getOccupant() != nullptr)
+			{
+				continue;
+			}
+
+			if (neighbor && neighbor->mTile->getArrayIndex() == endIndex)
 			{
 				neighbor->mParent = currentTile;
 				finalTile = neighbor;
 				done = true;
 			}
-			else if (neighbor != nullptr &&
+			else if (neighbor &&
 					 !containsElement(closedList, neighbor) &&
 					 !containsElement(openList, neighbor))
 			{
-				int manhattanDist =
+				manhattanDist =
 					abs(finalTile->mTile->getArrayIndex().x - neighbor->mTile->getArrayIndex().x) +
 					abs(finalTile->mTile->getArrayIndex().y - neighbor->mTile->getArrayIndex().y);
 				int cost = currentTile->mAccumulatedCost + manhattanDist + 1;
 
 				neighbor->mAccumulatedCost = cost;
+				neighbor->mDistanceFromTarget = manhattanDist;
 				neighbor->mParent = currentTile;
 				openList.push(neighbor);
 			}
 		}
 	}
+
+	auto currentTile = finalTile;
 	if (!done)
 	{
-		printf("No path found!\n", finalPath.size());
-		return std::stack<TileNode*>();
+		printf("No path found! Will use the tile with the lowest cost.\n");
+
+		size_t nearest = 0;
+		int currentLowest = 1000;
+		for (size_t i = 0; i < closedList.size(); i++)
+		{
+			if (closedList[i]->mDistanceFromTarget < currentLowest)
+			{
+				currentLowest = closedList[i]->mDistanceFromTarget;
+				nearest = i;
+			}
+		}
+		currentTile = closedList[nearest];
 	}
-	auto currentTile = finalTile;
 	while (currentTile->mParent)
 	{
 		finalPath.push(currentTile);
