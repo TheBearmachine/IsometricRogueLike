@@ -3,10 +3,13 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include "DrawThis.h"
 
+class Item;
+class Inventoryslot;
+class Inventory;
+
 __interface IInventoryslotListener
 {
-	void buttonAction(unsigned int ID);
-	void onHover(/*Should contain some parameter (item type in the item slot?)*/);
+	void buttonAction(Item* item, Inventoryslot* invSlot);
 };
 
 class Inventoryslot : public Clickable, public DrawThis
@@ -16,12 +19,19 @@ public:
 	Inventoryslot(size_t ID);
 	virtual ~Inventoryslot();
 
-	void setListener(IInventoryslotListener* listener);
+	static void setListener(IInventoryslotListener* listener);
+
 	void setID(size_t ID);
+	size_t getID() const;
+
+	void setInventoryReference(Inventory* invRef);
+	Inventory* getInventoryReference();
+
+	void setItem(Item** item);
+	Item** getItem();
 
 	sf::Vector2f getSize() const;
 
-	virtual bool observe(const sf::Event & _event) override;
 	virtual void onMouseOver(bool mouseOver) override;
 	virtual void onClickInside() override;
 	virtual void onReleaseInside() override;
@@ -32,6 +42,7 @@ public:
 
 private:
 	sf::Sprite mSprite;
+	Inventory* mInvRef;
+	Item** mItem;
 	size_t mID;
-	IInventoryslotListener* mListener;
 };

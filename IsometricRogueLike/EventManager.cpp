@@ -47,7 +47,7 @@ void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) co
 	if (mObservers.find(_event.type) != mObservers.end())
 	{
 		bool onlyOneClick = false;
-		const ObserverVec &observers = mObservers.at(_event.type);
+		const ObserverVec observers = mObservers.at(_event.type);
 		sf::View prevView = target->getView();
 		sf::View GUIView = target->getDefaultView();
 

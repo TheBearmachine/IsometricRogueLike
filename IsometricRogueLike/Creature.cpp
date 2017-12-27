@@ -28,3 +28,8 @@ CharacterAttributes * Creature::getCharacterAttributes()
 {
 	return &mCharacterAttributes;
 }
+
+Inventory * Creature::getInventory()
+{
+	return &mInventory;
+}

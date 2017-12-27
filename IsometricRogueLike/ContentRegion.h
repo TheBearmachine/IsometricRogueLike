@@ -11,8 +11,7 @@ public:
 	ContentRegion(const sf::Vector2f &size);
 	~ContentRegion();
 
-	virtual void registerEvents();
-	virtual void unregisterEvents();
+	virtual bool delegateEvent(const sf::Event &_event);
 
 	void setRegionSize(const sf::Vector2f &size);
 	sf::Vector2f getRegionSize() const;

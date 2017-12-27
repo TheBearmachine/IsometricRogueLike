@@ -37,16 +37,6 @@ ContentRegionCharacterAttributes::~ContentRegionCharacterAttributes()
 
 }
 
-void ContentRegionCharacterAttributes::registerEvents()
-{
-
-}
-
-void ContentRegionCharacterAttributes::unregisterEvents()
-{
-
-}
-
 void ContentRegionCharacterAttributes::drawPrep(DrawingManager * drawingMan)
 {
 

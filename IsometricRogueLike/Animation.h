@@ -45,6 +45,8 @@ public:
 	void tickAnimation(sf::Time& deltaTime);
 	void setSpriteTexture(const std::string &texName);
 
+	sf::Sprite* getSprite();
+
 	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 

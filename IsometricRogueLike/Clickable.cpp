@@ -1,10 +1,8 @@
 #include "Clickable.h"
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "EventManager.h"
 
 static sf::RenderTarget* mWindow;
-static EventManager* mEventManager;
 
 Clickable::Clickable() :
 	Clickable(sf::Vector2f(0.0f, 0.0f))
@@ -28,24 +26,6 @@ Clickable::~Clickable()
 void Clickable::setSize(const sf::Vector2f & size)
 {
 	mSize = size;
-}
-
-void Clickable::registerEvents()
-{
-	if (mEventManager && !mRegistered)
-	{
-		mRegistered = true;
-		mEventManager->registerObserver(this, mInterestedEvents);
-	}
-}
-
-void Clickable::unregisterEvents()
-{
-	if (mEventManager && mRegistered)
-	{
-		mRegistered = false;
-		mEventManager->unregisterObserver(this, mInterestedEvents);
-	}
 }
 
 bool Clickable::observe(const sf::Event & _event)
@@ -88,10 +68,10 @@ bool Clickable::observe(const sf::Event & _event)
 	case sf::Event::MouseButtonPressed:
 		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
+			mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
 			if (mMouseInside)
 			{
 				onClickInside();
-				mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
 				mPreviousMousePos = mousePos;
 				mDrag = true;
 
@@ -117,22 +97,31 @@ bool Clickable::observe(const sf::Event & _event)
 
 void Clickable::onMouseOver(bool mouseOver)
 {
+
 }
 
 void Clickable::onClickInside()
 {
+
 }
 
 void Clickable::onReleaseInside()
 {
+
 }
 
 void Clickable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
 {
+
 }
 
-void Clickable::setup(EventManager * eventManager, sf::RenderTarget * window)
+void Clickable::resetState()
 {
-	mEventManager = eventManager;
+	mMouseInside = false;
+	mDrag = false;
+}
+
+void Clickable::setup(sf::RenderTarget * window)
+{
 	mWindow = window;
 }

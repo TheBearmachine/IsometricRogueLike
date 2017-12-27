@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Movement.h"
 #include "CharacterAttributes.h"
+#include "Inventory.h"
 
 class Creature : public Entity
 {
@@ -13,9 +14,11 @@ public:
 
 	virtual Movement* getMovementComponent() override;
 	virtual CharacterAttributes* getCharacterAttributes() override;
+	virtual Inventory* getInventory() override;
 
 
 private:
 	Movement mMovementComponent;
 	CharacterAttributes mCharacterAttributes;
+	Inventory mInventory;
 };

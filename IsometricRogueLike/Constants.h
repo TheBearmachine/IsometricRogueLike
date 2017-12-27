@@ -41,6 +41,16 @@ namespace Constants
 
 	}
 
+	namespace Items
+	{
+		static const float Width = 64.0f;
+		static const float Height = 64.0f;
+		static const float HalfWidth = Width / 2.0f;
+		static const float HalfHeight = Height / 2.0f;
+		static const float WidthRatio = World::Tile::HalfWidth / Width;
+		static const float HeightRatio = World::Tile::HalfHeight / Height;
+	}
+
 	namespace Camera
 	{
 		static const float Speed = 120.0f;

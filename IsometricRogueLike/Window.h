@@ -9,25 +9,35 @@
 #include "DrawThis.h"
 
 class Window;
+class WindowManager;
 
 __interface IWindowListener
 {
 	void onWindowClose(Window* window);
 };
 
-class Window : public IDragListener, public IButtonListener, public Transformabetter, public DrawThis
+class Window : public IDragListener, public IButtonListener, public Clickable, public DrawThis
 {
-public:
+private:
 	Window();
 	Window(const std::string &windowName, const sf::Vector2f &position, const sf::Vector2f &size);
+
+public:
 	~Window();
+
+	static bool createWindow(Window** outWin, const std::string &windowName = "Window", const sf::Vector2f &position = sf::Vector2f(), const sf::Vector2f &size = sf::Vector2f());
 
 	void registerEvents();
 	void unregisterEvents();
 
+	virtual bool observe(const sf::Event & _event) override;
+	virtual void onClickInside() override;
+	virtual void onMouseOver(bool mouseOver) override;
+
 	void addContentRegion(ContentRegion* contentRegion);
 	void clearContentRegions();
 	void setVisibility(bool visible);
+	bool getVisible() const;
 
 	void setWindowSize(const sf::Vector2f &size);
 	void setWindowContentSize(const sf::Vector2f &size);
@@ -37,6 +47,7 @@ public:
 	void setWindowListener(IWindowListener* windowListener);
 
 	static void setup(sf::RenderTarget* window);
+	static void setWindowManager(WindowManager* winMan);
 	virtual void onDrag(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos) override;
 	virtual void buttonAction(unsigned int action) override;
 
@@ -57,4 +68,5 @@ private:
 	std::vector<ContentRegion*> mContentRegions;
 	Button mCloseButton;
 	bool mVisible;
+	bool mCurrent;
 };

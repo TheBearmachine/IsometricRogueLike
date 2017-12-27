@@ -6,6 +6,7 @@
 #include "MapManager.h"
 #include "EntityManager.h"
 #include "WindowManager.h"
+#include "ItemManager.h"
 
 namespace sf
 {
@@ -48,6 +49,7 @@ private:
 	WindowManager mWindowManager;
 	MapManager mMapManager;
 	EntityManager mEntityManager;
+	ItemManager mItemManager;
 
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;

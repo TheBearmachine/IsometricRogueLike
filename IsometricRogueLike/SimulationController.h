@@ -1,18 +1,20 @@
 #pragma once
 #include "EventObserver.h"
 #include "Movement.h"
+#include "Window.h"
 #include <SFML/Window/Event.hpp>
 #include <vector>
 
 class Map;
 class Creature;
 class EventManager;
+class MousePointer;
 namespace sf
 {
 	class RenderTarget;
 }
 
-class SimulationController : public EventObserver, public IMovementListener
+class SimulationController : public EventObserver, public IMovementListener, public IWindowListener
 {
 public:
 	SimulationController();
@@ -25,11 +27,14 @@ public:
 	virtual void unregisterEvents() override;
 
 	void onReachTile(const sf::Vector2f &clientPos) override;
+	void onWindowClose(Window* window) override;
 
-	static void setup(sf::RenderTarget* target, EventManager* eventManager);
+	static void setup(sf::RenderTarget* target, EventManager* eventManager, MousePointer* mouseP);
 
 private:
 	std::vector<sf::Event::EventType> mInterestedEvents;
 	Map* mCurrentMap;
 	Creature* mControllableEntity;
+	Window* mInventoryWin;
+	Window* mCharacterWin;
 };

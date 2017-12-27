@@ -75,6 +75,11 @@ void Animation::setSpriteTexture(const std::string & texName)
 	mSprite.setTexture(ResourceManager::getInstance().getTexture(texName));
 }
 
+sf::Sprite * Animation::getSprite()
+{
+	return &mSprite;
+}
+
 void Animation::drawPrep(DrawingManager * drawingMan)
 {
 	drawingMan->addDrawable(this);

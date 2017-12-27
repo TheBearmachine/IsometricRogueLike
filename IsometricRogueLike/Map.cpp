@@ -5,8 +5,9 @@
 #include "Constants.h"
 #include "DrawingManager.h"
 #include "VectorFunctions.h"
-#include <SFML/System/Time.hpp>
+#include "Item.h"
 #include <queue>
+#include <SFML/System/Time.hpp>
 
 #define FloorTileWidth Constants::World::Tile::Width
 #define FloorTileHeight Constants::World::Tile::Height
@@ -92,7 +93,7 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 	{
 		if (mTiles[i].getTextureID() >= 0)
 		{
-			sf::Vector2f tilePos = mTiles[i].getWorldPosCenter();
+			sf::Vector2f tilePos = mTiles[i].getPosition();
 			int distFromPos = (int)VectorFunctions::vectorMagnitude(tilePos - worldPos);
 			if (distFromPos > distance)
 			{
@@ -158,6 +159,12 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		quad[2].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
+
+		for (auto it : visibleTiles[i].first->getItems())
+		{
+			it->getSprite()->setColor(sf::Color(255, 255, 255, colorVal));
+		}
+
 
 		ID *= 2;
 		if ((visibleTiles[i].second & 0b01) == 0b01)
@@ -236,6 +243,10 @@ void Map::update(const sf::Time & deltaTime)
 		mDarkFloorIndices[i].second->reduceFadeCurrent(deltaTime.asSeconds());
 		int colorVal = (int)(mDarkFloorIndices[i].second->getFadeRatio() * 255.0f);
 		sf::Vertex* quad = &mFloorVertices[mDarkFloorIndices[i].first * 4];
+		for (auto it : mDarkFloorIndices[i].second->getItems())
+		{
+			it->getSprite()->setColor(sf::Color(255, 255, 255, colorVal));
+		}
 
 		quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
@@ -415,4 +426,7 @@ void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(mFloorVertices, states);
 	states.texture = mWallTex;
 	target.draw(mWallVertices, states);
+
+	for (auto t : mTiles)
+		t.draw(target, states);
 }

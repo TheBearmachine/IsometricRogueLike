@@ -18,3 +18,8 @@ void Object::update(const sf::Time & deltaTime)
 {
 	Entity::update(deltaTime);
 }
+
+Inventory * Object::getInventory()
+{
+	return &mInventory;
+}

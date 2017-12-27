@@ -10,6 +10,7 @@ static IEntityManager* mEntityManager;
 Entity::Entity(const std::string & textureName) :
 	mSprite(ResourceManager::getInstance().getTexture(textureName)),
 	mGarbage(false),
+	mTick(true),
 	mFadeCurrent(0.0f),
 	mFadeMax(1.0f)
 {
@@ -36,6 +37,16 @@ void Entity::update(const sf::Time & deltaTime)
 	reduceFadeCurrent(deltaTime.asSeconds());
 }
 
+void Entity::setDoesTick(bool tick)
+{
+	mTick = tick;
+}
+
+bool Entity::getDoesTick() const
+{
+	return mTick;
+}
+
 void Entity::moveToTile(const sf::Vector2i & startTile, Map * currentMap)
 {
 	if (currentMap)
@@ -46,7 +57,7 @@ void Entity::moveToTile(const sf::Vector2i & startTile, Map * currentMap)
 		if (to && !to->getOccupant())
 		{
 			to->setOccupant(this);
-			sf::Vector2f pos = to->getWorldPosCenter();
+			sf::Vector2f pos = to->getPosition();
 
 			setPosition(pos);
 			if (from && from->getOccupant() == this)
@@ -61,6 +72,11 @@ Movement * Entity::getMovementComponent()
 }
 
 CharacterAttributes * Entity::getCharacterAttributes()
+{
+	return nullptr;
+}
+
+Inventory * Entity::getInventory()
 {
 	return nullptr;
 }

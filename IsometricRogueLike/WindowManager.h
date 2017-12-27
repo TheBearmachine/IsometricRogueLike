@@ -1,10 +1,11 @@
 #pragma once
 #include "Window.h"
-#include <set>
-#include <stack>
 #include "DrawThis.h"
+#include "EventObserver.h"
+#include <vector>
+#include <stack>
 
-class WindowManager : public IWindowListener, public DrawThis
+class WindowManager : public IWindowListener, public EventObserver
 {
 public:
 	WindowManager();
@@ -13,16 +14,19 @@ public:
 	void addWindow(Window* window);
 	void onWindowClose(Window* window);
 
+	bool observe(const sf::Event& _event) override;
 	void registerEvents();
 	void unregisterEvents();
 
 	void clearGarbage();
+	void arrangeWindows(Window* window);
 
 	virtual void drawPrep(DrawingManager* drawingMan);
-	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
+	static void setup(EventManager* eventManager);
 
 private:
 
-	std::set<Window*> mWindows;
+	std::vector<Window*> mWindows;
 	std::stack<Window*> mGarbage;
 };

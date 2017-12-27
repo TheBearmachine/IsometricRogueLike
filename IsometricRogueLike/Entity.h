@@ -8,6 +8,7 @@
 class Map;
 class Movement;
 class CharacterAttributes;
+class Inventory;
 namespace sf
 {
 	class Time;
@@ -22,9 +23,15 @@ public:
 
 	virtual void update(const sf::Time &deltaTime);
 
+	void setDoesTick(bool tick);
+	bool getDoesTick() const;
+
 	void moveToTile(const sf::Vector2i & startTile, Map* currentMap);
+
 	virtual Movement* getMovementComponent();
 	virtual CharacterAttributes* getCharacterAttributes();
+	virtual Inventory* getInventory();
+
 	void remove();
 	bool getGarbage() const;
 
@@ -43,5 +50,6 @@ protected:
 
 private:
 	bool mGarbage;
+	bool mTick;
 	float mFadeMax, mFadeCurrent;
 };

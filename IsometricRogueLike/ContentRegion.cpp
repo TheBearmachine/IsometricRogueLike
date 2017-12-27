@@ -23,12 +23,9 @@ ContentRegion::~ContentRegion()
 
 }
 
-void ContentRegion::registerEvents()
+bool ContentRegion::delegateEvent(const sf::Event & _event)
 {
-}
-
-void ContentRegion::unregisterEvents()
-{
+	return false;
 }
 
 void ContentRegion::setRegionSize(const sf::Vector2f & size)

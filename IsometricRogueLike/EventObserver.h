@@ -1,9 +1,8 @@
 #pragma once
+#include <SFML/Window/Event.hpp>
+#include <vector>
 
-namespace sf
-{
-	class Event;
-}
+class EventManager;
 
 class EventObserver
 {
@@ -15,11 +14,14 @@ public:
 	bool getStaticEventPosition() const { return mStaticPosition; }
 
 	virtual bool observe(const sf::Event& _event) = 0;
-	virtual void registerEvents() = 0;
-	virtual void unregisterEvents() = 0;
+	virtual void registerEvents();
+	virtual void unregisterEvents();
+
+	static void setup(EventManager* eventManager);
 
 protected:
 	bool mRegistered;
+	std::vector<sf::Event::EventType> mInterestedEvents;
 
 private:
 	bool mStaticPosition;

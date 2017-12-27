@@ -42,12 +42,24 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	mWindow = window;
 	mEventManager = eventManager;
 	Entity::setup(&mEntityManager);
+	Inventoryslot::setListener(&mItemManager);
+
+	Item* item = mItemManager.makeItem(100);
+	Item* item2 = mItemManager.makeItem(101);
+
 	mMapManager.setupMap(TEST_LEVEL, 10, 10);
 	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
 	Creature* testEntity = new Creature(PLAYER_TEXTURE);
 	testEntity->moveToTile(sf::Vector2i(2, 2), mMapManager.getCurrentMap());
+	testEntity->getInventory()->populateContents(12);
+	testEntity->getInventory()->switchItemsInSlot(item, 0);
+	testEntity->getInventory()->switchItemsInSlot(item2, 1);
+
+
 
 	Object* obj = new Object(CHEST_TEXTURE, sf::Vector2i(6, 2), mMapManager.getCurrentMap());
+	obj->getInventory()->populateContents(10);
+	Window::setWindowManager(&mWindowManager);
 
 	testCamController.initalize(screenSize, window);
 	testSimController.initalize(mMapManager.getCurrentMap(), testEntity);
@@ -59,15 +71,15 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 void GameStateSimulation::registerEvents()
 {
 	mEventManager->registerObserver(this, mInterestedEvents);
-	testSimController.registerEvents();
 	mWindowManager.registerEvents();
+	testSimController.registerEvents();
 }
 
 void GameStateSimulation::unregisterEvents()
 {
 	mEventManager->unregisterObserver(this, mInterestedEvents);
-	testSimController.unregisterEvents();
 	mWindowManager.unregisterEvents();
+	testSimController.unregisterEvents();
 }
 
 bool GameStateSimulation::observe(const sf::Event & _event)
@@ -75,27 +87,8 @@ bool GameStateSimulation::observe(const sf::Event & _event)
 	switch (_event.type)
 	{
 	case sf::Event::KeyPressed:
-		if (_event.key.code == sf::Keyboard::I)
-		{
-			// Test window
-			Window* testWindow = new Window("Inventory", sf::Vector2f(100.0f, 50.0f), sf::Vector2f());
-			ContentRegionInventory* cr = new ContentRegionInventory(12, 5);
-			mWindowManager.addWindow(testWindow);
-			testWindow->setWindowContentSize(cr->getRegionSize());
-			testWindow->addContentRegion(cr);
-			testWindow->registerEvents();
-		}
-		else if (_event.key.code == sf::Keyboard::C)
-		{
-			// Test window
-			Window* testWindow = new Window("Character", sf::Vector2f(100.0f, 50.0f), sf::Vector2f());
-			ContentRegionCharacterAttributes* cr = new ContentRegionCharacterAttributes();
-			mWindowManager.addWindow(testWindow);
-			testWindow->setWindowContentSize(cr->getRegionSize());
-			testWindow->addContentRegion(cr);
-			testWindow->registerEvents();
-		}
-		else if (_event.key.code == sf::Keyboard::Escape)
+
+		if (_event.key.code == sf::Keyboard::Escape)
 		{
 			mWindow->close();
 		}

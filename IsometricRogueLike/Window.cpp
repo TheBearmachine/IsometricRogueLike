@@ -2,6 +2,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "ResourceManager.h"
 #include "DrawingManager.h"
+#include "WindowManager.h"
 #include "Constants.h"
 
 static const float TOP_THICKNESS = 30.0f;
@@ -14,6 +15,7 @@ static const sf::Vector2f DEFAULT_WINDOW_SIZE(300.0f, 200.0f);
 static const std::string DOTS = "...";
 
 static sf::RenderTarget* mRenderTarget;
+static WindowManager* mWIndowManager;
 
 Window::Window() :
 	Window("Window", sf::Vector2f(), DEFAULT_WINDOW_SIZE)
@@ -48,6 +50,8 @@ Window::Window(const std::string &windowName, const sf::Vector2f & position, con
 	mCloseButton.setTextString("");
 	mCloseButton.setPosition(size.x - iconWidth, 0.0f);
 
+	setSize(size);
+
 	// Shorten strings that are too long
 	restructureText();
 }
@@ -58,24 +62,55 @@ Window::~Window()
 	clearContentRegions();
 }
 
+bool Window::createWindow(Window ** outWin, const std::string & windowName, const sf::Vector2f & position, const sf::Vector2f & size)
+{
+	if (!mWIndowManager) return false;
+	Window* win = new  Window(windowName, position, size);
+	*outWin = win;
+	mWIndowManager->addWindow(win);
+
+	return true;
+}
+
 void Window::registerEvents()
 {
-	mCloseButton.registerEvents();
-	mTopDragable.registerEvents();
-	for (auto cr : mContentRegions)
-	{
-		cr->registerEvents();
-	}
+	Clickable::registerEvents();
+	//mTopDragable.registerEvents();
+	//mCloseButton.registerEvents();
 }
 
 void Window::unregisterEvents()
 {
-	mCloseButton.unregisterEvents();
-	mTopDragable.unregisterEvents();
+	Clickable::unregisterEvents();
+	//mTopDragable.unregisterEvents();
+	//mCloseButton.unregisterEvents();
+	mTopDragable.resetState();
+	resetState();
+}
+
+bool Window::observe(const sf::Event & _event)
+{
+	bool retVal = Clickable::observe(_event);
+
+	if (mCloseButton.observe(_event)) return true;
+	if (mTopDragable.observe(_event)) return true;
+
 	for (auto cr : mContentRegions)
-	{
-		cr->unregisterEvents();
-	}
+		cr->delegateEvent(_event);
+
+	return retVal;
+}
+
+void Window::onClickInside()
+{
+	mWIndowManager->arrangeWindows(this);
+	mCurrent = true;
+}
+
+void Window::onMouseOver(bool mouseOver)
+{
+	if (mCurrent && !mouseOver)
+		mCurrent = false;
 }
 
 void Window::addContentRegion(ContentRegion* contentRegion)
@@ -99,15 +134,20 @@ void Window::setVisibility(bool visible)
 {
 	mVisible = visible;
 	if (visible)
-		registerEvents();
-	else
-		unregisterEvents();
+		mWIndowManager->arrangeWindows(this);
+}
+
+bool Window::getVisible() const
+{
+	return mVisible;
 }
 
 void Window::setWindowSize(const sf::Vector2f & size)
 {
 	mBorder.setSize(size);
 	mTop.setSize(sf::Vector2f(size.x, TOP_THICKNESS));
+	mTopDragable.setSize(sf::Vector2f(size.x, TOP_THICKNESS));
+	setSize(size);
 	restructureText();
 }
 
@@ -119,7 +159,8 @@ void Window::setWindowContentSize(const sf::Vector2f & size)
 
 	mBorder.setSize(newSize);
 	mTop.setSize(sf::Vector2f(newSize.x, TOP_THICKNESS));
-	//mDragable.set
+	mTopDragable.setSize(sf::Vector2f(newSize.x, TOP_THICKNESS));
+	setSize(newSize);
 	restructureText();
 }
 
@@ -144,6 +185,11 @@ void Window::setWindowListener(IWindowListener * windowListener)
 void Window::setup(sf::RenderTarget * window)
 {
 	mRenderTarget = window;
+}
+
+void Window::setWindowManager(WindowManager * winMan)
+{
+	mWIndowManager = winMan;
 }
 
 void Window::onDrag(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
@@ -214,7 +260,6 @@ void Window::restructureText()
 		}
 		mWindowName.setString(mWindowName.getString() + dots.getString());
 	}
-	mTopDragable.setSize(sf::Vector2f(topWidth, TOP_THICKNESS));
 	mCloseButton.setPosition(mTop.getSize().x - iconWidth, 0.0f);
 }
 

@@ -1,14 +1,16 @@
 #include "ContentRegionInventory.h"
-#include <SFML/Graphics/RenderTarget.hpp>
 #include "DrawingManager.h"
+#include "Inventory.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 static const float PADDING = 2.0f;
 
-ContentRegionInventory::ContentRegionInventory(size_t inventorySlots, size_t slotsPerRow) :
+ContentRegionInventory::ContentRegionInventory(Inventory* refInv, size_t slotsPerRow) :
 	ContentRegion(),
-	mSlotsNr(inventorySlots)
+	mSlotsNr(0)
 {
-	mInventoryslots = new Inventoryslot[inventorySlots];
+	mSlotsNr = refInv->getSize();
+	mInventoryslots = new Inventoryslot[mSlotsNr];
 	if (!mInventoryslots)
 	{
 		mSlotsNr = 0;
@@ -17,18 +19,21 @@ ContentRegionInventory::ContentRegionInventory(size_t inventorySlots, size_t slo
 
 	// Space out the slots evenly
 	sf::Vector2f slotSize = mInventoryslots->getSize();
-	size_t nrColumns = (size_t)std::ceil((float)inventorySlots / (float)slotsPerRow);
-	sf::Vector2f contentSize((float)slotsPerRow * (slotSize.x + PADDING) + PADDING,
-							 (float)nrColumns * (slotSize.x + PADDING) + PADDING);
+	size_t nrColumns = (size_t)std::ceil((float)mSlotsNr / (float)slotsPerRow);
+	sf::Vector2f contentSize(
+		(float)slotsPerRow * (slotSize.x + PADDING) + PADDING,
+		(float)nrColumns * (slotSize.x + PADDING) + PADDING);
 	setRegionSize(contentSize);
 
-	for (size_t i = 0; i < inventorySlots; i++)
+	for (size_t i = 0; i < mSlotsNr; i++)
 	{
 		float xPos = float(i % slotsPerRow) * (slotSize.x + PADDING) + PADDING;
 		float yPos = float(i / slotsPerRow) * (slotSize.x + PADDING) + PADDING;
 		mInventoryslots[i].setParentTransform(this);
 		mInventoryslots[i].setID(i);
 		mInventoryslots[i].setPosition(xPos, yPos);
+		mInventoryslots[i].setItem(refInv->getItem(i));
+		mInventoryslots[i].setInventoryReference(refInv);
 
 		//mInventoryslots[i].setListener(); <-- Need to have a listener eventually
 	}
@@ -40,26 +45,25 @@ ContentRegionInventory::~ContentRegionInventory()
 		delete[mSlotsNr] mInventoryslots;
 }
 
-void ContentRegionInventory::registerEvents()
+Inventoryslot * ContentRegionInventory::getInventorySlot(size_t ID)
 {
-	if (mSlotsNr != 0)
+	return &mInventoryslots[ID];
+}
+
+void ContentRegionInventory::setInvSlotListener(IInventoryslotListener * listener)
+{
+	for (size_t i = 0; i < mSlotsNr; i++)
 	{
-		for (size_t i = 0; i < mSlotsNr; i++)
-		{
-			mInventoryslots[i].registerEvents();
-		}
+		mInventoryslots[i].setListener(listener);
 	}
 }
 
-void ContentRegionInventory::unregisterEvents()
+bool ContentRegionInventory::delegateEvent(const sf::Event & _event)
 {
-	if (mSlotsNr != 0)
-	{
-		for (size_t i = 0; i < mSlotsNr; i++)
-		{
-			mInventoryslots[i].unregisterEvents();
-		}
-	}
+	for (size_t i = 0; i < mSlotsNr; i++)
+		mInventoryslots[i].observe(_event);
+
+	return false;
 }
 
 void ContentRegionInventory::drawPrep(DrawingManager * drawingMan)

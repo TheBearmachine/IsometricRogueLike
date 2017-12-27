@@ -14,7 +14,6 @@ TestButtonContainer::~TestButtonContainer()
 
 void TestButtonContainer::setup(EventManager * eventManager, sf::RenderTarget * window)
 {
-	button.setup(eventManager, window);
 	button.registerEvents();
 }
 

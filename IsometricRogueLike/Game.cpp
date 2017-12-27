@@ -1,10 +1,15 @@
 #include "Game.h"
-#include <SFML/System/Clock.hpp>
 #include "IsometricConversion.h"
 #include "Clickable.h"
 #include "SimulationController.h"
+#include "Constants.h"
+#include "ItemDatabase.h"
+#include "ItemManager.h"
+#include <string>
+#include <SFML/System/Clock.hpp>
 
 static const char* APP_TITLE = "Isometrica";
+static const std::string MOUSEPOINTER_TEX = Constants::Filepaths::ImagesFolder + "MousePointer.png";
 
 Game::Game() :
 	mWindow(sf::VideoMode(640, 480), APP_TITLE),
@@ -30,6 +35,7 @@ void Game::run()
 		handleEvents();
 
 		mCurrentState->update(dt);
+		mMousePointer.drawPrep(&mDrawingManager);
 
 		mWindow.clear();
 		mCurrentState->drawPrep(&mDrawingManager);
@@ -49,9 +55,14 @@ void Game::handleEvents()
 
 void Game::initialize()
 {
-	Clickable::setup(&mEventManager, &mWindow);
+	Clickable::setup(&mWindow);
+	EventObserver::setup(&mEventManager);
+	MousePointer::setup(&mWindow);
 	Window::setup(&mWindow);
-	SimulationController::setup(&mWindow, &mEventManager);
+	WindowManager::setup(&mEventManager);
+	ItemManager::setMousePointer(&mMousePointer);
+	SimulationController::setup(&mWindow, &mEventManager, &mMousePointer);
+	ItemDatabase::getInstance();
 
 	mGameStateSimulation.initalize(&mWindow, &mEventManager);
 	mGameStateMenu.initalize(&mWindow, &mEventManager);
@@ -60,4 +71,8 @@ void Game::initialize()
 	mGameStateSimulation.setGameStates(&mGameStateMenu);
 
 	mCurrentState = &mGameStateMenu;
+
+	mMousePointer.setSprite(MOUSEPOINTER_TEX);
+	mMousePointer.registerEvents();
+	mWindow.setMouseCursorVisible(false);
 }

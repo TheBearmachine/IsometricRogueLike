@@ -6,6 +6,7 @@
 #include "GameStateMenu.h"
 #include "EventManager.h"
 #include "DrawingManager.h"
+#include "MousePointer.h"
 
 class Game
 {
@@ -22,6 +23,8 @@ private:
 	sf::RenderWindow mWindow;
 	EventManager mEventManager;
 	DrawingManager mDrawingManager;
+
+	MousePointer mMousePointer;
 
 	GameState* mCurrentState;
 	GameStateSimulation mGameStateSimulation;
