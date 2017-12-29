@@ -6,8 +6,12 @@
 #include <string>
 
 class Item;
+namespace sf
+{
+	class RenderWindow;
+}
 
-class MousePointer : public EventObserver, public DrawThis, public Transformabetter
+class MousePointer : public DrawThis, public Transformabetter
 {
 public:
 	MousePointer();
@@ -18,12 +22,12 @@ public:
 	Item* switchItem(Item* newItem);
 	Item* getItem();
 
-	virtual bool observe(const sf::Event& _event) override;
+	void update(const sf::Time &deltaTime);
 
 	virtual void drawPrep(DrawingManager* drawingMan) override;
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-	static void setup(sf::RenderTarget* window);
+	static void setup(sf::RenderWindow* window);
 
 private:
 	Animation mSprite;

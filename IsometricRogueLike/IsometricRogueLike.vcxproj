@@ -126,6 +126,7 @@
     <ClCompile Include="ContentRegion.cpp" />
     <ClCompile Include="ContentRegionCharacterAttributes.cpp" />
     <ClCompile Include="ContentRegionInventory.cpp" />
+    <ClCompile Include="ContentRegionMenu.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Dragable.cpp" />
     <ClCompile Include="DrawingManager.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="ContentRegion.h" />
     <ClInclude Include="ContentRegionCharacterAttributes.h" />
     <ClInclude Include="ContentRegionInventory.h" />
+    <ClInclude Include="ContentRegionMenu.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="EntityEvent.h" />
     <ClInclude Include="EntityManager.h" />

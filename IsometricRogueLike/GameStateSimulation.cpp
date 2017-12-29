@@ -42,7 +42,7 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	mWindow = window;
 	mEventManager = eventManager;
 	Entity::setup(&mEntityManager);
-	Inventoryslot::setListener(&mItemManager);
+	Inventoryslot::setListener(&testSimController);
 
 	Item* item = mItemManager.makeItem(100);
 	Item* item2 = mItemManager.makeItem(101);

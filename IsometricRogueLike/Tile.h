@@ -1,7 +1,7 @@
 #pragma once
 #include "Transformabetter.h"
 #include "DrawThis.h"
-#include <set>
+#include <vector>
 #include <SFML/System/Vector2.hpp>
 
 class Entity;
@@ -40,7 +40,9 @@ public:
 
 	void addItem(Item* item);
 	void removeItem(Item* item);
-	std::set<Item*> getItems() const;
+	std::vector<Item*> getItems();
+	Item** getItem(size_t ID);
+	size_t getNrItems() const;
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -51,5 +53,5 @@ private:
 	sf::Vector2i mArrayIndex;
 	float mFadeMax, mFadeCurrent;
 	Entity* mOccupant;
-	std::set<Item*> mItems;
+	std::vector<Item*> mItems;
 };

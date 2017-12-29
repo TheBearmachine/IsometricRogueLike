@@ -16,6 +16,8 @@ static MousePointer* mMousePointer;
 static const int TempDist = 170;
 static const int TempTime = 10;
 
+static const size_t RightClickCols = 3;
+
 SimulationController::SimulationController()
 {
 	setStaticEventPosition(false);
@@ -40,7 +42,7 @@ void SimulationController::initalize(Map * map, Creature * controllableEntity)
 	bool success = true;
 
 	success = Window::createWindow(&mInventoryWin, "Inventory", sf::Vector2f(100.0f, 50.0f), sf::Vector2f());
-	ContentRegionInventory* cr = new ContentRegionInventory(inv, 5);
+	ContentRegionInventory*  cr = new ContentRegionInventory(inv, 5);
 	mInventoryWin->setWindowContentSize(cr->getRegionSize());
 	mInventoryWin->addContentRegion(cr);
 	mInventoryWin->setVisibility(false);
@@ -53,14 +55,24 @@ void SimulationController::initalize(Map * map, Creature * controllableEntity)
 	mCharacterWin->setVisibility(false);
 	mCharacterWin->setWindowListener(this);
 
+	success = Window::createWindow(&mRightClickWindow, "Items");
+	mRightClickCRI = new ContentRegionInventory();
+	mRightClickWindow->setVisibility(false);
+	mRightClickWindow->setWindowListener(this);
+	mRightClickWindow->addContentRegion(mRightClickCRI);
+
 }
 
 bool SimulationController::observe(const sf::Event & _event)
 {
 	bool retVal = false;
+	sf::Vector2f mousePos;
+	sf::Vector2i targetPos;
 	switch (_event.type)
 	{
 	case sf::Event::MouseButtonPressed:
+		mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
+		targetPos = mCurrentMap->getTileIndexFromCoords(mousePos);
 		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
 			if (!mControllableEntity || !mCurrentMap || !mMousePointer) break;
@@ -69,14 +81,35 @@ bool SimulationController::observe(const sf::Event & _event)
 			sf::Vector2i currentPos = mCurrentMap->getTileIndexFromCoords(entityPos);
 			if (mMousePointer->getItem() == nullptr)
 			{
-				sf::Vector2f mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
-				sf::Vector2i targetPos = mCurrentMap->getTileIndexFromCoords(mousePos);
-
 				mControllableEntity->getMovementComponent()->setPath(mCurrentMap->findPath(currentPos, targetPos));
 			}
 			else
 			{
 				mCurrentMap->getTileFromIndex(currentPos)->addItem(mMousePointer->switchItem(nullptr));
+			}
+		}
+		else if (_event.mouseButton.button == sf::Mouse::Right)
+		{
+			/*ContentRegionInventory* cri = new ContentRegionInventory();
+			mRightClickWindow->clearContentRegions();
+			mRightClickWindow->addContentRegion(cri);*/
+
+			Tile* tile = mCurrentMap->getTileFromIndex(targetPos);
+			size_t size = tile->getNrItems();
+			if (size != 0)
+			{
+				mRightClickCRI->createNewSlots(size, 3);
+				mRightClickWindow->setWindowContentSize(mRightClickCRI->getRegionSize());
+				mRightClickWindow->setVisibility(true);
+				for (size_t i = 0; i < size; i++)
+				{
+					mRightClickCRI->getInventorySlot(i)->setItem(tile->getItem(i));
+					mRightClickCRI->getInventorySlot(i)->setTileReference(tile);
+				}
+			}
+			else
+			{
+				//mRightClickWindow->setWindowContentSize(cri->getRegionSize());
 			}
 		}
 		break;
@@ -124,6 +157,30 @@ void SimulationController::onReachTile(const sf::Vector2f & clientPos)
 void SimulationController::onWindowClose(Window * window)
 {
 	window->setVisibility(false);
+}
+
+void SimulationController::buttonAction(Item * item, Inventoryslot * invSlot)
+{
+	Item* temp = mMousePointer->getItem();
+	Inventory* invRef = invSlot->getInventoryReference();
+	Tile* tileRef = invSlot->getTileReference();
+	if (invRef)
+	{
+		temp = invRef->switchItemsInSlot(temp, invSlot->getID());
+		mMousePointer->switchItem(temp);
+	}
+	else if (tileRef)
+	{
+		tileRef->removeItem(item);
+		mMousePointer->switchItem(item);
+		size_t size = tileRef->getNrItems();
+		mRightClickCRI->createNewSlots(size, RightClickCols);
+		for (size_t i = 0; i < size; i++)
+		{
+			mRightClickCRI->getInventorySlot(i)->setItem(tileRef->getItem(i));
+			mRightClickCRI->getInventorySlot(i)->setTileReference(tileRef);
+		}
+	}
 }
 
 void SimulationController::setup(sf::RenderTarget * target, EventManager * eventManager, MousePointer* mouseP)

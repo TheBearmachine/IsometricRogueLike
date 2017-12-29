@@ -94,15 +94,19 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 		if (mTiles[i].getTextureID() >= 0)
 		{
 			sf::Vector2f tilePos = mTiles[i].getPosition();
-			int distFromPos = (int)VectorFunctions::vectorMagnitude(tilePos - worldPos);
-			if (distFromPos > distance)
+			tilePos.y += Constants::World::Tile::HalfHeight;
+			int distFromPosSq = (int)VectorFunctions::vectorMagnitudeSquared(tilePos - worldPos);
+			bool tooFar = distFromPosSq > distance * distance;
+			if (tooFar)
+			{
+				mDarkFloorIndices.push_back(std::make_pair(floorTiles, &mTiles[i]));
+			}
+			else if (!lineOfSight(tilePos, worldPos, 20.0f))
 			{
 				mDarkFloorIndices.push_back(std::make_pair(floorTiles, &mTiles[i]));
 			}
 			else
-			{
 				mTiles[i].setFadeMax((float)duration);
-			}
 
 
 			floorTiles++;
@@ -113,14 +117,14 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 			if (i % mMapWidth == 0 || mTiles[left].getTextureID() == -1)
 			{
 				hasAWall += 1;
-				if (distFromPos > distance)
+				if (tooFar)
 					mDarkWallIndices.push_back(std::make_pair(walls, &mTiles[i]));
 				walls++;
 			}
 			if (i / mMapWidth == 0 || mTiles[above].getTextureID() == -1)
 			{
 				hasAWall += 2;
-				if (distFromPos > distance)
+				if (tooFar)
 					mDarkWallIndices.push_back(std::make_pair(walls, &mTiles[i]));
 				walls++;
 			}
@@ -161,10 +165,7 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 		quad[3].color = sf::Color(colorVal, colorVal, colorVal, 255);
 
 		for (auto it : visibleTiles[i].first->getItems())
-		{
 			it->getSprite()->setColor(sf::Color(255, 255, 255, colorVal));
-		}
-
 
 		ID *= 2;
 		if ((visibleTiles[i].second & 0b01) == 0b01)
@@ -243,10 +244,9 @@ void Map::update(const sf::Time & deltaTime)
 		mDarkFloorIndices[i].second->reduceFadeCurrent(deltaTime.asSeconds());
 		int colorVal = (int)(mDarkFloorIndices[i].second->getFadeRatio() * 255.0f);
 		sf::Vertex* quad = &mFloorVertices[mDarkFloorIndices[i].first * 4];
+
 		for (auto it : mDarkFloorIndices[i].second->getItems())
-		{
 			it->getSprite()->setColor(sf::Color(255, 255, 255, colorVal));
-		}
 
 		quad[0].color = sf::Color(colorVal, colorVal, colorVal, 255);
 		quad[1].color = sf::Color(colorVal, colorVal, colorVal, 255);
@@ -412,6 +412,20 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 	finalPath.push(currentTile);
 
 	return finalPath;
+}
+
+bool Map::lineOfSight(const sf::Vector2f & p1, const sf::Vector2f & p2, float stepSize)
+{
+	sf::Vector2f current = p1;
+	bool done = false;
+	while (!done)
+	{
+		current = VectorFunctions::lerp(current, p2, stepSize, done);
+		if (getTileFromIndex(getTileIndexFromCoords(current))->getTextureID() == -1)
+			return false;
+	}
+
+	return true;
 }
 
 void Map::drawPrep(DrawingManager * drawingMan)

@@ -2,7 +2,8 @@
 #include "Item.h"
 
 Inventory::Inventory() :
-	mSize(0)
+	mSize(0),
+	mNextFreeSlot(0)
 {
 
 }
@@ -22,11 +23,25 @@ void Inventory::populateContents(size_t size)
 		}
 	}
 	mSize = size;
+	mNextFreeSlot = 0;
 }
 
 size_t Inventory::getSize() const
 {
 	return mSize;
+}
+
+bool Inventory::insertItem(Item * item)
+{
+	if (mNextFreeSlot == -1)
+	{
+		printf("No free slot in insert the item into.\n");
+		return false;
+	}
+
+	switchItemsInSlot(item, mNextFreeSlot);
+
+	return true;
 }
 
 Item* Inventory::switchItemsInSlot(Item* newItem, size_t ID)
@@ -40,6 +55,20 @@ Item* Inventory::switchItemsInSlot(Item* newItem, size_t ID)
 	mContents[ID] = newItem;
 	if (newItem)
 		newItem->setAttachment(mContents[ID]);
+
+	bool hasFreeSlot = false;
+	for (int i = 0; i < mSize; i++)
+	{
+		if (!mContents[i])
+		{
+			mNextFreeSlot = i;
+			hasFreeSlot = true;
+			break;
+		}
+	}
+	if (!hasFreeSlot)
+		mNextFreeSlot = -1;
+
 	return temp;
 }
 

@@ -7,8 +7,11 @@ class Inventory;
 class ContentRegionInventory : public ContentRegion
 {
 public:
+	ContentRegionInventory();
 	ContentRegionInventory(Inventory* refInv, size_t slotsPerRow);
 	~ContentRegionInventory();
+
+	void createNewSlots(size_t size, size_t slotsPerRow);
 
 	Inventoryslot* getInventorySlot(size_t ID);
 

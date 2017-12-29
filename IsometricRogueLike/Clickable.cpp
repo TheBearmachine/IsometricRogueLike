@@ -47,6 +47,7 @@ bool Clickable::observe(const sf::Event & _event)
 
 		if (globRect.contains(mousePos))
 		{
+			retVal = true;
 			if (!mMouseInside)
 			{
 				mMouseInside = true;

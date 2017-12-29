@@ -92,7 +92,7 @@ const Entity * Tile::getOccupant() const
 
 void Tile::addItem(Item * item)
 {
-	mItems.insert(item);
+	mItems.push_back(item);
 	item->setParentTransform(this);
 	sf::Vector2f origin(Constants::Items::HalfWidth, -Constants::Items::HalfHeight);
 	sf::Vector2f scale(Constants::Items::WidthRatio, Constants::Items::HeightRatio);
@@ -104,12 +104,41 @@ void Tile::removeItem(Item * item)
 {
 	item->getSprite()->setScale(1.0f, 1.0f);
 	item->getSprite()->setOrigin(0.0f, 0.0f);
-	mItems.erase(item);
+
+	size_t pos = 0;
+	// Find location of item in vector
+	for (size_t i = 0; i < mItems.size(); i++)
+	{
+		if (mItems[i] == item)
+		{
+			pos = i;
+			break;
+		}
+	}
+
+	// Bubble it up to the top and remove it
+	for (size_t i = pos; i < mItems.size() - 1; i++)
+	{
+		Item* temp = mItems[i];
+		mItems[i] = mItems[i + 1];
+		mItems[i + 1] = temp;
+	}
+	mItems.pop_back();
 }
 
-std::set<Item*> Tile::getItems() const
+std::vector<Item*> Tile::getItems()
 {
 	return mItems;
+}
+
+Item** Tile::getItem(size_t ID)
+{
+	return &mItems[ID];
+}
+
+size_t Tile::getNrItems() const
+{
+	return mItems.size();
 }
 
 void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -117,5 +146,13 @@ void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	states.transform = getGlobalTransform();
 
 	for (auto i : mItems)
+	{
+		sf::Vector2f origin(Constants::Items::HalfWidth, -Constants::Items::HalfHeight);
+		sf::Vector2f scale(Constants::Items::WidthRatio, Constants::Items::HeightRatio);
+		i->getSprite()->setScale(scale);
+		i->getSprite()->setOrigin(origin);
 		i->draw(target, states);
+		i->getSprite()->setScale(1.0f, 1.0f);
+		i->getSprite()->setOrigin(0.0f, 0.0f);
+	}
 }

@@ -2,6 +2,7 @@
 #include "EventObserver.h"
 #include "Movement.h"
 #include "Window.h"
+#include "Inventoryslot.h"
 #include <SFML/Window/Event.hpp>
 #include <vector>
 
@@ -9,12 +10,13 @@ class Map;
 class Creature;
 class EventManager;
 class MousePointer;
+class ContentRegionInventory;
 namespace sf
 {
 	class RenderTarget;
 }
 
-class SimulationController : public EventObserver, public IMovementListener, public IWindowListener
+class SimulationController : public EventObserver, public IMovementListener, public IWindowListener, public IInventoryslotListener
 {
 public:
 	SimulationController();
@@ -29,6 +31,8 @@ public:
 	void onReachTile(const sf::Vector2f &clientPos) override;
 	void onWindowClose(Window* window) override;
 
+	void buttonAction(Item* item, Inventoryslot* invSlot);
+
 	static void setup(sf::RenderTarget* target, EventManager* eventManager, MousePointer* mouseP);
 
 private:
@@ -37,4 +41,7 @@ private:
 	Creature* mControllableEntity;
 	Window* mInventoryWin;
 	Window* mCharacterWin;
+	Window* mRightClickWindow;
+	ContentRegionInventory* mRightClickCRI;
+
 };

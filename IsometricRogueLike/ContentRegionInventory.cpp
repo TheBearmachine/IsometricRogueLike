@@ -5,17 +5,43 @@
 
 static const float PADDING = 2.0f;
 
+ContentRegionInventory::ContentRegionInventory() :
+	ContentRegion(),
+	mSlotsNr(0)
+{
+}
+
 ContentRegionInventory::ContentRegionInventory(Inventory* refInv, size_t slotsPerRow) :
 	ContentRegion(),
 	mSlotsNr(0)
 {
-	mSlotsNr = refInv->getSize();
-	mInventoryslots = new Inventoryslot[mSlotsNr];
-	if (!mInventoryslots)
+	size_t size = refInv->getSize();
+
+	createNewSlots(size, slotsPerRow);
+
+	for (size_t i = 0; i < mSlotsNr; i++)
 	{
-		mSlotsNr = 0;
-		return;
+		mInventoryslots[i].setItem(refInv->getItem(i));
+		mInventoryslots[i].setInventoryReference(refInv);
 	}
+
+}
+
+ContentRegionInventory::~ContentRegionInventory()
+{
+	if (mSlotsNr != 0)
+		delete[mSlotsNr] mInventoryslots;
+}
+
+void ContentRegionInventory::createNewSlots(size_t size, size_t slotsPerRow)
+{
+	if (mSlotsNr != 0)
+		delete[mSlotsNr] mInventoryslots;
+
+	mSlotsNr = size;
+	if (size == 0) return;
+
+	mInventoryslots = new Inventoryslot[mSlotsNr];
 
 	// Space out the slots evenly
 	sf::Vector2f slotSize = mInventoryslots->getSize();
@@ -32,17 +58,8 @@ ContentRegionInventory::ContentRegionInventory(Inventory* refInv, size_t slotsPe
 		mInventoryslots[i].setParentTransform(this);
 		mInventoryslots[i].setID(i);
 		mInventoryslots[i].setPosition(xPos, yPos);
-		mInventoryslots[i].setItem(refInv->getItem(i));
-		mInventoryslots[i].setInventoryReference(refInv);
-
-		//mInventoryslots[i].setListener(); <-- Need to have a listener eventually
 	}
-}
 
-ContentRegionInventory::~ContentRegionInventory()
-{
-	if (mSlotsNr != 0)
-		delete[mSlotsNr] mInventoryslots;
 }
 
 Inventoryslot * ContentRegionInventory::getInventorySlot(size_t ID)

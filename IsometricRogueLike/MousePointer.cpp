@@ -1,16 +1,13 @@
 #include "MousePointer.h"
 #include "DrawingManager.h"
 #include "Item.h"
-#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
-static sf::RenderTarget* mWindow;
+static sf::RenderWindow* mWindow;
 
 MousePointer::MousePointer() :
 	mItem(nullptr)
 {
-	mInterestedEvents.push_back(sf::Event::EventType::MouseMoved);
-	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonPressed);
-	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonReleased);
 	mSprite.setParentTransform(this);
 	setStaticDrawPosition(true);
 	setZBuffer(1000000);
@@ -39,30 +36,10 @@ Item * MousePointer::getItem()
 	return mItem;
 }
 
-bool MousePointer::observe(const sf::Event & _event)
+void MousePointer::update(const sf::Time & deltaTime)
 {
-	sf::Vector2f mousePos;
-	switch (_event.type)
-	{
-	case sf::Event::EventType::MouseMoved:
-		mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseMove.x, _event.mouseMove.y));
-		setPosition(mousePos);
-		break;
-
-	case sf::Event::EventType::MouseButtonPressed:
-
-		break;
-
-
-	case sf::Event::EventType::MouseButtonReleased:
-
-		break;
-
-	default:
-		break;
-	}
-
-	return false;
+	sf::Vector2f mousePos(sf::Mouse::getPosition(*mWindow));
+	setPosition(mousePos);
 }
 
 void MousePointer::drawPrep(DrawingManager * drawingMan)
@@ -80,7 +57,7 @@ void MousePointer::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 		mItem->draw(target, states);
 }
 
-void MousePointer::setup(sf::RenderTarget * window)
+void MousePointer::setup(sf::RenderWindow* window)
 {
 	mWindow = window;
 }

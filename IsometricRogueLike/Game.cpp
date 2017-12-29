@@ -34,6 +34,7 @@ void Game::run()
 		sf::Time dt = clock.restart();
 		handleEvents();
 
+		mMousePointer.update(dt);
 		mCurrentState->update(dt);
 		mMousePointer.drawPrep(&mDrawingManager);
 
@@ -73,6 +74,5 @@ void Game::initialize()
 	mCurrentState = &mGameStateMenu;
 
 	mMousePointer.setSprite(MOUSEPOINTER_TEX);
-	mMousePointer.registerEvents();
 	mWindow.setMouseCursorVisible(false);
 }

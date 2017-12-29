@@ -4,10 +4,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 Item::Item() :
-	mItemType(Sword),
-	mEqSlot(NonEquippable)
+	mItemType(ItemTypes(0)),
+	mEqSlot(EquipmentSlot(0))
 {
-	setStaticDrawPosition(true);
+
 }
 
 Item::~Item()
@@ -104,4 +104,9 @@ void Item::setItemTex(const std::string & texFile)
 sf::Sprite * Item::getSprite()
 {
 	return &mSprite;
+}
+
+sf::Sprite * Item::getMapSprite()
+{
+	return &mMapSprite;
 }

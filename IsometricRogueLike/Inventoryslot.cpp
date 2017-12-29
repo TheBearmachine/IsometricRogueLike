@@ -18,6 +18,7 @@ Inventoryslot::Inventoryslot(size_t ID) :
 	mID(ID),
 	mItem(nullptr),
 	mInvRef(nullptr),
+	mTileRef(nullptr),
 	mSprite(ResourceManager::getInstance().getTexture(TEXTURE_FILE))
 {
 	mSize = sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
@@ -53,6 +54,16 @@ Inventory * Inventoryslot::getInventoryReference()
 	return mInvRef;
 }
 
+void Inventoryslot::setTileReference(Tile * tileRef)
+{
+	mTileRef = tileRef;
+}
+
+Tile * Inventoryslot::getTileReference()
+{
+	return mTileRef;
+}
+
 void Inventoryslot::setItem(Item ** item)
 {
 	mItem = item;
@@ -76,7 +87,7 @@ void Inventoryslot::onMouseOver(bool mouseOver)
 
 void Inventoryslot::onClickInside()
 {
-	if (mListener)
+	if (mListener && mItem)
 		mListener->buttonAction(*mItem, this);
 }
 

@@ -1,9 +1,9 @@
 #include "Window.h"
-#include <SFML/Graphics/RenderTarget.hpp>
 #include "ResourceManager.h"
 #include "DrawingManager.h"
 #include "WindowManager.h"
 #include "Constants.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 static const float TOP_THICKNESS = 30.0f;
 static const float BORDER_THICKNESS = 2.0f;

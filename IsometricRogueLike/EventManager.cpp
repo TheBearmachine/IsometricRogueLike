@@ -44,6 +44,7 @@ void EventManager::unregisterObserver(EventObserver* observer, const sf::Event::
 
 void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) const
 {
+
 	if (mObservers.find(_event.type) != mObservers.end())
 	{
 		bool onlyOneClick = false;
@@ -59,7 +60,9 @@ void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) co
 				onlyOneClick = (*rit)->observe(_event);
 				if (onlyOneClick && (
 					_event.type == sf::Event::MouseButtonPressed ||
-					_event.type == sf::Event::MouseButtonReleased))
+					_event.type == sf::Event::MouseButtonReleased ||
+					_event.type == sf::Event::MouseMoved
+					))
 				{
 					target->setView(prevView);
 					return;

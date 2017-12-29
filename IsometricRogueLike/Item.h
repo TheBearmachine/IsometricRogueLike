@@ -69,11 +69,13 @@ public:
 
 	void setItemTex(const std::string &texFile);
 	sf::Sprite* getSprite();
+	sf::Sprite* getMapSprite();
 
 private:
 	int mProperties[NrProperties];
 	int mID;
 	sf::Sprite mSprite;
+	sf::Sprite mMapSprite;
 	Transformabetter* mAttachment;
 	std::string mItemName, mItemDesc;
 	ItemTypes mItemType;

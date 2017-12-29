@@ -31,6 +31,8 @@ public:
 	void updateTileGraph();
 	std::stack<TileNode*> findPath(const sf::Vector2i &startIndex, const sf::Vector2i &endIndex);
 
+	bool lineOfSight(const sf::Vector2f &p1, const sf::Vector2f &p2, float stepSize = 10.0f);
+
 	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

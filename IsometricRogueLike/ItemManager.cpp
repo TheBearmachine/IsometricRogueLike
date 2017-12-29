@@ -2,6 +2,7 @@
 #include "ItemDatabase.h"
 #include "Inventory.h"
 #include "Constants.h"
+#include "Tile.h"
 #include "MousePointer.h"
 
 static MousePointer* mMousePointer;
@@ -36,11 +37,4 @@ Item * ItemManager::makeItem(size_t ID)
 	mItems.insert(item);
 
 	return item;
-}
-
-void ItemManager::buttonAction(Item * item, Inventoryslot * invSlot)
-{
-	Item* temp = mMousePointer->getItem();
-	temp = invSlot->getInventoryReference()->switchItemsInSlot(temp, invSlot->getID());
-	mMousePointer->switchItem(temp);
 }

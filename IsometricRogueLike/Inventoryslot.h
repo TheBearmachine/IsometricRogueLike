@@ -6,6 +6,7 @@
 class Item;
 class Inventoryslot;
 class Inventory;
+class Tile;
 
 __interface IInventoryslotListener
 {
@@ -27,6 +28,9 @@ public:
 	void setInventoryReference(Inventory* invRef);
 	Inventory* getInventoryReference();
 
+	void setTileReference(Tile* tileRef);
+	Tile* getTileReference();
+
 	void setItem(Item** item);
 	Item** getItem();
 
@@ -43,6 +47,7 @@ public:
 private:
 	sf::Sprite mSprite;
 	Inventory* mInvRef;
+	Tile* mTileRef;
 	Item** mItem;
 	size_t mID;
 };
