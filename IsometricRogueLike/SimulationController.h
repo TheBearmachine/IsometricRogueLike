@@ -3,6 +3,7 @@
 #include "Movement.h"
 #include "Window.h"
 #include "Inventoryslot.h"
+#include "Button.h"
 #include <SFML/Window/Event.hpp>
 #include <vector>
 
@@ -11,12 +12,13 @@ class Creature;
 class EventManager;
 class MousePointer;
 class ContentRegionInventory;
+class ContentRegionMenu;
 namespace sf
 {
 	class RenderTarget;
 }
 
-class SimulationController : public EventObserver, public IMovementListener, public IWindowListener, public IInventoryslotListener
+class SimulationController : public EventObserver, public IMovementListener, public IWindowListener, public IInventoryslotListener, public IButtonListener
 {
 public:
 	SimulationController();
@@ -33,9 +35,19 @@ public:
 
 	void buttonAction(Item* item, Inventoryslot* invSlot);
 
+	void buttonAction(unsigned int action);
+
+
 	static void setup(sf::RenderTarget* target, EventManager* eventManager, MousePointer* mouseP);
 
 private:
+	enum MenuButtons
+	{
+		Move,
+		Attack,
+		Interact,
+	};
+
 	std::vector<sf::Event::EventType> mInterestedEvents;
 	Map* mCurrentMap;
 	Creature* mControllableEntity;
@@ -43,5 +55,6 @@ private:
 	Window* mCharacterWin;
 	Window* mRightClickWindow;
 	ContentRegionInventory* mRightClickCRI;
-
+	ContentRegionMenu* mRightClickCRM;
+	sf::Vector2i mRightClickTile;
 };

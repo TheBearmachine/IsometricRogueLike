@@ -39,7 +39,11 @@ void ContentRegionInventory::createNewSlots(size_t size, size_t slotsPerRow)
 		delete[mSlotsNr] mInventoryslots;
 
 	mSlotsNr = size;
-	if (size == 0) return;
+	if (size == 0)
+	{
+		setRegionSize(sf::Vector2f());
+		return;
+	}
 
 	mInventoryslots = new Inventoryslot[mSlotsNr];
 

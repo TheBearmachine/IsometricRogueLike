@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "ContentRegionInventory.h"
 #include "ContentRegionCharacterAttributes.h"
+#include "ContentRegionMenu.h"
 #include "Creature.h"
 #include "Constants.h"
 #include "MousePointer.h"
@@ -55,10 +56,12 @@ void SimulationController::initalize(Map * map, Creature * controllableEntity)
 	mCharacterWin->setVisibility(false);
 	mCharacterWin->setWindowListener(this);
 
-	success = Window::createWindow(&mRightClickWindow, "Items");
+	success = Window::createWindow(&mRightClickWindow, "Menu");
 	mRightClickCRI = new ContentRegionInventory();
+	mRightClickCRM = new ContentRegionMenu(this);
 	mRightClickWindow->setVisibility(false);
 	mRightClickWindow->setWindowListener(this);
+	mRightClickWindow->addContentRegion(mRightClickCRM);
 	mRightClickWindow->addContentRegion(mRightClickCRI);
 
 }
@@ -76,6 +79,7 @@ bool SimulationController::observe(const sf::Event & _event)
 		if (_event.mouseButton.button == sf::Mouse::Left)
 		{
 			if (!mControllableEntity || !mCurrentMap || !mMousePointer) break;
+			mRightClickWindow->setVisibility(false);
 			retVal = true;
 			sf::Vector2f entityPos = mControllableEntity->getMovementComponent()->getCurrentTarget();
 			sf::Vector2i currentPos = mCurrentMap->getTileIndexFromCoords(entityPos);
@@ -90,27 +94,34 @@ bool SimulationController::observe(const sf::Event & _event)
 		}
 		else if (_event.mouseButton.button == sf::Mouse::Right)
 		{
-			/*ContentRegionInventory* cri = new ContentRegionInventory();
-			mRightClickWindow->clearContentRegions();
-			mRightClickWindow->addContentRegion(cri);*/
-
 			Tile* tile = mCurrentMap->getTileFromIndex(targetPos);
 			size_t size = tile->getNrItems();
+			sf::Vector2f winSize;
+			static const float CONTENT_PADDING = 5.0f;
+			mRightClickTile = targetPos;
+			mRightClickCRI->createNewSlots(size, 3);
+			mRightClickWindow->setVisibility(true);
 			if (size != 0)
 			{
-				mRightClickCRI->createNewSlots(size, 3);
-				mRightClickWindow->setWindowContentSize(mRightClickCRI->getRegionSize());
-				mRightClickWindow->setVisibility(true);
+				//mRightClickCRI->createNewSlots(size, 3);
 				for (size_t i = 0; i < size; i++)
 				{
 					mRightClickCRI->getInventorySlot(i)->setItem(tile->getItem(i));
 					mRightClickCRI->getInventorySlot(i)->setTileReference(tile);
 				}
 			}
-			else
+			mRightClickCRM->clearButtons();
+			mRightClickCRM->addButton("Move", MenuButtons::Move);
+			if (tile->getOccupant())
 			{
-				//mRightClickWindow->setWindowContentSize(cri->getRegionSize());
+				mRightClickCRM->addButton("Attack", MenuButtons::Attack);
 			}
+			float CRMHeight = mRightClickCRM->getRegionSize().y;
+			mRightClickCRI->setPosition(0.0f, CRMHeight);
+			winSize.x = mRightClickCRI->getRegionSize().x;
+			winSize.x = std::max(winSize.x, mRightClickCRM->getRegionSize().x);
+			winSize.y = CRMHeight + mRightClickCRI->getRegionSize().y;
+			mRightClickWindow->setWindowContentSize(winSize);
 		}
 		break;
 
@@ -169,7 +180,7 @@ void SimulationController::buttonAction(Item * item, Inventoryslot * invSlot)
 		temp = invRef->switchItemsInSlot(temp, invSlot->getID());
 		mMousePointer->switchItem(temp);
 	}
-	else if (tileRef)
+	else if (tileRef && !mMousePointer->getItem())
 	{
 		tileRef->removeItem(item);
 		mMousePointer->switchItem(item);
@@ -180,6 +191,23 @@ void SimulationController::buttonAction(Item * item, Inventoryslot * invSlot)
 			mRightClickCRI->getInventorySlot(i)->setItem(tileRef->getItem(i));
 			mRightClickCRI->getInventorySlot(i)->setTileReference(tileRef);
 		}
+	}
+}
+
+void SimulationController::buttonAction(unsigned int action)
+{
+	switch (action)
+	{
+	case MenuButtons::Move:
+
+		break;
+
+	case MenuButtons::Attack:
+
+		break;
+
+	default:
+		break;
 	}
 }
 

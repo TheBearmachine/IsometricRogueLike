@@ -24,9 +24,8 @@ public:
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 private:
-	std::vector<Button> mButtons;
+	std::vector<Button*> mButtons;
 	IButtonListener* mButtonListener;
-	Orientation mOrientation;
+	const Orientation mOrientation;
 	size_t mButtonsPerRow;
-	size_t mCurentButtonNr;
 };

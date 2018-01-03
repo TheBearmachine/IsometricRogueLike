@@ -32,6 +32,9 @@ Window::Window(const std::string &windowName, const sf::Vector2f & position, con
 {
 	setPosition(position);
 	setStaticDrawPosition(true);
+	mContentOffset.move(BORDER_THICKNESS * (CONTENT_INDENTATION * .5f),
+						TOP_THICKNESS + BORDER_THICKNESS * (CONTENT_INDENTATION * .5f));
+	mContentOffset.setParentTransform(this);
 
 	mTopDragable.setParentTransform(this);
 	mBorder.setOutlineThickness(-BORDER_THICKNESS);
@@ -116,9 +119,7 @@ void Window::onMouseOver(bool mouseOver)
 void Window::addContentRegion(ContentRegion* contentRegion)
 {
 	mContentRegions.push_back(contentRegion);
-	contentRegion->setParentTransform(this);
-	contentRegion->move(BORDER_THICKNESS * (CONTENT_INDENTATION * .5f),
-						TOP_THICKNESS + BORDER_THICKNESS * (CONTENT_INDENTATION * .5f));
+	contentRegion->setParentTransform(&mContentOffset);
 }
 
 void Window::clearContentRegions()
@@ -149,6 +150,7 @@ void Window::setWindowSize(const sf::Vector2f & size)
 	mTopDragable.setSize(sf::Vector2f(size.x, TOP_THICKNESS));
 	setSize(size);
 	restructureText();
+	fitWindow();
 }
 
 void Window::setWindowContentSize(const sf::Vector2f & size)
@@ -162,6 +164,7 @@ void Window::setWindowContentSize(const sf::Vector2f & size)
 	mTopDragable.setSize(sf::Vector2f(newSize.x, TOP_THICKNESS));
 	setSize(newSize);
 	restructureText();
+	fitWindow();
 }
 
 sf::Vector2f Window::getContentSize() const
@@ -195,23 +198,7 @@ void Window::setWindowManager(WindowManager * winMan)
 void Window::onDrag(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
 {
 	move(mouseDelta);
-
-	// Limit movement to inside the render window
-	if (!mRenderTarget) return;
-	const sf::Vector2f &pos = getPosition();
-	const sf::Vector2f &winSize = getWindowSize();
-	const sf::Vector2f renderWinSize(mRenderTarget->getDefaultView().getSize());
-
-	if (pos.x < 0.0f)
-		setPosition(0.0f, pos.y);
-	else if (pos.x + winSize.x > renderWinSize.x)
-		setPosition(renderWinSize.x - winSize.x, pos.y);
-
-	if (pos.y < 0.0f)
-		setPosition(pos.x, 0.0f);
-	else if (pos.y + winSize.y > renderWinSize.y)
-		setPosition(pos.x, renderWinSize.y - winSize.y);
-
+	fitWindow();
 }
 
 void Window::drawPrep(DrawingManager * drawingMan)
@@ -261,6 +248,25 @@ void Window::restructureText()
 		mWindowName.setString(mWindowName.getString() + dots.getString());
 	}
 	mCloseButton.setPosition(mTop.getSize().x - iconWidth, 0.0f);
+}
+
+void Window::fitWindow()
+{
+	// Limit movement to inside the render window
+	if (!mRenderTarget) return;
+	const sf::Vector2f &pos = getPosition();
+	const sf::Vector2f &winSize = getWindowSize();
+	const sf::Vector2f renderWinSize(mRenderTarget->getDefaultView().getSize());
+
+	if (pos.x < 0.0f)
+		setPosition(0.0f, pos.y);
+	else if (pos.x + winSize.x > renderWinSize.x)
+		setPosition(renderWinSize.x - winSize.x, pos.y);
+
+	if (pos.y < 0.0f)
+		setPosition(pos.x, 0.0f);
+	else if (pos.y + winSize.y > renderWinSize.y)
+		setPosition(pos.x, renderWinSize.y - winSize.y);
 }
 
 void Window::buttonAction(unsigned int action)

@@ -56,9 +56,11 @@ public:
 
 private:
 	void onClose();
+	void fitWindow();
 	void restructureText();
 
 	IWindowListener* mWindowListener;
+	Transformabetter mContentOffset;
 
 	Dragable mTopDragable;
 	sf::RectangleShape mBorder;

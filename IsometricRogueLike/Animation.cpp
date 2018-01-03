@@ -13,14 +13,14 @@ Animation::Animation() :
 
 Animation::~Animation()
 {
-	if (!m_spriteRects)
+	if (m_spriteRects)
 		delete[m_frames] m_spriteRects;
 }
 
 void Animation::setup(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timerPerFrame)
 {
 	mSprite.setTexture(ResourceManager::getInstance().getTexture(textureName));
-	if (!m_spriteRects)
+	if (m_spriteRects)
 		delete[m_frames] m_spriteRects;
 	m_frames = nrFrames;
 	m_currentFrame = 0;
@@ -56,7 +56,7 @@ void Animation::setFrame(unsigned short frame)
 
 sf::Vector2f Animation::getSize() const
 {
-	return sf::Vector2f(mSprite.getTextureRect().width, mSprite.getTextureRect().height);
+	return sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
 }
 
 void Animation::tickAnimation(sf::Time & deltaTime)
