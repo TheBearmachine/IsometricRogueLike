@@ -185,6 +185,7 @@
     <ClInclude Include="MousePointer.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Order.h" />
     <ClInclude Include="SimulationController.h" />
     <ClInclude Include="Dragable.h" />
     <ClInclude Include="DrawingManager.h" />

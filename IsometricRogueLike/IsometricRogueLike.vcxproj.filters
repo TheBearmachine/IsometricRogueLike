@@ -293,5 +293,8 @@
     <ClInclude Include="ContentRegionMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Order.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
