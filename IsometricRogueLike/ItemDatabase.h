@@ -13,6 +13,7 @@ public:
 		std::string name, desc, texFile;
 		size_t iType, eqSlot;
 		int prop[Item::NrProperties];
+		int value;
 	};
 
 	static ItemDatabase& getInstance();

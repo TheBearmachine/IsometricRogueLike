@@ -310,8 +310,12 @@ void Map::updateTileGraph()
 	}
 }
 
-std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)
+size_t Map::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex, std::stack<TileNode*> &outPath)
 {
+	while (!outPath.empty())
+		outPath.pop();
+
+	size_t pathExists = 1;
 	int startI = startIndex.y + startIndex.x * mMapWidth,
 		endI = endIndex.y + endIndex.x * mMapWidth;
 	if (startI >= (int)mTiles.size() || startI < 0 ||
@@ -320,7 +324,7 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 		endIndex.y >= (int)mMapHeight || endIndex.y < 0)
 	{
 		printf("Target out of bounds!\n");
-		return std::stack<TileNode*>();
+		return false;
 	}
 
 	std::vector<TileNode*>closedList;
@@ -332,7 +336,7 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 	if (!startTile || startTile == finalTile)
 	{
 		printf("Start same as goal.\n");
-		return std::stack<TileNode*>();
+		return true;
 	}
 
 	int manhattanDist =
@@ -359,30 +363,40 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 		{
 			neighbor = currentTile->mNeighbors[i];
 
-			if (neighbor && neighbor->mTile->getOccupant() != nullptr)
+			if (neighbor)
 			{
-				continue;
-			}
+				if (neighbor->mTile->getOccupant() != nullptr)
+				{
+					if (neighbor->mTile->getArrayIndex() == endIndex)
+					{
+						neighbor->mParent = currentTile;
+						finalTile = neighbor;
+						done = true;
+						pathExists = 2;
+					}
+					else
+						continue;
+				}
 
-			if (neighbor && neighbor->mTile->getArrayIndex() == endIndex)
-			{
-				neighbor->mParent = currentTile;
-				finalTile = neighbor;
-				done = true;
-			}
-			else if (neighbor &&
-					 !containsElement(closedList, neighbor) &&
-					 !containsElement(openList, neighbor))
-			{
-				manhattanDist =
-					abs(finalTile->mTile->getArrayIndex().x - neighbor->mTile->getArrayIndex().x) +
-					abs(finalTile->mTile->getArrayIndex().y - neighbor->mTile->getArrayIndex().y);
-				int cost = currentTile->mAccumulatedCost + manhattanDist + 1;
+				if (neighbor->mTile->getArrayIndex() == endIndex)
+				{
+					neighbor->mParent = currentTile;
+					//finalTile = neighbor;
+					done = true;
+				}
+				else if (!containsElement(closedList, neighbor) &&
+						 !containsElement(openList, neighbor))
+				{
+					manhattanDist =
+						abs(finalTile->mTile->getArrayIndex().x - neighbor->mTile->getArrayIndex().x) +
+						abs(finalTile->mTile->getArrayIndex().y - neighbor->mTile->getArrayIndex().y);
+					int cost = currentTile->mAccumulatedCost + manhattanDist + 1;
 
-				neighbor->mAccumulatedCost = cost;
-				neighbor->mDistanceFromTarget = manhattanDist;
-				neighbor->mParent = currentTile;
-				openList.push(neighbor);
+					neighbor->mAccumulatedCost = cost;
+					neighbor->mDistanceFromTarget = manhattanDist;
+					neighbor->mParent = currentTile;
+					openList.push(neighbor);
+				}
 			}
 		}
 	}
@@ -391,7 +405,7 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 	if (!done)
 	{
 		printf("No path found! Will use the tile with the lowest cost.\n");
-
+		pathExists = 0;
 		size_t nearest = 0;
 		int currentLowest = 1000;
 		for (size_t i = 0; i < closedList.size(); i++)
@@ -406,12 +420,12 @@ std::stack<TileNode*> Map::findPath(const sf::Vector2i & startIndex, const sf::V
 	}
 	while (currentTile->mParent)
 	{
-		finalPath.push(currentTile);
+		outPath.push(currentTile);
 		currentTile = currentTile->mParent;
 	}
-	finalPath.push(currentTile);
+	outPath.push(currentTile);
 
-	return finalPath;
+	return pathExists;
 }
 
 bool Map::lineOfSight(const sf::Vector2f & p1, const sf::Vector2f & p2, float stepSize)

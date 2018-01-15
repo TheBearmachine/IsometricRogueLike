@@ -2,6 +2,7 @@
 #include "GameState.h"
 #include "WindowManager.h"
 #include "Menu.h"
+#include "EnhancedText.h"
 
 namespace sf
 {
@@ -50,6 +51,7 @@ private:
 	EventManager* mEventManager;
 
 	Menu mMainMenu;
+	EnhancedText textText;
 
 	GameStateSimulation* mGameStateSimulation;
 };

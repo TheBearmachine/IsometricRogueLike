@@ -46,16 +46,19 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 
 	Item* item = mItemManager.makeItem(100);
 	Item* item2 = mItemManager.makeItem(101);
+	Item* itemPots[5];
+	for (int i = 0; i < 5; i++)
+		itemPots[i] = mItemManager.makeItem(500);
 
 	mMapManager.setupMap(TEST_LEVEL, 10, 10);
 	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
-	Creature* testEntity = new Creature(PLAYER_TEXTURE);
+	Creature* testEntity = new Creature(PLAYER_TEXTURE, sf::Vector2i(2, 2), mMapManager.getCurrentMap());
 	testEntity->moveToTile(sf::Vector2i(2, 2), mMapManager.getCurrentMap());
 	testEntity->getInventory()->populateContents(12);
-	testEntity->getInventory()->switchItemsInSlot(item, 0);
-	testEntity->getInventory()->switchItemsInSlot(item2, 1);
-
-
+	testEntity->getInventory()->insertItem(item);
+	testEntity->getInventory()->insertItem(item2);
+	for (int i = 0; i < 5; i++)
+		testEntity->getInventory()->insertItem(itemPots[i]);
 
 	Object* obj = new Object(CHEST_TEXTURE, sf::Vector2i(6, 2), mMapManager.getCurrentMap());
 	obj->getInventory()->populateContents(10);
@@ -66,6 +69,8 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	mEntityManager.addEntity(testEntity);
 	mEntityManager.addEntity(obj);
 	mEntityManager.setLightgiver(testEntity);
+
+	Action::setCurrentMap(mMapManager.getCurrentMap());
 }
 
 void GameStateSimulation::registerEvents()

@@ -5,10 +5,17 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 static const std::string GUI_BUTTON = Constants::Filepaths::ImagesFolder + "GUIButton.png";
+static const std::string FONT = Constants::Filepaths::DefaultFont;
+static const std::string STRING_EH = "White |cff0000|Red |c00ff00|Green |c0000ff|Blue\nNew line";
+static const std::string ANOTHER_STRING_YAH = "This is a sentance with many many words. Many words indeed. Some short and some long, but mostly short.";
 
 GameStateMenu::GameStateMenu(Game* owner, GameState** currentGameState) :
-	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f))
+	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f)),
+	textText()
 {
+	textText.setSize(20U);
+	textText.setConfines(sf::Vector2f(500.0f, 150.0f));
+	textText.setString(ANOTHER_STRING_YAH);
 }
 
 GameStateMenu::~GameStateMenu()
@@ -85,6 +92,8 @@ void GameStateMenu::drawPrep(DrawingManager* drawingMan)
 {
 	mMainMenu.drawPrep(drawingMan);
 	mWindowManager.drawPrep(drawingMan);
+
+	textText.drawPrep(drawingMan);
 }
 
 void GameStateMenu::buttonAction(unsigned int action)

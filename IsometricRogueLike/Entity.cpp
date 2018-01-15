@@ -7,20 +7,22 @@
 
 static IEntityManager* mEntityManager;
 
-Entity::Entity(const std::string & textureName) :
-	mSprite(ResourceManager::getInstance().getTexture(textureName)),
-	mGarbage(false),
-	mTick(true),
-	mFadeCurrent(0.0f),
-	mFadeMax(1.0f)
-{
-	mSprite.setOrigin(mSprite.getTextureRect().width / 2.0f,
-					  mSprite.getTextureRect().height - Constants::World::Tile::HalfHeight);
-}
+//Entity::Entity(const std::string & textureName) :
+//	mSprite(ResourceManager::getInstance().getTexture(textureName)),
+//	mGarbage(false), mAlive(true),
+//	mTick(true),
+//	mFadeCurrent(0.0f),
+//	mFadeMax(1.0f)
+//{
+//	mSprite.setOrigin(mSprite.getTextureRect().width / 2.0f,
+//					  mSprite.getTextureRect().height - Constants::World::Tile::HalfHeight);
+//}
 
 Entity::Entity(const std::string & textureName, const sf::Vector2i & startTile, Map* currentMap) :
 	mSprite(ResourceManager::getInstance().getTexture(textureName)),
-	mGarbage(false)
+	mGarbage(false), mAlive(true),
+	mTick(true),
+	mFadeCurrent(0.0f), mFadeMax(1.0f)
 {
 	mSprite.setOrigin(mSprite.getTextureRect().width / 2.0f,
 					  mSprite.getTextureRect().height - Constants::World::Tile::HalfHeight);
@@ -71,6 +73,21 @@ Movement * Entity::getMovementComponent()
 	return nullptr;
 }
 
+FSMAction * Entity::getFSMActionComponent()
+{
+	return nullptr;
+}
+
+FSMIdle * Entity::getFSMIdleComponent()
+{
+	return nullptr;
+}
+
+FSM * Entity::getCurrentFSMState()
+{
+	return nullptr;
+}
+
 CharacterAttributes * Entity::getCharacterAttributes()
 {
 	return nullptr;
@@ -91,6 +108,16 @@ bool Entity::getGarbage() const
 	return mGarbage;
 }
 
+void Entity::setAlive(bool isAlive)
+{
+	mAlive = isAlive;
+}
+
+bool Entity::getAlive() const
+{
+	return mAlive;
+}
+
 void Entity::setFadeMax(float val)
 {
 	mFadeCurrent = mFadeMax = val;
@@ -104,6 +131,26 @@ void Entity::reduceFadeCurrent(float deltaVal)
 float Entity::getFadeRatio() const
 {
 	return mFadeCurrent / mFadeMax;
+}
+
+void Entity::addAvailableAction(Action::ActionTypes actionType)
+{
+	mAvailableActions.push_back(actionType);
+}
+
+const std::vector<Action::ActionTypes>& Entity::getAvailableActions() const
+{
+	return mAvailableActions;
+}
+
+void Entity::setWorldState(const std::string & key, size_t val)
+{
+	mWorldState[key] = val;
+}
+
+const Action::WorldState & Entity::getWorldState() const
+{
+	return mWorldState;
 }
 
 void Entity::drawPrep(DrawingManager * drawingMan)

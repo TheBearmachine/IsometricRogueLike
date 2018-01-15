@@ -8,6 +8,7 @@
 #include "Creature.h"
 #include "Constants.h"
 #include "MousePointer.h"
+#include "ActionPickUpItem.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 static sf::RenderTarget* mWindow;
@@ -85,7 +86,12 @@ bool SimulationController::observe(const sf::Event & _event)
 			sf::Vector2i currentPos = mCurrentMap->getTileIndexFromCoords(entityPos);
 			if (mMousePointer->getItem() == nullptr)
 			{
-				mControllableEntity->getMovementComponent()->setPath(mCurrentMap->findPath(currentPos, targetPos));
+				bool temp;
+				mControllableEntity->getFSMActionComponent()->clearQueue();
+				std::stack<TileNode*> path;
+				mCurrentMap->findPath(currentPos, targetPos, path);
+				mControllableEntity->getMovementComponent()->setPath(path);
+				mControllableEntity->getCurrentFSMState()->move();
 			}
 			else
 			{
@@ -165,6 +171,10 @@ void SimulationController::onReachTile(const sf::Vector2f & clientPos)
 	mCurrentMap->updateVertexArray(clientPos, TempDist, TempTime);
 }
 
+void SimulationController::onDestinationReached()
+{
+}
+
 void SimulationController::onWindowClose(Window * window)
 {
 	window->setVisibility(false);
@@ -182,14 +192,14 @@ void SimulationController::buttonAction(Item * item, Inventoryslot * invSlot)
 	}
 	else if (tileRef && !mMousePointer->getItem())
 	{
-		tileRef->removeItem(item);
-		mMousePointer->switchItem(item);
-		size_t size = tileRef->getNrItems();
-		mRightClickCRI->createNewSlots(size, RightClickCols);
-		for (size_t i = 0; i < size; i++)
+		// Issue a GOAP plan to take item
+		mControllableEntity->getFSMActionComponent()->clearQueue();
+		ActionPickUpItem* ac = new ActionPickUpItem(mControllableEntity, item, tileRef, mRightClickCRI, mControllableEntity->getInventory());
+		if (ac->checkProceduralPrecondition(nullptr))
 		{
-			mRightClickCRI->getInventorySlot(i)->setItem(tileRef->getItem(i));
-			mRightClickCRI->getInventorySlot(i)->setTileReference(tileRef);
+			mControllableEntity->getFSMActionComponent()->addActionToQueue(ac);
+			mControllableEntity->getCurrentFSMState()->performAction();
+			mControllableEntity->getMovementComponent()->setPath(ac->getPath());
 		}
 	}
 }

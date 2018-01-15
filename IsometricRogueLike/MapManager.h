@@ -15,7 +15,7 @@ public:
 	void drawPrep(DrawingManager* drawingMan) override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void update(const sf::Time &deltaTime);
-	std::stack<TileNode*> findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex);
+	//std::stack<TileNode*> findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex);
 
 private:
 	Map mCurrentMap;

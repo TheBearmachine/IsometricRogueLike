@@ -52,6 +52,9 @@ public:
 	void setID(size_t ID);
 	size_t getID() const;
 
+	void setValue(int value);
+	int getValue() const;
+
 	void setItemTyp(ItemTypes type);
 	ItemTypes getItemType() const;
 
@@ -73,6 +76,7 @@ public:
 
 private:
 	int mProperties[NrProperties];
+	int mValue;
 	int mID;
 	sf::Sprite mSprite;
 	sf::Sprite mMapSprite;

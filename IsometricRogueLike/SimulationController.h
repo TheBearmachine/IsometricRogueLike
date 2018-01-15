@@ -31,6 +31,8 @@ public:
 	virtual void unregisterEvents() override;
 
 	void onReachTile(const sf::Vector2f &clientPos) override;
+	void onDestinationReached() override;
+
 	void onWindowClose(Window* window) override;
 
 	void buttonAction(Item* item, Inventoryslot* invSlot);

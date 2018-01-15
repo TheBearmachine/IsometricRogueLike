@@ -54,7 +54,7 @@ ItemDatabase::ItemDatabase()
 		{
 			iss >> ic.prop[i];
 		}
-		iss >> ic.texFile;
+		iss >> ic.value >> ic.texFile;
 
 		std::getline(iss, line);
 		size_t cur = 0;

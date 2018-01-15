@@ -12,7 +12,7 @@ static const char* APP_TITLE = "Isometrica";
 static const std::string MOUSEPOINTER_TEX = Constants::Filepaths::ImagesFolder + "MousePointer.png";
 
 Game::Game() :
-	mWindow(sf::VideoMode(640, 480), APP_TITLE),
+	mWindow(sf::VideoMode(1600, 900), APP_TITLE),
 	mGameStateSimulation(this, &mCurrentState),
 	mGameStateMenu(this, &mCurrentState)
 {

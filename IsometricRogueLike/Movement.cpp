@@ -1,4 +1,6 @@
 #include "Movement.h"
+#include "FSMAction.h"
+#include "FSMIdle.h"
 #include "Constants.h"
 #include "VectorFunctions.h"
 #include "TileGraph.h"
@@ -7,8 +9,8 @@
 #include "Entity.h"
 #include <SFML/System/Time.hpp>
 
-Movement::Movement(Entity * client, float moveSpeed) :
-	mClient(client), mMoveSpeed(moveSpeed), mHalt(false)
+Movement::Movement(Entity * client, float moveSpeed, FSM** currentStatePtr) :
+	FSM(currentStatePtr), mClient(client), mMoveSpeed(moveSpeed), mHalt(false)
 {
 
 }
@@ -24,6 +26,17 @@ void Movement::setPath(std::stack<TileNode*> path)
 	mPath = path;
 	mHalt = false;
 }
+//
+//void Movement::setTarget(Entity * target)
+//{
+//	mCurrentTarget = target;
+//
+//	std::stack<TileNode*> path;
+//	sf::Vector2i start = mCurrentMap->getTileIndexFromCoords(mClient->getPosition());
+//	mCurrentTargetPos = mCurrentMap->getTileIndexFromCoords( mCurrentTarget->getPosition());
+//	mCurrentMap->findPath(start, mCurrentTargetPos, path);
+//	setPath(path);
+//}
 
 sf::Vector2f Movement::getCurrentTarget() const
 {
@@ -35,6 +48,11 @@ sf::Vector2f Movement::getCurrentTarget() const
 	}
 
 	return retVec;
+}
+
+bool Movement::getMoving() const
+{
+	return !mPath.empty();
 }
 
 void Movement::registerMovementListener(IMovementListener * listener)
@@ -82,15 +100,38 @@ void Movement::update(const sf::Time & deltaTime)
 		if (goalReached)
 		{
 			//printf("Movement goal reached.\n");
-			for (auto l : mListeners)
-				l->onReachTile(targetPos);
-
 			auto prevTile = mPath.top();
 			mPath.pop();
+
+			/*if (mCurrentTarget)
+			{
+				sf::Vector2i newEnd = mCurrentMap->getTileIndexFromCoords(mCurrentTarget->getPosition());
+				if (newEnd != mCurrentTargetPos)
+				{
+
+				}
+			}*/
+
+			for (auto l : mListeners)
+			{
+				l->onReachTile(targetPos);
+				if (mPath.empty())
+				{
+					l->onDestinationReached();
+					if (mFSMAction->getActionQueue().empty())
+						goIdle();
+
+				}
+				if (!mFSMAction->getActionQueue().empty())
+				{
+					performAction();
+				}
+			}
 
 			if (mHalt)
 			{
 				mHalt = false;
+				//mCurrentTarget = nullptr;
 				while (!mPath.empty()) mPath.pop();
 			}
 			else if (!mPath.empty())
@@ -107,23 +148,47 @@ void Movement::update(const sf::Time & deltaTime)
 						mPath.pop();
 					}
 					sf::Vector2i end = mCurrentMap->getTileIndexFromCoords(getCurrentTarget());
-					setPath(mCurrentMap->findPath(start, end));
+					std::stack<TileNode*> temp;
+					// Need to validate if end can stil be reached
+					// If not, then the actionqueue need to be emptied
+					if (mCurrentMap->findPath(start, end, temp))
+						mFSMAction->clearQueue();
+					setPath(temp);
 				}
 				else
 				{
 					mPath.top()->mTile->setOccupant(mClient);
 					prevTile->mTile->setOccupant(nullptr);
 				}
-				{
-
-
-				}
 			}
-
-
-
 		}
 	}
+}
 
+void Movement::exit()
+{
+}
 
+void Movement::entry()
+{
+}
+
+void Movement::setFSMIdle(FSMIdle * fSMIdle)
+{
+	mFSMIdle = fSMIdle;
+}
+
+void Movement::setFSMAction(FSMAction * fSMAction)
+{
+	mFSMAction = fSMAction;
+}
+
+void Movement::performAction()
+{
+	transition(this, mFSMAction);
+}
+
+void Movement::goIdle()
+{
+	transition(this, mFSMIdle);
 }

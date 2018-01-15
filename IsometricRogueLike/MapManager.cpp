@@ -37,7 +37,7 @@ void MapManager::update(const sf::Time & deltaTime)
 	mCurrentMap.update(deltaTime);
 }
 
-std::stack<TileNode*> MapManager::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)
-{
-	return mCurrentMap.findPath(startIndex, endIndex);
-}
+//std::stack<TileNode*> MapManager::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIndex)
+//{
+//	return mCurrentMap.findPath(startIndex, endIndex);
+//}

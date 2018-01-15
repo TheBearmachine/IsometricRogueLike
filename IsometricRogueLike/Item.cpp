@@ -45,6 +45,16 @@ size_t Item::getID() const
 	return mID;
 }
 
+void Item::setValue(int value)
+{
+	mValue = value;
+}
+
+int Item::getValue() const
+{
+	return mValue;
+}
+
 void Item::setItemTyp(ItemTypes type)
 {
 	mItemType = type;
@@ -87,12 +97,11 @@ const std::string & Item::getItemDescription() const
 
 void Item::drawPrep(DrawingManager * drawingMan)
 {
-
+	drawingMan->addDrawable(this);
 }
 
 void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-
 	target.draw(mSprite, states);
 }
 

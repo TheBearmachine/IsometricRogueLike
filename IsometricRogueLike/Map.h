@@ -29,7 +29,8 @@ public:
 	void update(const sf::Time &deltaTime);
 
 	void updateTileGraph();
-	std::stack<TileNode*> findPath(const sf::Vector2i &startIndex, const sf::Vector2i &endIndex);
+	// Returns 0 if no path exists, 1 if one does exist and 2 if the target is blocked by an entity
+	size_t findPath(const sf::Vector2i &startIndex, const sf::Vector2i &endIndex, std::stack<TileNode*> &outPath);
 
 	bool lineOfSight(const sf::Vector2f &p1, const sf::Vector2f &p2, float stepSize = 10.0f);
 
