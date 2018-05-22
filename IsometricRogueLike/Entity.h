@@ -42,6 +42,8 @@ public:
 	virtual CharacterAttributes* getCharacterAttributes();
 	virtual Inventory* getInventory();
 
+	sf::Sprite* getSprite();
+
 	void remove();
 	bool getGarbage() const;
 

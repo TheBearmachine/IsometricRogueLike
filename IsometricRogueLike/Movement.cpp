@@ -93,6 +93,10 @@ void Movement::update(const sf::Time & deltaTime)
 		float speed = deltaTime.asSeconds() * mMoveSpeed;
 		bool goalReached = false;
 
+		mSway += (speed * 0.164f);
+		float finalSway = (sinf(mSway) * 12.0f);
+		mClient->getSprite()->setRotation(finalSway);
+
 		sf::Vector2f curPos = mClient->getPosition(), targetPos = mPath.top()->mTile->getPosition();
 		sf::Vector2f newPos = VectorFunctions::lerp(curPos, targetPos, speed, goalReached);
 		mClient->setPosition(newPos);
@@ -167,10 +171,13 @@ void Movement::update(const sf::Time & deltaTime)
 
 void Movement::exit()
 {
+	mClient->getSprite()->setRotation(0.0f);
 }
 
 void Movement::entry()
 {
+	mClient->getSprite()->setRotation(0.0f);
+	mSway = 0.0f;
 }
 
 void Movement::setFSMIdle(FSMIdle * fSMIdle)

@@ -98,6 +98,11 @@ Inventory * Entity::getInventory()
 	return nullptr;
 }
 
+sf::Sprite * Entity::getSprite()
+{
+	return &mSprite;
+}
+
 void Entity::remove()
 {
 	mGarbage = true;

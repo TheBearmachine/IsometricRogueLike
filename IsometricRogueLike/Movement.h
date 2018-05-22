@@ -57,5 +57,6 @@ private:
 	std::vector<IMovementListener*> mListeners;
 
 	float mMoveSpeed;
+	float mSway;
 	bool mHalt;
 };

@@ -7,7 +7,7 @@
 static const std::string GUI_BUTTON = Constants::Filepaths::ImagesFolder + "GUIButton.png";
 static const std::string FONT = Constants::Filepaths::DefaultFont;
 static const std::string STRING_EH = "White |cff0000|Red |c00ff00|Green |c0000ff|Blue\nNew line";
-static const std::string ANOTHER_STRING_YAH = "This is a sentance with many many words. Many words indeed. Some short and some long, but mostly short.";
+static const std::string ANOTHER_STRING_YAH = "This is a |cff0000|sentance |cffffff|with many many words. Many |c00ff00|words |cffffff|indeed. Some short and some long altough mostly short.";
 
 GameStateMenu::GameStateMenu(Game* owner, GameState** currentGameState) :
 	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f)),
