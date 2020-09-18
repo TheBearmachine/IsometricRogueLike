@@ -1,5 +1,5 @@
-ID iType eqSlot P0 P1 P2 P3 P4 Value ObjTexNoExt <ObjName>|e| <ObjDesc>
-100 0 3 2 2 0 0 0 100 ShortSword Short Sword|e| A small sword for slashing and stabbing.
-101 0 3 2 3 0 0 0 150 Longsword Longsword|e| A longsword for stabbing and slashing.
-102 0 4 3 3 0 0 0 250 Claymore Claymore|e| A Sword that is too large for most to wield with one hand.
-500 8 0 3 0 0 0 0 25 HealthPotSmall Small Healing Potion|e| A potion that restores a small amount of health.
+ID iType eqSlot P0 P1 P2 P3 P4 Value ObjTexNoExt "ObjName"|e|"ObjDesc"
+100 0 3 2 2 0 0 0 100 ShortSword Short Sword|e|A small sword for slashing and stabbing.
+101 0 3 2 3 0 0 0 150 Longsword Longsword|e|A longsword for stabbing and slashing.
+102 0 4 3 3 0 0 0 250 Claymore Claymore|e|A Sword that is too large for most to wield with one hand.
+500 500 0 3 0 0 0 0 25 HealthPotSmall Small Healing Potion|e|A potion that restores a small amount of health.

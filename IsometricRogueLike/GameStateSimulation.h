@@ -7,6 +7,7 @@
 #include "EntityManager.h"
 #include "WindowManager.h"
 #include "ItemManager.h"
+#include "EntityFactory.h"
 
 namespace sf
 {
@@ -51,8 +52,10 @@ private:
 	EntityManager mEntityManager;
 	ItemManager mItemManager;
 
+	EntityFactory mEntityFactory;
+
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;
 
-	GameStateMenu* mGameStateMenu;
+	//GameStateMenu* mGameStateMenu;
 };

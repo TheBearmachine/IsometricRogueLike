@@ -19,11 +19,12 @@ public:
 
 	void setSize(const sf::Vector2f &size);
 
-	virtual bool observe(const sf::Event & _event);
+	virtual void unregisterEvents() override;
+	virtual bool observe(const sf::Event& _event);
 	virtual void onMouseOver(bool mouseOver);
-	virtual void onClickInside();
-	virtual void onReleaseInside();
-	virtual void onDragInside(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos);
+	virtual void onClickInside(const sf::Event& button);
+	virtual void onReleaseInside(const sf::Event& button);
+	virtual void onDragInside(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos, const sf::Event& button);
 
 	void resetState();
 

@@ -3,6 +3,7 @@
 #include "Transformabetter.h"
 #include "IEntityManager.h"
 #include "Action.h"
+#include "AnimationSystem.h"
 #include <vector>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
@@ -12,7 +13,7 @@ class Action;
 class FSM;
 class FSMAction;
 class FSMIdle;
-class Movement;
+class FSMMove;
 class CharacterAttributes;
 class Inventory;
 namespace sf
@@ -34,7 +35,8 @@ public:
 
 	void moveToTile(const sf::Vector2i & startTile, Map* currentMap);
 
-	virtual Movement* getMovementComponent();
+	virtual AnimationSystem* getAnimationsystemComponent();
+	virtual FSMMove* getMovementComponent();
 	virtual FSMAction* getFSMActionComponent();
 	virtual FSMIdle* getFSMIdleComponent();
 	virtual FSM* getCurrentFSMState();
@@ -54,6 +56,8 @@ public:
 	void reduceFadeCurrent(float deltaVal);
 	float getFadeRatio() const;
 
+	AnimationNode* addAnimationNode(AnimationTransformBased::AnimationTransformType type);
+
 	void addAvailableAction(Action::ActionTypes actionType);
 	const std::vector<Action::ActionTypes>& getAvailableActions() const;
 
@@ -68,6 +72,7 @@ public:
 
 protected:
 	sf::Sprite mSprite;
+	AnimationSystem mAnimationSystem;
 
 private:
 	std::vector<Action::ActionTypes> mAvailableActions;

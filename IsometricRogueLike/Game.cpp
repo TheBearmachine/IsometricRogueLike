@@ -56,12 +56,17 @@ void Game::handleEvents()
 
 void Game::initialize()
 {
+	Tooltip* ttp = mMousePointer.getTooltip();
+
 	Clickable::setup(&mWindow);
 	EventObserver::setup(&mEventManager);
 	MousePointer::setup(&mWindow);
+	Button::setTooltipPointer(ttp);
 	Window::setup(&mWindow);
+	Window::setTooltipPointer(ttp);
 	WindowManager::setup(&mEventManager);
 	ItemManager::setMousePointer(&mMousePointer);
+	Inventoryslot::setTooltipPointer(ttp);
 	SimulationController::setup(&mWindow, &mEventManager, &mMousePointer);
 	ItemDatabase::getInstance();
 

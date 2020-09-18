@@ -13,8 +13,8 @@ GameStateMenu::GameStateMenu(Game* owner, GameState** currentGameState) :
 	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f)),
 	textText()
 {
-	textText.setSize(20U);
-	textText.setConfines(sf::Vector2f(500.0f, 150.0f));
+	textText.setFontSize(20U);
+	textText.setConfines(500.0f);
 	textText.setString(ANOTHER_STRING_YAH);
 }
 
@@ -41,6 +41,7 @@ void GameStateMenu::initalize(sf::RenderWindow * window, EventManager * eventMan
 	button->setPosition(buttonPos);
 	button->setTextSize(15);
 	button->setTextString("Play");
+	button->setTooltipText("Start a new game? Just click it, not like you have a choise of buttons.");
 	//button->setActive(false);
 	mMainMenu.addButton(button);
 	mMainMenu.registerEvents();

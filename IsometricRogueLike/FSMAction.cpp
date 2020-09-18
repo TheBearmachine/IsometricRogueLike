@@ -1,6 +1,6 @@
 #include "FSMAction.h"
 #include "FSMIdle.h"
-#include "Movement.h"
+#include "FSMMove.h"
 #include "Entity.h"
 #include "Action.h"
 
@@ -44,7 +44,7 @@ void FSMAction::update(const sf::Time & deltaTime)
 	}
 }
 
-void FSMAction::setFSMMove(Movement * movement)
+void FSMAction::setFSMMove(FSMMove * movement)
 {
 	mFSMMove = movement;
 }

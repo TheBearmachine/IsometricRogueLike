@@ -1,8 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <math.h>
-
-constexpr double PI = 3.141592653589793238463;
+#include "Constants.h"
 
 // Class using complex numbers to represent rotation
 class VectorRotation
@@ -16,7 +15,7 @@ public:
 
 	static VectorRotation inDegrees(float degrees)
 	{
-		return VectorRotation(degrees * (float)PI / 180.f);
+		return VectorRotation(degrees * (float)Constants::PI / 180.f);
 	}
 
 	VectorRotation operator+(const VectorRotation &vr2) { return VectorRotation(mReal + vr2.mReal, mImaginary + vr2.mImaginary); }

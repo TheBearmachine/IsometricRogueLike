@@ -10,6 +10,7 @@
 
 class Window;
 class WindowManager;
+class Tooltip;
 
 __interface IWindowListener
 {
@@ -31,7 +32,7 @@ public:
 	void unregisterEvents();
 
 	virtual bool observe(const sf::Event & _event) override;
-	virtual void onClickInside() override;
+	virtual void onClickInside(const sf::Event& button) override;
 	virtual void onMouseOver(bool mouseOver) override;
 
 	void addContentRegion(ContentRegion* contentRegion);
@@ -48,7 +49,8 @@ public:
 
 	static void setup(sf::RenderTarget* window);
 	static void setWindowManager(WindowManager* winMan);
-	virtual void onDrag(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos) override;
+	static void setTooltipPointer(Tooltip* tooltipPointer);
+	virtual void onDrag(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos, const sf::Event& button) override;
 	virtual void buttonAction(unsigned int action) override;
 
 	virtual void drawPrep(DrawingManager* drawingMan);
@@ -70,5 +72,4 @@ private:
 	std::vector<ContentRegion*> mContentRegions;
 	Button mCloseButton;
 	bool mVisible;
-	bool mCurrent;
 };

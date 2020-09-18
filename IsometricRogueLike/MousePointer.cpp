@@ -11,6 +11,7 @@ MousePointer::MousePointer() :
 	mSprite.setParentTransform(this);
 	setStaticDrawPosition(true);
 	setZBuffer(1000000);
+	mTooltip.setParentTransform(this);
 }
 
 MousePointer::~MousePointer()
@@ -36,10 +37,16 @@ Item * MousePointer::getItem()
 	return mItem;
 }
 
+Tooltip * MousePointer::getTooltip()
+{
+	return &mTooltip;
+}
+
 void MousePointer::update(const sf::Time & deltaTime)
 {
 	sf::Vector2f mousePos(sf::Mouse::getPosition(*mWindow));
 	setPosition(mousePos);
+	mTooltip.update(deltaTime);
 }
 
 void MousePointer::drawPrep(DrawingManager * drawingMan)
@@ -54,7 +61,10 @@ void MousePointer::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 	target.draw(mSprite, states);
 
 	if (mItem)
-		mItem->draw(target, states);
+		target.draw(*mItem, states);
+		//mItem->draw(target, states);
+	
+	target.draw(mTooltip, states);
 }
 
 void MousePointer::setup(sf::RenderWindow* window)

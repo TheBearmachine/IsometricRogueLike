@@ -3,7 +3,7 @@
 #include <queue>
 
 class Action;
-class Movement;
+class FSMMove;
 class FSMIdle;
 class Entity;
 
@@ -15,7 +15,7 @@ public:
 
 	void update(const sf::Time &deltaTime) override;
 
-	void setFSMMove(Movement* movement);
+	void setFSMMove(FSMMove* movement);
 	void setFSMIdle(FSMIdle* fSMIdle);
 
 	void addActionToQueue(Action* action);
@@ -32,7 +32,7 @@ protected:
 private:
 
 	std::queue<Action*> mActionQueue;
-	Movement* mFSMMove;
+	FSMMove* mFSMMove;
 	FSMIdle* mFSMIdle;
 	Entity* mOwner;
 };

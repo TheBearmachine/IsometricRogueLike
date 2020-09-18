@@ -28,8 +28,8 @@ void Dragable::setAction(size_t action)
 	mAction = action;
 }
 
-void Dragable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
+void Dragable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos, const sf::Event& button)
 {
 	if (mListener)
-		mListener->onDrag(mouseDelta, mousePos);
+		mListener->onDrag(mouseDelta, mousePos, button);
 }

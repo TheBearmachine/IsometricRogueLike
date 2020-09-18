@@ -1,6 +1,6 @@
 #pragma once
 #include "EventObserver.h"
-#include "Movement.h"
+#include "FSMMove.h"
 #include "Window.h"
 #include "Inventoryslot.h"
 #include "Button.h"
@@ -48,7 +48,11 @@ private:
 		Move,
 		Attack,
 		Interact,
+		Examine,
 	};
+
+	void doMoveToTile(const sf::Vector2i& targetPos);
+	sf::Vector2i getCurrentPos();
 
 	std::vector<sf::Event::EventType> mInterestedEvents;
 	Map* mCurrentMap;
@@ -58,5 +62,7 @@ private:
 	Window* mRightClickWindow;
 	ContentRegionInventory* mRightClickCRI;
 	ContentRegionMenu* mRightClickCRM;
+	sf::Vector2i mRightClickMenuTileRefPos; //Use double pointer and use middleman to manage relations
+	const Entity* mRightClickMenuEntityRef;
 	sf::Vector2i mRightClickTile;
 };

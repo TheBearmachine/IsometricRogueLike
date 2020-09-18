@@ -13,6 +13,7 @@ Creature::Creature(const std::string &textureName, const sf::Vector2i & startTil
 	mFSMAction.setFSMMove(&mMovementComponent);
 	mFSMIdle.setFSMMove(&mMovementComponent);
 	mFSMIdle.setFSMAction(&mFSMAction);
+	moveToTile(startTile, currentMap);
 }
 
 Creature::~Creature()
@@ -25,10 +26,9 @@ void Creature::update(const sf::Time & deltaTime)
 	if (getGarbage()) return;
 	Entity::update(deltaTime);
 	mCurrentState->update(deltaTime);
-	//mMovementComponent.update(deltaTime);
 }
 
-Movement * Creature::getMovementComponent()
+FSMMove * Creature::getMovementComponent()
 {
 	return &mMovementComponent;
 }

@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "DrawingManager.h"
 #include "WindowManager.h"
+#include "Tooltip.h"
 #include "Constants.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -16,6 +17,7 @@ static const std::string DOTS = "...";
 
 static sf::RenderTarget* mRenderTarget;
 static WindowManager* mWIndowManager;
+static Tooltip* mTooptipPointer = nullptr;
 
 Window::Window() :
 	Window("Window", sf::Vector2f(), DEFAULT_WINDOW_SIZE)
@@ -52,6 +54,7 @@ Window::Window(const std::string &windowName, const sf::Vector2f & position, con
 	mCloseButton.setParentTransform(this);
 	mCloseButton.setTextString("");
 	mCloseButton.setPosition(size.x - iconWidth, 0.0f);
+	mCloseButton.setTooltipText("Close window.");
 
 	setSize(size);
 
@@ -78,15 +81,11 @@ bool Window::createWindow(Window ** outWin, const std::string & windowName, cons
 void Window::registerEvents()
 {
 	Clickable::registerEvents();
-	//mTopDragable.registerEvents();
-	//mCloseButton.registerEvents();
 }
 
 void Window::unregisterEvents()
 {
 	Clickable::unregisterEvents();
-	//mTopDragable.unregisterEvents();
-	//mCloseButton.unregisterEvents();
 	mTopDragable.resetState();
 	resetState();
 }
@@ -95,7 +94,7 @@ bool Window::observe(const sf::Event & _event)
 {
 	bool retVal = Clickable::observe(_event);
 
-	if (mCloseButton.observe(_event)) return true;
+	mCloseButton.observe(_event);
 	if (mTopDragable.observe(_event)) return true;
 
 	for (auto cr : mContentRegions)
@@ -104,16 +103,15 @@ bool Window::observe(const sf::Event & _event)
 	return retVal;
 }
 
-void Window::onClickInside()
+void Window::onClickInside(const sf::Event& button)
 {
 	mWIndowManager->arrangeWindows(this);
-	mCurrent = true;
 }
 
 void Window::onMouseOver(bool mouseOver)
 {
-	if (mCurrent && !mouseOver)
-		mCurrent = false;
+	if (mTooptipPointer)
+		mTooptipPointer->doDrawTooltip(false);
 }
 
 void Window::addContentRegion(ContentRegion* contentRegion)
@@ -136,6 +134,11 @@ void Window::setVisibility(bool visible)
 	mVisible = visible;
 	if (visible)
 		mWIndowManager->arrangeWindows(this);
+	else
+	{
+		mCloseButton.resetState();
+		resetState();
+	}
 }
 
 bool Window::getVisible() const
@@ -195,10 +198,18 @@ void Window::setWindowManager(WindowManager * winMan)
 	mWIndowManager = winMan;
 }
 
-void Window::onDrag(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
+void Window::setTooltipPointer(Tooltip * tooltipPointer)
 {
+	mTooptipPointer = tooltipPointer;
+}
+
+void Window::onDrag(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos, const sf::Event& button)
+{
+	//if (button.mouseButton.button == sf::Mouse::Left)
+	//{
 	move(mouseDelta);
 	fitWindow();
+	//}
 }
 
 void Window::drawPrep(DrawingManager * drawingMan)
@@ -223,7 +234,10 @@ void Window::draw(sf::RenderTarget & target, sf::RenderStates states) const
 void Window::onClose()
 {
 	if (mWindowListener)
+	{
+		mTopDragable.resetState();
 		mWindowListener->onWindowClose(this);
+	}
 }
 
 void Window::restructureText()

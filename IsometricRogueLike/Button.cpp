@@ -3,9 +3,12 @@
 #include "EventManager.h"
 #include "Constants.h"
 #include "DrawingManager.h"
+#include "Tooltip.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 static const std::string DEFAULT_TEXTURE = Constants::Filepaths::ImagesFolder + "Button.png";
+
+static Tooltip* mTooptipPointer = nullptr;
 
 Button::Button() :
 	Button(nullptr, DEFAULT_TEXTURE, 0U)
@@ -15,9 +18,9 @@ Button::Button() :
 
 Button::Button(IButtonListener * listener, const std::string &textureName, size_t action) :
 	mText("Button", ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont), 26),
-	mIsActive(true), mListener(listener), mClickAction(action)
+	mIsActive(true), mListener(listener), mClickAction(action), mDoDisplayTooltip(false)
 {
-	AnimationSetup animSetup = AnimationSetup::DefaultButtonSetup();
+	AnimationTextureSetup animSetup = AnimationTextureSetup::DefaultButtonSetup();
 	animSetup.textureName = textureName;
 	mSprite.setup(animSetup);
 	mSize = mSprite.getSize();
@@ -59,6 +62,17 @@ sf::Vector2f Button::getSize() const
 	return mSprite.getSize();
 }
 
+void Button::setTooltipText(const std::string & text)
+{
+	//mTooptipPointer->setTooltipText(text);
+	mTooltipString = text;
+}
+
+void Button::setTooltipPointer(Tooltip * tooltipPointer)
+{
+	mTooptipPointer = tooltipPointer;
+}
+
 void Button::setListener(IButtonListener * listener)
 {
 	mListener = listener;
@@ -74,24 +88,46 @@ void Button::onMouseOver(bool mouseOver)
 	if (mIsActive)
 	{
 		if (mouseOver)
+		{
+			if (mTooptipPointer != nullptr)
+			{
+				if (mTooltipString.length() != 0)
+				{
+					mTooptipPointer->setTooltipText(mTooltipString);
+					mTooptipPointer->doDrawTooltip(true);
+				}
+				else
+				{
+					mTooptipPointer->doDrawTooltip(false);
+				}
+			}
 			mSprite.setFrame(1);
+		}
 		else
+		{
+			if (mTooptipPointer != nullptr)
+				mTooptipPointer->doDrawTooltip(false);
 			mSprite.setFrame(0);
+		}
 	}
 }
 
-void Button::onClickInside()
+void Button::onClickInside(const sf::Event& button)
 {
 	if (mIsActive)
 		mSprite.setFrame(2);
 }
 
-void Button::onReleaseInside()
+void Button::onReleaseInside(const sf::Event& button)
 {
 	if (mIsActive)
 	{
 		if (mListener)
 			mListener->buttonAction(mClickAction);
+
+		if (mTooptipPointer != nullptr)
+			mTooptipPointer->doDrawTooltip(false);
+
 		if (mMouseInside)
 			mSprite.setFrame(1);
 		else

@@ -2,7 +2,7 @@
 #include "VectorFunctions.h"
 #include "Entity.h"
 #include "FSMAction.h"
-#include "Movement.h"
+#include "FSMMove.h"
 #include "Map.h"
 
 ActionMeleeAttack::ActionMeleeAttack(Entity * owner, Entity * target, Attack * attack) :

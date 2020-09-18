@@ -1,7 +1,7 @@
 #pragma once
 #include "FSM.h"
 
-class Movement;
+class FSMMove;
 class FSMAction;
 
 class FSMIdle : public FSM
@@ -12,7 +12,7 @@ public:
 
 	void update(const sf::Time &deltaTime) override;
 
-	void setFSMMove(Movement* movement);
+	void setFSMMove(FSMMove* movement);
 	void setFSMAction(FSMAction* fSMAction);
 
 	void move() override;
@@ -23,6 +23,6 @@ protected:
 	void entry() override;
 
 private:
-	Movement* mFSMMove;
+	FSMMove* mFSMMove;
 	FSMAction* mFSMAction;
 };

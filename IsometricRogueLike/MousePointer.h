@@ -1,8 +1,9 @@
 #pragma once
 #include "EventObserver.h"
 #include "Transformabetter.h"
-#include "Animation.h"
+#include "AnimationTextureBased.h"
 #include "DrawThis.h"
+#include "Tooltip.h"
 #include <string>
 
 class Item;
@@ -21,6 +22,7 @@ public:
 
 	Item* switchItem(Item* newItem);
 	Item* getItem();
+	Tooltip* getTooltip();
 
 	void update(const sf::Time &deltaTime);
 
@@ -30,6 +32,7 @@ public:
 	static void setup(sf::RenderWindow* window);
 
 private:
-	Animation mSprite;
+	AnimationTextureBased mSprite;
 	Item* mItem;
+	Tooltip mTooltip;
 };

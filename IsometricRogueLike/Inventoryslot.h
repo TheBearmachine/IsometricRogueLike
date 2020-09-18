@@ -7,6 +7,7 @@ class Item;
 class Inventoryslot;
 class Inventory;
 class Tile;
+class Tooltip;
 
 __interface IInventoryslotListener
 {
@@ -21,6 +22,7 @@ public:
 	virtual ~Inventoryslot();
 
 	static void setListener(IInventoryslotListener* listener);
+	static void setTooltipPointer(Tooltip* tooltipPointer);
 
 	void setID(size_t ID);
 	size_t getID() const;
@@ -37,8 +39,8 @@ public:
 	sf::Vector2f getSize() const;
 
 	virtual void onMouseOver(bool mouseOver) override;
-	virtual void onClickInside() override;
-	virtual void onReleaseInside() override;
+	virtual void onClickInside(const sf::Event& button) override;
+	virtual void onReleaseInside(const sf::Event& button) override;
 	virtual void onDragInside(const sf::Vector2f &mouseDelta, const sf::Vector2f &mousePos);
 
 	virtual void drawPrep(DrawingManager* drawingMan);

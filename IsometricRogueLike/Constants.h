@@ -4,6 +4,8 @@
 
 namespace Constants
 {
+	constexpr double PI = 3.141592653589793238463;
+
 	namespace Game
 	{
 		static const char* Name = "Isometrica";
@@ -53,7 +55,7 @@ namespace Constants
 
 	namespace Camera
 	{
-		static const float Speed = 120.0f;
+		static const float Speed = 320.0f;
 	}
 
 	namespace Filepaths

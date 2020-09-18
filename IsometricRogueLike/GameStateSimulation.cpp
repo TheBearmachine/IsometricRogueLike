@@ -10,6 +10,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+
 static const std::string PLAYER_TEXTURE = Constants::Filepaths::ImagesFolder + "Monk.png";
 static const std::string CHEST_TEXTURE = Constants::Filepaths::ImagesFolder + "WoodenChest.png";
 
@@ -43,6 +44,8 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 	mEventManager = eventManager;
 	Entity::setup(&mEntityManager);
 	Inventoryslot::setListener(&testSimController);
+	mEntityFactory.setCurrentMap(mMapManager.getCurrentMap());
+	mEntityFactory.setEntityManager(&mEntityManager);
 
 	Item* item = mItemManager.makeItem(100);
 	Item* item2 = mItemManager.makeItem(101);
@@ -52,13 +55,15 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 
 	mMapManager.setupMap(TEST_LEVEL, 10, 10);
 	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
-	Creature* testEntity = new Creature(PLAYER_TEXTURE, sf::Vector2i(2, 2), mMapManager.getCurrentMap());
-	testEntity->moveToTile(sf::Vector2i(2, 2), mMapManager.getCurrentMap());
-	testEntity->getInventory()->populateContents(12);
+	EntityFactoryHelper hlp;
+	hlp.startPos = sf::Vector2i(2, 2);
+	hlp.textureName = PLAYER_TEXTURE;
+	Creature* testEntity = mEntityFactory.createPrefabCreature(EntityFactory::EntityPrefabs::Player, hlp);
 	testEntity->getInventory()->insertItem(item);
 	testEntity->getInventory()->insertItem(item2);
 	for (int i = 0; i < 5; i++)
 		testEntity->getInventory()->insertItem(itemPots[i]);
+
 
 	Object* obj = new Object(CHEST_TEXTURE, sf::Vector2i(6, 2), mMapManager.getCurrentMap());
 	obj->getInventory()->populateContents(10);
@@ -66,7 +71,6 @@ void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eve
 
 	testCamController.initalize(screenSize, window);
 	testSimController.initalize(mMapManager.getCurrentMap(), testEntity);
-	mEntityManager.addEntity(testEntity);
 	mEntityManager.addEntity(obj);
 	mEntityManager.setLightgiver(testEntity);
 
@@ -108,7 +112,7 @@ bool GameStateSimulation::observe(const sf::Event & _event)
 
 void GameStateSimulation::setGameStates(GameStateMenu * gameStateMenu)
 {
-	mGameStateMenu = gameStateMenu;
+	//mGameStateMenu = gameStateMenu;
 }
 
 void GameStateSimulation::exit()

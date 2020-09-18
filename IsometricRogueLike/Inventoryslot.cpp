@@ -1,18 +1,19 @@
 #include "Inventoryslot.h"
 #include "DrawingManager.h"
-#include "Constants.h"
 #include "ResourceManager.h"
 #include "Item.h"
+#include "Tooltip.h"
+#include "Constants.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 static const std::string TEXTURE_FILE = Constants::Filepaths::ImagesFolder + "Inventoryslot.png";
 
 static IInventoryslotListener* mListener = nullptr;
+static Tooltip* mTooptipPointer = nullptr;
 
 Inventoryslot::Inventoryslot() :
 	Inventoryslot(0U)
-{
-}
+{}
 
 Inventoryslot::Inventoryslot(size_t ID) :
 	mID(ID),
@@ -32,6 +33,11 @@ Inventoryslot::~Inventoryslot()
 void Inventoryslot::setListener(IInventoryslotListener * listener)
 {
 	mListener = listener;
+}
+
+void Inventoryslot::setTooltipPointer(Tooltip * tooltipPointer)
+{
+	mTooptipPointer = tooltipPointer;
 }
 
 void Inventoryslot::setID(size_t ID)
@@ -82,16 +88,29 @@ sf::Vector2f Inventoryslot::getSize() const
 
 void Inventoryslot::onMouseOver(bool mouseOver)
 {
-
+	if (mouseOver)
+	{
+		if (mItem && *mItem)
+		{
+			std::string temp = (*mItem)->getItemName() + "\n\n"
+				+ (*mItem)->getItemDescription();
+			mTooptipPointer->setTooltipText(temp);
+			mTooptipPointer->doDrawTooltip(true);
+		}
+	}
+	else
+	{
+		mTooptipPointer->doDrawTooltip(false);
+	}
 }
 
-void Inventoryslot::onClickInside()
+void Inventoryslot::onClickInside(const sf::Event& button)
 {
 	if (mListener && mItem)
 		mListener->buttonAction(*mItem, this);
 }
 
-void Inventoryslot::onReleaseInside()
+void Inventoryslot::onReleaseInside(const sf::Event& button)
 {
 
 }

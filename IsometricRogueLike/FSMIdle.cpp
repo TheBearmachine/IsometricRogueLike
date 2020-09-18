@@ -1,5 +1,5 @@
 #include "FSMIdle.h"
-#include "Movement.h"
+#include "FSMMove.h"
 #include "FSMAction.h"
 
 FSMIdle::FSMIdle(FSM** currentStatePtr) :
@@ -16,7 +16,7 @@ void FSMIdle::update(const sf::Time & deltaTime)
 {
 }
 
-void FSMIdle::setFSMMove(Movement * movement)
+void FSMIdle::setFSMMove(FSMMove * movement)
 {
 	mFSMMove = movement;
 }

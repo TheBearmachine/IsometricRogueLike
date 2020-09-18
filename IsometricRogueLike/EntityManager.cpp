@@ -1,7 +1,7 @@
 #include "EntityManager.h"
 #include "Entity.h"
 #include "VectorFunctions.h"
-#include "Movement.h"
+//#include "FSMMove.h"
 
 static const int TempDist = 170;
 static const int TempTime = 10;

@@ -28,6 +28,12 @@ void Clickable::setSize(const sf::Vector2f & size)
 	mSize = size;
 }
 
+void Clickable::unregisterEvents()
+{
+	EventObserver::unregisterEvents();
+	mDrag = false;
+}
+
 bool Clickable::observe(const sf::Event & _event)
 {
 	bool retVal = false;
@@ -42,7 +48,7 @@ bool Clickable::observe(const sf::Event & _event)
 		{
 			sf::Vector2f mouseDelta = mousePos - mPreviousMousePos;
 			mPreviousMousePos = mousePos;
-			onDragInside(mouseDelta, mousePos);
+			onDragInside(mouseDelta, mousePos, _event); // Move this logic to dragable?
 		}
 
 		if (globRect.contains(mousePos))
@@ -67,30 +73,25 @@ bool Clickable::observe(const sf::Event & _event)
 		break;
 
 	case sf::Event::MouseButtonPressed:
-		if (_event.mouseButton.button == sf::Mouse::Left)
+		mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
+		if (mMouseInside)
 		{
-			mousePos = mWindow->mapPixelToCoords(sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y));
-			if (mMouseInside)
-			{
-				onClickInside();
-				mPreviousMousePos = mousePos;
-				mDrag = true;
+			onClickInside(_event);
+			mPreviousMousePos = mousePos;
+			mDrag = true;
 
-				retVal = true;
-			}
+			retVal = true;
 		}
 		break;
 
 	case sf::Event::MouseButtonReleased:
-		if (_event.mouseButton.button == sf::Mouse::Left)
+
+		if (mMouseInside && mDrag)
 		{
-			if (mMouseInside && mDrag)
-			{
-				onReleaseInside();
-				retVal = true;
-			}
-			mDrag = false;
+			onReleaseInside(_event);
+			retVal = true;
 		}
+		mDrag = false;
 		break;
 	}
 	return retVal;
@@ -101,17 +102,17 @@ void Clickable::onMouseOver(bool mouseOver)
 
 }
 
-void Clickable::onClickInside()
+void Clickable::onClickInside(const sf::Event& button)
 {
 
 }
 
-void Clickable::onReleaseInside()
+void Clickable::onReleaseInside(const sf::Event& button)
 {
 
 }
 
-void Clickable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos)
+void Clickable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos, const sf::Event& button)
 {
 
 }

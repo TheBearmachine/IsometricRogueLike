@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{03039084-65A1-4AA3-9130-108DA6319E76}</ProjectGuid>
     <RootNamespace>IsometricRogueLike</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -74,11 +74,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\SFML-2.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\SFML-2.4.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -87,7 +87,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -121,7 +127,10 @@
   <ItemGroup>
     <ClCompile Include="ActionMeleeAttack.cpp" />
     <ClCompile Include="ActionPickUpItem.cpp" />
-    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationNode.cpp" />
+    <ClCompile Include="AnimationSystem.cpp" />
+    <ClCompile Include="AnimationTextureBased.cpp" />
+    <ClCompile Include="AnimationTransformBased.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="CharacterAttributes.cpp" />
@@ -135,6 +144,7 @@
     <ClCompile Include="DrawingManager.cpp" />
     <ClCompile Include="EnhancedText.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityFactory.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="EventObserver.cpp" />
@@ -144,6 +154,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameStateMenu.cpp" />
     <ClCompile Include="GameStateSimulation.cpp" />
+    <ClCompile Include="Tooltip.cpp" />
     <ClCompile Include="Inventoryslot.cpp" />
     <ClCompile Include="IsometricConversion.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -155,15 +166,19 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MousePointer.cpp" />
-    <ClCompile Include="Movement.cpp" />
+    <ClCompile Include="FSMMove.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SimulationController.cpp" />
     <ClCompile Include="TestButtonContainer.cpp" />
-    <ClCompile Include="TestTransform.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileGraph.cpp" />
+    <ClCompile Include="TransAlgCast.cpp" />
+    <ClCompile Include="TransAlgHappy.cpp" />
+    <ClCompile Include="TransAlgMad.cpp" />
+    <ClCompile Include="TransAlgSwing.cpp" />
+    <ClCompile Include="TransAlgWalk.cpp" />
     <ClCompile Include="Transformabetter.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -171,7 +186,12 @@
   <ItemGroup>
     <ClInclude Include="ActionMeleeAttack.h" />
     <ClInclude Include="ActionPatrol.h" />
-    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationTextureBased.h" />
+    <ClInclude Include="EntityFactory.h" />
+    <ClInclude Include="IAnimationListener.h" />
+    <ClInclude Include="AnimationTransformBased.h" />
+    <ClInclude Include="AnimationNode.h" />
+    <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CharacterAttributes.h" />
@@ -190,6 +210,7 @@
     <ClInclude Include="FSMAction.h" />
     <ClInclude Include="FSMIdle.h" />
     <ClInclude Include="GoalPlanner.h" />
+    <ClInclude Include="Tooltip.h" />
     <ClInclude Include="IEntityManager.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Inventory.h" />
@@ -197,7 +218,7 @@
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="MousePointer.h" />
-    <ClInclude Include="Movement.h" />
+    <ClInclude Include="FSMMove.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Action.h" />
     <ClInclude Include="SimulationController.h" />
@@ -219,10 +240,15 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ActionPickUpItem.h" />
     <ClInclude Include="TestButtonContainer.h" />
-    <ClInclude Include="TestTransform.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileGraph.h" />
+    <ClInclude Include="TransAlgCast.h" />
+    <ClInclude Include="TransAlgHappy.h" />
+    <ClInclude Include="TransAlgMad.h" />
+    <ClInclude Include="TransAlgSwing.h" />
+    <ClInclude Include="TransAlgWalk.h" />
     <ClInclude Include="Transformabetter.h" />
+    <ClInclude Include="TransformAlgorithm.h" />
     <ClInclude Include="VectorFunctions.h" />
     <ClInclude Include="VectorRotation.h" />
     <ClInclude Include="Window.h" />

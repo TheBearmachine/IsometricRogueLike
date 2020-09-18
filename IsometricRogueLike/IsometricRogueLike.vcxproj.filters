@@ -16,6 +16,15 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{51b2fe4a-c27e-4d14-9130-a1424b55164c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphical">
+      <UniqueIdentifier>{b5114410-5ec2-40ec-b223-95144e567083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects">
+      <UniqueIdentifier>{2b35c98d-1a8b-4f13-98d1-72e673cb09ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphical\TransformAlgorithms">
+      <UniqueIdentifier>{c4cd5d47-ffb4-45d7-9119-bcca401340b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,16 +66,7 @@
     <ClCompile Include="Clickable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Transformabetter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestButtonContainer.cpp">
@@ -75,13 +75,7 @@
     <ClCompile Include="Dragable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ContentRegion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Inventoryslot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ContentRegionInventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WindowManager.cpp">
@@ -93,9 +87,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DrawingManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SimulationController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,9 +94,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Creature.cpp">
@@ -118,9 +106,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CharacterAttributes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ContentRegionCharacterAttributes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MousePointer.cpp">
@@ -141,9 +126,6 @@
     <ClCompile Include="ItemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ContentRegionMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Action.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,6 +143,60 @@
     </ClCompile>
     <ClCompile Include="ActionMeleeAttack.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tooltip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationNode.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSystem.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawingManager.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformabetter.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentRegion.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentRegionCharacterAttributes.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentRegionInventory.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentRegionMenu.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="TransAlgWalk.cpp">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="TransAlgSwing.cpp">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="TransAlgHappy.cpp">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="TransAlgMad.cpp">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="TransAlgCast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FSMMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTextureBased.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTransformBased.cpp">
+      <Filter>Engine\Graphical</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,28 +248,13 @@
     <ClInclude Include="Clickable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transformabetter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestButtonContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dragable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ContentRegion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ContentRegionInventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inventoryslot.h">
@@ -251,12 +272,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrawThis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawingManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SimulationController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -264,9 +279,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
@@ -287,9 +299,6 @@
     <ClInclude Include="CharacterAttributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContentRegionCharacterAttributes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EntityEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -306,9 +315,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ContentRegionMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Action.h">
@@ -337,6 +343,69 @@
     </ClInclude>
     <ClInclude Include="ActionPatrol.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tooltip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IAnimationListener.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTransformBased.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationNode.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSystem.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawingManager.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawThis.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformabetter.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentRegion.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentRegionCharacterAttributes.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentRegionInventory.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentRegionMenu.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformAlgorithm.h">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="TransAlgWalk.h">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="TransAlgSwing.h">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="TransAlgMad.h">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="TransAlgHappy.h">
+      <Filter>Engine\Graphical\TransformAlgorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="TransAlgCast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FSMMove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTextureBased.h">
+      <Filter>Engine\Graphical</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

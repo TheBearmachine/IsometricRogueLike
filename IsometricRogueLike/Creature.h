@@ -1,9 +1,10 @@
 #pragma once
 #include "Entity.h"
-#include "Movement.h"
+#include "FSMMove.h"
 #include "FSMAction.h"
 #include "FSMIdle.h"
 #include "CharacterAttributes.h"
+#include "AnimationSystem.h"
 #include "Inventory.h"
 
 class Creature : public Entity
@@ -14,7 +15,7 @@ public:
 
 	virtual void update(const sf::Time &deltaTime) override;
 
-	virtual Movement* getMovementComponent() override;
+	virtual FSMMove* getMovementComponent() override;
 	virtual FSMAction* getFSMActionComponent() override;
 	virtual FSMIdle* getFSMIdleComponent() override;
 	virtual FSM* getCurrentFSMState() override;
@@ -22,9 +23,8 @@ public:
 	virtual CharacterAttributes* getCharacterAttributes() override;
 	virtual Inventory* getInventory() override;
 
-
 private:
-	Movement mMovementComponent;
+	FSMMove mMovementComponent;
 	FSMAction mFSMAction;
 	FSMIdle mFSMIdle;
 	FSM* mCurrentState;

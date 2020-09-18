@@ -14,13 +14,15 @@ class EnhancedText : public DrawThis, public Transformabetter
 {
 public:
 	EnhancedText();
-	EnhancedText(const std::string &string, const std::string &font, const sf::Vector2f& confines);
+	EnhancedText(const std::string &string, const std::string &font, float maxWidth);
 	~EnhancedText();
 
-	void setSize(size_t size);
-	void setConfines(const sf::Vector2f &size);
+	void setFontSize(size_t size);
+	void setConfines(float size);
 	void setString(const std::string &string);
 	void setFont(const std::string &string);
+	sf::Vector2f getBounds() const;
+	void forceUpdateVertexArray();
 
 	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
@@ -33,16 +35,17 @@ private:
 	};
 
 	void parseString();
-	void updateVertexArray() const;
+	void updateVertexArray() const; //TODO: Make run on separate thread
+	void doUpdateVertexArray() const;
 
-	sf::Vector2f mConfines;
+	float mMaxWidth;
 	const sf::Font* mFont;
 	std::string mString;
 	size_t mActualCaracters;
 	std::vector<EnhancedTextStruct> mTextInfo;
 	mutable sf::VertexArray mVertices;
 	mutable bool mNeedsUpdate;
-	size_t mSize;
+	size_t mFontSize;
 
 #ifdef DEBUG_MODE
 	sf::RectangleShape mDebugConfines;

@@ -31,12 +31,12 @@ Entity::Entity(const std::string & textureName, const sf::Vector2i & startTile, 
 }
 
 Entity::~Entity()
-{
-}
+{}
 
 void Entity::update(const sf::Time & deltaTime)
 {
 	reduceFadeCurrent(deltaTime.asSeconds());
+	mAnimationSystem.update(deltaTime);
 }
 
 void Entity::setDoesTick(bool tick)
@@ -68,7 +68,7 @@ void Entity::moveToTile(const sf::Vector2i & startTile, Map * currentMap)
 	}
 }
 
-Movement * Entity::getMovementComponent()
+FSMMove * Entity::getMovementComponent()
 {
 	return nullptr;
 }
@@ -136,6 +136,16 @@ void Entity::reduceFadeCurrent(float deltaVal)
 float Entity::getFadeRatio() const
 {
 	return mFadeCurrent / mFadeMax;
+}
+
+AnimationNode* Entity::addAnimationNode(AnimationTransformBased::AnimationTransformType type)
+{
+	return mAnimationSystem.addNode(type, &mSprite);
+}
+
+AnimationSystem * Entity::getAnimationsystemComponent()
+{
+	return &mAnimationSystem;
 }
 
 void Entity::addAvailableAction(Action::ActionTypes actionType)
