@@ -50,6 +50,11 @@ void Game::handleEvents()
 	sf::Event currEvent;
 	while (mWindow.pollEvent(currEvent))
 	{
+		if (currEvent.type == sf::Event::EventType::Resized)
+		{
+			mWindow.create(sf::VideoMode(currEvent.size.width, currEvent.size.height), APP_TITLE);
+			mWindow.setMouseCursorVisible(false);
+		}
 		mEventManager.notify(currEvent, &mWindow);
 	}
 }
@@ -78,6 +83,7 @@ void Game::initialize()
 
 	mCurrentState = &mGameStateMenu;
 
-	mMousePointer.setSprite(MOUSEPOINTER_TEX);
+	AnimationTextureSetup ats(MOUSEPOINTER_TEX, 2, 1, 2, 0.3f);
+	mMousePointer.setNewTexture(ats);
 	mWindow.setMouseCursorVisible(false);
 }

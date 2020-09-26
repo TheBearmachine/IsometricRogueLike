@@ -1,6 +1,7 @@
 #include "GameStateSimulation.h"
 #include "Constants.h"
 #include "ContentRegionInventory.h"
+#include "ContentRegionTextBox.h"
 #include "Creature.h"
 #include "Object.h"
 #include "EventManager.h"
@@ -15,22 +16,22 @@ static const std::string PLAYER_TEXTURE = Constants::Filepaths::ImagesFolder + "
 static const std::string CHEST_TEXTURE = Constants::Filepaths::ImagesFolder + "WoodenChest.png";
 
 static const int TEST_LEVEL[]{
-	-1,-1,-1,-1,-1,-1,-1, 1, 1, 1,
-	-1,-1,-1,-1,-1,-1,-1, 1, 1, 1,
-	-1,-1, 0, 0, 0, 0, 0, 1, 1, 1,
-	-1,-1, 0, 0, 0, 0, 0, 1, 1, 1,
-	-1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
-	-1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
-	-1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
-	-1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
-	-1,-1, 0, 0, 0,-1,-1,-1,-1,-1,
-	-1,-1, 0, 0, 0,-1,-1,-1,-1,-1
+    -1,-1,-1,-1,-1,-1,-1, 1, 1, 1,
+    -1,-1,-1,-1,-1,-1,-1, 1, 1, 1,
+    -1,-1, 0, 0, 0, 0, 0, 1, 1, 1,
+    -1,-1, 0, 0, 0, 0, 0, 1, 1, 1,
+    -1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
+    -1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
+    -1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
+    -1,-1, 0, 0, 0,-1,-1, 1, 1, 1,
+    -1,-1, 0, 0, 0,-1,-1,-1,-1,-1,
+    -1,-1, 0, 0, 0,-1,-1,-1,-1,-1
 };
 
 GameStateSimulation::GameStateSimulation(Game* owner, GameState** currentGameState) :
-	GameState(owner, currentGameState)
+    GameState(owner, currentGameState)
 {
-	mInterestedEvents.push_back(sf::Event::KeyPressed);
+    mInterestedEvents.push_back(sf::Event::KeyPressed);
 }
 
 GameStateSimulation::~GameStateSimulation()
@@ -40,127 +41,127 @@ GameStateSimulation::~GameStateSimulation()
 
 void GameStateSimulation::initalize(sf::RenderWindow * window, EventManager* eventManager)
 {
-	mWindow = window;
-	mEventManager = eventManager;
-	Entity::setup(&mEntityManager);
-	Inventoryslot::setListener(&testSimController);
-	mEntityFactory.setCurrentMap(mMapManager.getCurrentMap());
-	mEntityFactory.setEntityManager(&mEntityManager);
+    mWindow = window;
+    mEventManager = eventManager;
+    Entity::setup(&mEntityManager);
+    Inventoryslot::setListener(&testSimController);
+    mEntityFactory.setCurrentMap(mMapManager.getCurrentMap());
+    mEntityFactory.setEntityManager(&mEntityManager);
 
-	Item* item = mItemManager.makeItem(100);
-	Item* item2 = mItemManager.makeItem(101);
-	Item* itemPots[5];
-	for (int i = 0; i < 5; i++)
-		itemPots[i] = mItemManager.makeItem(500);
+    Item* item = mItemManager.makeItem(100);
+    Item* item2 = mItemManager.makeItem(101);
+    Item* itemPots[5];
+    for (int i = 0; i < 5; i++)
+        itemPots[i] = mItemManager.makeItem(500);
 
-	mMapManager.setupMap(TEST_LEVEL, 10, 10);
-	sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
-	EntityFactoryHelper hlp;
-	hlp.startPos = sf::Vector2i(2, 2);
-	hlp.textureName = PLAYER_TEXTURE;
-	Creature* testEntity = mEntityFactory.createPrefabCreature(EntityFactory::EntityPrefabs::Player, hlp);
-	testEntity->getInventory()->insertItem(item);
-	testEntity->getInventory()->insertItem(item2);
-	for (int i = 0; i < 5; i++)
-		testEntity->getInventory()->insertItem(itemPots[i]);
+    mMapManager.setupMap(TEST_LEVEL, 10, 10);
+    sf::FloatRect screenSize(sf::Vector2f(0.0f, 0.0f), window->getView().getSize());
+    EntityFactoryHelper hlp;
+    hlp.startPos = sf::Vector2i(2, 2);
+    hlp.textureName = PLAYER_TEXTURE;
+    Creature* player = mEntityFactory.createPrefabCreature(EntityFactory::EntityPrefabs::Player, hlp);
+    player->getInventory()->insertItem(item);
+    player->getInventory()->insertItem(item2);
+    for (int i = 0; i < 5; i++)
+        player->getInventory()->insertItem(itemPots[i]);
 
 
-	Object* obj = new Object(CHEST_TEXTURE, sf::Vector2i(6, 2), mMapManager.getCurrentMap());
-	obj->getInventory()->populateContents(10);
-	Window::setWindowManager(&mWindowManager);
+    Object* obj = new Object(CHEST_TEXTURE, sf::Vector2i(6, 2), mMapManager.getCurrentMap());
+    obj->getInventory()->populateContents(10);
+    Window::setWindowManager(&mWindowManager);
 
-	testCamController.initalize(screenSize, window);
-	testSimController.initalize(mMapManager.getCurrentMap(), testEntity);
-	mEntityManager.addEntity(obj);
-	mEntityManager.setLightgiver(testEntity);
+    testCamController.initalize(screenSize, window);
+    testSimController.initalize(mMapManager.getCurrentMap(), player);
+    mEntityManager.addEntity(obj);
+    mEntityManager.setLightgiver(player);
 
-	Action::setCurrentMap(mMapManager.getCurrentMap());
+    Action::setCurrentMap(mMapManager.getCurrentMap());
 }
 
 void GameStateSimulation::registerEvents()
 {
-	mEventManager->registerObserver(this, mInterestedEvents);
-	mWindowManager.registerEvents();
-	testSimController.registerEvents();
+    mEventManager->registerObserver(this, mInterestedEvents);
+    mWindowManager.registerEvents();
+    testSimController.registerEvents();
 }
 
 void GameStateSimulation::unregisterEvents()
 {
-	mEventManager->unregisterObserver(this, mInterestedEvents);
-	mWindowManager.unregisterEvents();
-	testSimController.unregisterEvents();
+    mEventManager->unregisterObserver(this, mInterestedEvents);
+    mWindowManager.unregisterEvents();
+    testSimController.unregisterEvents();
 }
 
 bool GameStateSimulation::observe(const sf::Event & _event)
 {
-	switch (_event.type)
-	{
-	case sf::Event::KeyPressed:
+    switch (_event.type)
+    {
+    case sf::Event::KeyPressed:
 
-		if (_event.key.code == sf::Keyboard::Escape)
-		{
-			mWindow->close();
-		}
-		break;
+        if (_event.key.code == sf::Keyboard::Escape)
+        {
+            mWindow->close();
+        }
+        break;
 
-	default:
-		break;
-	}
+    default:
+        break;
+    }
 
-	return false;
+    return false;
 }
 
 void GameStateSimulation::setGameStates(GameStateMenu * gameStateMenu)
 {
-	//mGameStateMenu = gameStateMenu;
+    //mGameStateMenu = gameStateMenu;
 }
 
 void GameStateSimulation::exit()
 {
-	unregisterEvents();
+    unregisterEvents();
 }
 
 void GameStateSimulation::entry()
 {
-	registerEvents();
+    registerEvents();
 }
 
 void GameStateSimulation::update(const sf::Time & deltaTime)
 {
-	sf::Vector2f offset;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		offset.x = -1.0f;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		offset.x = 1.0f;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		offset.y = -1.0f;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		offset.y = 1.0f;
-	}
-	if (offset != sf::Vector2f(0.0f, 0.0f))
-	{
-		VectorFunctions::normalizeVector(offset);
-		offset *= deltaTime.asSeconds() * Constants::Camera::Speed;
+    sf::Vector2f offset;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        offset.x = -1.0f;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        offset.x = 1.0f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
+        offset.y = -1.0f;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        offset.y = 1.0f;
+    }
+    if (offset != sf::Vector2f(0.0f, 0.0f))
+    {
+        VectorFunctions::normalizeVector(offset);
+        offset *= deltaTime.asSeconds() * Constants::Camera::Speed;
 
-		testCamController.moveCamera(offset);
-		testCamController.updateCamera();
-	}
+        testCamController.moveCamera(offset);
+        testCamController.updateCamera();
+    }
 
-	mEntityManager.update(deltaTime);
-	mMapManager.update(deltaTime);
-	mWindowManager.clearGarbage();
+    mEntityManager.update(deltaTime);
+    mMapManager.update(deltaTime);
+    mWindowManager.clearGarbage();
 }
 
 void GameStateSimulation::drawPrep(DrawingManager* drawingMan)
 {
-	mMapManager.drawPrep(drawingMan);
-	mEntityManager.drawPrep(drawingMan);
-	mWindowManager.drawPrep(drawingMan);
+    mMapManager.drawPrep(drawingMan);
+    mEntityManager.drawPrep(drawingMan);
+    mWindowManager.drawPrep(drawingMan);
 }

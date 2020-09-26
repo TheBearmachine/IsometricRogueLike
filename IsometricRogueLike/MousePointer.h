@@ -9,30 +9,30 @@
 class Item;
 namespace sf
 {
-	class RenderWindow;
+    class RenderWindow;
 }
 
 class MousePointer : public DrawThis, public Transformabetter
 {
 public:
-	MousePointer();
-	~MousePointer();
+    MousePointer();
+    ~MousePointer();
 
-	void setSprite(const std::string &textureName);
+    void setNewTexture(const AnimationTextureSetup& animSetup);
 
-	Item* switchItem(Item* newItem);
-	Item* getItem();
-	Tooltip* getTooltip();
+    Item* switchItem(Item* newItem);
+    Item* getItem();
+    Tooltip* getTooltip();
 
-	void update(const sf::Time &deltaTime);
+    void update(const sf::Time &deltaTime);
 
-	virtual void drawPrep(DrawingManager* drawingMan) override;
-	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+    virtual void drawPrep(DrawingManager* drawingMan) override;
+    virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-	static void setup(sf::RenderWindow* window);
+    static void setup(sf::RenderWindow* window);
 
 private:
-	AnimationTextureBased mSprite;
-	Item* mItem;
-	Tooltip mTooltip;
+    AnimationTextureBased mSprite;
+    Item* mItem;
+    Tooltip mTooltip;
 };

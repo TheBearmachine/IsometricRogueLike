@@ -13,13 +13,14 @@ public:
 
 	virtual bool delegateEvent(const sf::Event &_event);
 
-	void setRegionSize(const sf::Vector2f &size);
+	virtual void setRegionSize(const sf::Vector2f &size);
 	sf::Vector2f getRegionSize() const;
 	sf::Vector2f getRegionUsableSize() const;
 
 	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
+	virtual void resetState();
 
 private:
 	sf::RectangleShape mRegionBG;

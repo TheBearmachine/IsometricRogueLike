@@ -6,68 +6,66 @@
 static sf::RenderWindow* mWindow;
 
 MousePointer::MousePointer() :
-	mItem(nullptr)
+    mItem(nullptr)
 {
-	mSprite.setParentTransform(this);
-	setStaticDrawPosition(true);
-	setZBuffer(1000000);
-	mTooltip.setParentTransform(this);
+    mSprite.setParentTransform(this);
+    setStaticDrawPosition(true);
+    setZBuffer(1000000);
+    mTooltip.setParentTransform(this);
 }
 
 MousePointer::~MousePointer()
 {
 }
 
-void MousePointer::setSprite(const std::string & textureName)
+void MousePointer::setNewTexture(const AnimationTextureSetup& animSetup)
 {
-	mSprite.setSpriteTexture(textureName);
+    mSprite.setNewTexture(animSetup);
 }
 
 Item* MousePointer::switchItem(Item* newItem)
 {
-	Item* temp = mItem;
-	mItem = newItem;
-	if (newItem)
-		newItem->setAttachment(this);
-	return temp;
+    Item* temp = mItem;
+    mItem = newItem;
+    return temp;
 }
 
 Item * MousePointer::getItem()
 {
-	return mItem;
+    return mItem;
 }
 
 Tooltip * MousePointer::getTooltip()
 {
-	return &mTooltip;
+    return &mTooltip;
 }
 
 void MousePointer::update(const sf::Time & deltaTime)
 {
-	sf::Vector2f mousePos(sf::Mouse::getPosition(*mWindow));
-	setPosition(mousePos);
-	mTooltip.update(deltaTime);
+    sf::Vector2f mousePos(sf::Mouse::getPosition(*mWindow));
+    setPosition(mousePos);
+    mTooltip.update(deltaTime);
 }
 
 void MousePointer::drawPrep(DrawingManager * drawingMan)
 {
-	drawingMan->addDrawable(this);
+    drawingMan->addDrawable(this);
 }
 
 void MousePointer::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.transform = getGlobalTransform();
+    states.transform = getGlobalTransform();
 
-	target.draw(mSprite, states);
+    target.draw(mSprite, states);
 
-	if (mItem)
-		target.draw(*mItem, states);
-		//mItem->draw(target, states);
-	
-	target.draw(mTooltip, states);
+    if (mItem)
+        target.draw(*mItem, states);
+    //mItem->draw(target, states);
+
+    target.draw(mTooltip, states);
 }
 
 void MousePointer::setup(sf::RenderWindow* window)
 {
-	mWindow = window;
+    mWindow = window;
 }

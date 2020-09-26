@@ -26,7 +26,6 @@ Tooltip::Tooltip(float width, const std::string& tooltipText) :
 	mTooltipText.setFontSize(20U);
 	mTooltipText.setConfines(width);
 	mTooltipText.setString(tooltipText);
-	//mTooltipText.
 	mTooltipText.setPosition(DEFAULT_PADDING, DEFAULT_PADDING); // Do something with anchoring?
 	mTooltipText.setParentTransform(this);
 	mTooltipDelay = mTooltipTimer = DEFAULT_TOOLTIP_DELAY;
@@ -67,7 +66,7 @@ void Tooltip::update(const sf::Time & deltaTime)
 {
 	if (mDoDraw)
 	{
-		mTooltipTimer = std::max( mTooltipTimer - deltaTime.asSeconds(), 0.0f);
+		mTooltipTimer = std::max(mTooltipTimer - deltaTime.asSeconds(), 0.0f);
 	}
 }
 

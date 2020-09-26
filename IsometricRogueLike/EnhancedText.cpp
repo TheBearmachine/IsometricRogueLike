@@ -63,8 +63,9 @@ void EnhancedText::setFont(const std::string & string)
 
 sf::Vector2f EnhancedText::getBounds() const
 {
-	return sf::Vector2f(mVertices.getBounds().width,
-						mVertices.getBounds().height);
+	sf::Vector2f v(mVertices.getBounds().left, mVertices.getBounds().top);
+	return sf::Vector2f(mVertices.getBounds().left + mVertices.getBounds().width,
+						mVertices.getBounds().top * 2.0f + mVertices.getBounds().height);
 }
 
 void EnhancedText::forceUpdateVertexArray()
@@ -213,7 +214,7 @@ void EnhancedText::updateVertexArray() const
 			if (i < mTextInfo.size() - 1)
 			{
 				char nextChar = mTextInfo[i + 1].character;
-				
+
 				// Check to see if the word exceed the defined width confine
 				if (!newWord && (nextChar == ' ' || nextChar == '\n' || i + 2 == mTextInfo.size()))
 				{
@@ -227,7 +228,7 @@ void EnhancedText::updateVertexArray() const
 					{
 						while (true)
 						{
-							if (i - wordLength - 1U == ~0U) break;
+							if (i - wordLength - 1U == ~(size_t)0) break;
 							if (mTextInfo[i - wordLength - 1U].character == ' ' ||
 								mTextInfo[i - wordLength - 1U].character == '\n') break;
 

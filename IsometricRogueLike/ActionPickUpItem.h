@@ -1,8 +1,6 @@
 #pragma once
 #include "Action.h"
-#include <stack>
 
-class Item;
 class Tile;
 class Inventory;
 class ContentRegionInventory;
@@ -11,23 +9,23 @@ struct TileNode;
 class ActionPickUpItem : public Action
 {
 public:
-	ActionPickUpItem(Entity* owner, Item* item, Tile* fromTile, ContentRegionInventory* fromInv, Inventory* toInv);
+	ActionPickUpItem();
 	~ActionPickUpItem();
 
-	bool isDone() override;
-	bool inRange() override;
+    virtual bool isDone() override;
+    virtual bool requiresinRange() override;
 	bool checkProceduralPrecondition(Entity* agent) override;
-	bool update(const sf::Time& deltaTime) override;
+	bool perform(Entity* self, const sf::Time& deltaTime) override;
+    virtual bool planPath(Entity* self) override;
+    virtual bool getInRange(Entity* self) const;
+    virtual void doReset() override;
 
-	const std::stack<TileNode*>& getPath() const;
+    void setTargetTile(Tile* tile);
+    void setFromInv(ContentRegionInventory* inv);
 
 private:
-	Item* mItem;
-	Entity* mOwner;
 	Tile* mTargetTile;
-	ContentRegionInventory* mFromInv;
-	Inventory* mToInv;
-	std::stack<TileNode*> mPath;
+    ContentRegionInventory* mFromInv;
 
-	bool mDone;
+    bool mDone;
 };

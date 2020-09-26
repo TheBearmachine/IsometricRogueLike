@@ -46,6 +46,7 @@ public:
 	sf::Vector2f getWindowSize() const;
 
 	void setWindowListener(IWindowListener* windowListener);
+	virtual void resetState() override;
 
 	static void setup(sf::RenderTarget* window);
 	static void setWindowManager(WindowManager* winMan);

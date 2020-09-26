@@ -23,7 +23,7 @@ public:
 	Button(IButtonListener *listener, const std::string &textureName, size_t action);
 	virtual ~Button();
 
-	void setSpriteTexture(const std::string &texName);
+	//void setSpriteTexture(const std::string &texName);
 	void setTextString(const std::string &text);
 	void setTextSize(size_t size);
 	void setTextFont(const std::string &font);
@@ -39,6 +39,7 @@ public:
 	virtual void onMouseOver(bool mouseOver) override;
 	virtual void onClickInside(const sf::Event& button) override;
 	virtual void onReleaseInside(const sf::Event& button) override;
+	virtual void resetState() override;
 
 	virtual void setActive(bool active);
 

@@ -10,8 +10,7 @@ ContentRegionMenu::ContentRegionMenu(IButtonListener* buttonListener, Orientatio
 	mButtonListener(buttonListener),
 	mOrientation(orientation),
 	mButtonsPerRow(buttonsPerRow)
-{
-}
+{}
 
 ContentRegionMenu::~ContentRegionMenu()
 {
@@ -69,8 +68,7 @@ bool ContentRegionMenu::delegateEvent(const sf::Event & _event)
 }
 
 void ContentRegionMenu::drawPrep(DrawingManager * drawingMan)
-{
-}
+{}
 
 void ContentRegionMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {

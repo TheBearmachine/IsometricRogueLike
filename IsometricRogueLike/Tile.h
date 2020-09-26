@@ -34,6 +34,7 @@ public:
 	void setFadeMax(float val);
 	void reduceFadeCurrent(float deltaVal);
 	float getFadeRatio() const;
+	bool getVisible() const;
 
 	void setOccupant(Entity* occupant);
 	const Entity* getOccupant() const;
@@ -52,6 +53,7 @@ private:
 	sf::Vector2f mWorldPos;
 	sf::Vector2i mArrayIndex;
 	float mFadeMax, mFadeCurrent;
+	bool mVisible;
 	Entity* mOccupant;
 	std::vector<Item*> mItems;
 };

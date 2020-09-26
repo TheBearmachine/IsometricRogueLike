@@ -7,81 +7,77 @@
 class Item : public Transformabetter, public DrawThis
 {
 public:
-	static const int NrProperties = 5;
-	enum ItemTypes
-	{
-		Sword,
-		Axe,
-		Mace,
-		Staff,
+    static const int NrProperties = 5;
+    enum ItemTypes
+    {
+        Sword,
+        Axe,
+        Mace,
+        Staff,
 
-		Cloth,
-		Leather,
-		Chainmail,
-		Plate,
+        Cloth,
+        Leather,
+        Chainmail,
+        Plate,
 
-		Consumable,
+        Consumable,
 
-	};
+    };
 
-	enum EquipmentSlot
-	{
-		NonEquippable,
-		Mainhand,
-		Offhand,
-		MainOrOffhand,
-		Twohand,
-		Helmet,
-		Chest,
-		Legs,
-		ChestAndLegs,
-		Finger,
-		Neck,
+    enum EquipmentSlot
+    {
+        NonEquippable,
+        Mainhand,
+        Offhand,
+        MainOrOffhand,
+        Twohand,
+        Helmet,
+        Chest,
+        Legs,
+        ChestAndLegs,
+        Finger,
+        Neck,
 
-	};
+    };
 
-	Item();
-	~Item();
+    Item();
+    ~Item();
 
-	void setAttachment(Transformabetter* attachment);
-	Transformabetter* getAttachment();
+    void setProperty(int value, int arrayIndex);
+    int getProperty(int arrayIndex) const;
 
-	void setProperty(int value, int arrayIndex);
-	int getProperty(int arrayIndex) const;
+    void setID(size_t ID);
+    size_t getID() const;
 
-	void setID(size_t ID);
-	size_t getID() const;
+    void setValue(int value);
+    int getValue() const;
 
-	void setValue(int value);
-	int getValue() const;
+    void setItemTyp(ItemTypes type);
+    ItemTypes getItemType() const;
 
-	void setItemTyp(ItemTypes type);
-	ItemTypes getItemType() const;
+    void setEquipmentSlot(EquipmentSlot eqSlot);
+    EquipmentSlot getEquipmentSlot() const;
 
-	void setEquipmentSlot(EquipmentSlot eqSlot);
-	EquipmentSlot getEquipmentSlot() const;
+    void setItemName(const std::string &iName);
+    const std::string& getItemName() const;
 
-	void setItemName(const std::string &iName);
-	const std::string& getItemName() const;
+    void setItemDescription(const std::string &desc);
+    const std::string& getItemDescription() const;
 
-	void setItemDescription(const std::string &desc);
-	const std::string& getItemDescription() const;
+    virtual void drawPrep(DrawingManager* drawingMan);
+    virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-	virtual void drawPrep(DrawingManager* drawingMan);
-	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-
-	void setItemTex(const std::string &texFile);
-	sf::Sprite* getSprite();
-	sf::Sprite* getMapSprite();
+    void setItemTex(const std::string &texFile);
+    sf::Sprite* getSprite();
+    sf::Sprite* getMapSprite();
 
 private:
-	int mProperties[NrProperties];
-	int mValue;
-	int mID;
-	sf::Sprite mSprite;
-	sf::Sprite mMapSprite;
-	Transformabetter* mAttachment;
-	std::string mItemName, mItemDesc;
-	ItemTypes mItemType;
-	EquipmentSlot mEqSlot;
+    int mProperties[NrProperties];
+    int mValue;
+    int mID;
+    sf::Sprite mSprite;
+    sf::Sprite mMapSprite;
+    std::string mItemName, mItemDesc;
+    ItemTypes mItemType;
+    EquipmentSlot mEqSlot;
 };

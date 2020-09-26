@@ -1,8 +1,9 @@
 #include "ContentRegion.h"
-#include <SFML/Graphics/RenderTarget.hpp>
 #include "DrawingManager.h"
+#include "Constants.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
-static const float BORDER_THICKNESS = 1.5f;
+static const float BORDER_THICKNESS = Constants::Game::ContentRegionBorderThickness;
 
 ContentRegion::ContentRegion() :
 	ContentRegion(sf::Vector2f())
@@ -56,3 +57,6 @@ void ContentRegion::draw(sf::RenderTarget & target, sf::RenderStates states) con
 	states.transform = getGlobalTransform();
 	target.draw(mRegionBG, states);
 }
+
+void ContentRegion::resetState()
+{}

@@ -2,8 +2,9 @@
 
 static Map* mCurrentMap;
 
-Action::Action() :
-	mCost(1.0f)
+Action::Action(ActionTypes actionType) :
+    mCost(1.0f), mActionType(actionType),
+    mTargetEntity(nullptr), mTargetItem(nullptr)
 {
 
 }
@@ -13,52 +14,111 @@ Action::~Action()
 
 }
 
+bool Action::planPath(Entity * self)
+{
+    return true;
+}
+
 void Action::setCost(float newCost)
 {
-	mCost = newCost;
+    mCost = newCost;
 }
 
 float Action::getCost() const
 {
-	return mCost;
+    return mCost;
+}
+
+void Action::setInRange(bool inRange)
+{
+    mInRange = inRange;
+}
+
+bool Action::getInRange(Entity* self) const
+{
+    return mInRange;
 }
 
 void Action::addPrecondition(const std::string &key, size_t val)
 {
-	mPreconditions[key] = val;
+    mPreconditions.insert(std::make_pair(key, val));
 }
 
-void Action::removePrecondition(const std::string & key)
+void Action::addPrecondition(const Condition & cond)
 {
-	mPreconditions.erase(key);
+    addPrecondition(cond.first, cond.second);
 }
 
-const Action::WorldState& Action::getPreconditions() const
+void Action::removePrecondition(const std::string &key, size_t val)
 {
-	return mPreconditions;
+    auto temp = std::make_pair(key, val);
+    mPreconditions.erase(temp);
+}
+
+const PairSet& Action::getPreconditions() const
+{
+    return mPreconditions;
 }
 
 void Action::addEffect(const std::string & key, size_t val)
 {
-	mEffects[key] = val;
+    mEffects.insert(std::make_pair(key, val));
 }
 
-void Action::removeEffect(const std::string & key)
+void Action::addEffect(const Condition & cond)
 {
-	mEffects.erase(key);
+    addEffect(cond.first, cond.second);
 }
 
-const Action::WorldState & Action::getEffects() const
+void Action::removeEffect(const std::string &key, size_t val)
 {
-	return mEffects;
+    auto temp = std::make_pair(key, val);
+    mEffects.erase(temp);
+}
+
+const PairSet& Action::getEffects() const
+{
+    return mEffects;
+}
+
+Action::ActionTypes Action::getActionType() const
+{
+    return mActionType;
+}
+
+void Action::setTargetEntity(Entity * target)
+{
+    mTargetEntity = target;
+}
+
+Entity * Action::getTargetEntity() const
+{
+    return mTargetEntity;
+}
+
+void Action::setTargetItem(Item * target)
+{
+    mTargetItem = target;
+}
+
+Item * Action::getTargetItem() const
+{
+    return mTargetItem;
+}
+
+void Action::doReset()
+{
+    mInRange = false;
+    mTargetEntity = nullptr;
+    mTargetItem = nullptr;
 }
 
 void Action::setCurrentMap(Map * currentMap)
 {
-	mCurrentMap = currentMap;
+    mCurrentMap = currentMap;
 }
 
 Map * Action::getCurrentMap()
 {
-	return mCurrentMap;
+    return mCurrentMap;
 }

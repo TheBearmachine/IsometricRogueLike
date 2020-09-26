@@ -1,174 +1,177 @@
 #include "CharacterAttributes.h"
 
 CharacterAttributes::CharacterAttributes() :
-	mBaseCharisma(0), mModifiedCharisma(0),
-	mBaseEndurance(0), mModifiedEndurance(0),
-	mBaseMemory(0), mModifiedMemory(0),
-	mBasePerception(0), mModifiedPerception(0),
-	mBaseStrength(0), mModifiedStrength(0)
+    mBaseCharisma(0), mModifiedCharisma(0),
+    mBaseEndurance(0), mModifiedEndurance(0),
+    mBaseMemory(0), mModifiedMemory(0),
+    mBasePerception(0), mModifiedPerception(0),
+    mBaseStrength(0), mModifiedStrength(0),
+    mUnallocatedPoints(0)
 {
+
 }
 
 CharacterAttributes::~CharacterAttributes()
 {
+
 }
 
 void CharacterAttributes::setBaseStrength(int val)
 {
-	mBaseStrength = val;
+    mBaseStrength = val;
 }
 
 void CharacterAttributes::setModifiedStrength(int val)
 {
-	mModifiedStrength = val;
+    mModifiedStrength = val;
 }
 
 int CharacterAttributes::getBaseStrength() const
 {
-	return mBaseStrength;
+    return mBaseStrength;
 }
 
 int CharacterAttributes::getModifiedStrength() const
 {
-	return mModifiedStrength;
+    return mModifiedStrength;
 }
 
 int CharacterAttributes::getTotalStrength() const
 {
-	return mBaseStrength + mModifiedStrength;
+    return mBaseStrength + mModifiedStrength;
 }
 
 void CharacterAttributes::setBasePerception(int val)
 {
-	mBasePerception = val;
+    mBasePerception = val;
 }
 
 void CharacterAttributes::setModifiedPerception(int val)
 {
-	mModifiedPerception = val;
+    mModifiedPerception = val;
 }
 
 int CharacterAttributes::getBasePerception() const
 {
-	return mBasePerception;
+    return mBasePerception;
 }
 
 int CharacterAttributes::getModifiedPerception() const
 {
-	return mModifiedPerception;
+    return mModifiedPerception;
 }
 
 int CharacterAttributes::getTotalPerception() const
 {
-	return mBasePerception + mModifiedPerception;
+    return mBasePerception + mModifiedPerception;
 }
 
 void CharacterAttributes::setBaseEndurance(int val)
 {
-	mBaseEndurance = val;
+    mBaseEndurance = val;
 }
 
 void CharacterAttributes::setModifiedEndurance(int val)
 {
-	mModifiedEndurance = val;
+    mModifiedEndurance = val;
 }
 
 int CharacterAttributes::getBaseEndurance() const
 {
-	return mBaseEndurance;
+    return mBaseEndurance;
 }
 
 int CharacterAttributes::getModifiedEndurance() const
 {
-	return mModifiedEndurance;
+    return mModifiedEndurance;
 }
 
 int CharacterAttributes::getTotalEndurance() const
 {
-	return mBaseEndurance + mModifiedEndurance;
+    return mBaseEndurance + mModifiedEndurance;
 }
 
 void CharacterAttributes::setBaseMemory(int val)
 {
-	mBaseMemory = val;
+    mBaseMemory = val;
 }
 
 void CharacterAttributes::setModifiedMemory(int val)
 {
-	mModifiedMemory = val;
+    mModifiedMemory = val;
 }
 
 int CharacterAttributes::getBaseMemory() const
 {
-	return mBaseMemory;
+    return mBaseMemory;
 }
 
 int CharacterAttributes::getModifiedMemory() const
 {
-	return mModifiedMemory;
+    return mModifiedMemory;
 }
 
 int CharacterAttributes::getTotalMemory() const
 {
-	return mBaseMemory + mModifiedMemory;
+    return mBaseMemory + mModifiedMemory;
 }
 
 void CharacterAttributes::setBaseCharisma(int val)
 {
-	mBaseCharisma = val;
+    mBaseCharisma = val;
 }
 
 void CharacterAttributes::setModifiedCharisma(int val)
 {
-	mModifiedCharisma = val;
+    mModifiedCharisma = val;
 }
 
 int CharacterAttributes::getBaseCharisma() const
 {
-	return mBaseCharisma;
+    return mBaseCharisma;
 }
 
 int CharacterAttributes::getModifiedCharisma() const
 {
-	return mModifiedCharisma;
+    return mModifiedCharisma;
 }
 
 int CharacterAttributes::getTotalCharisma() const
 {
-	return mBaseCharisma + mModifiedCharisma;
+    return mBaseCharisma + mModifiedCharisma;
 }
 
 void CharacterAttributes::setBaseWisdom(int val)
 {
-	mBaseWisdom = val;
+    mBaseWisdom = val;
 }
 
 void CharacterAttributes::setModifiedWisdom(int val)
 {
-	mModifiedWisdom = val;
+    mModifiedWisdom = val;
 }
 
 int CharacterAttributes::getBaseWisdom() const
 {
-	return mBaseWisdom;
+    return mBaseWisdom;
 }
 
 int CharacterAttributes::getModifiedWisdom() const
 {
-	return mModifiedWisdom;
+    return mModifiedWisdom;
 }
 
 int CharacterAttributes::getTotalWisdom() const
 {
-	return mBaseWisdom + mModifiedWisdom;
+    return mBaseWisdom + mModifiedWisdom;
 }
 
 void CharacterAttributes::setUnallocatedPoints(int val)
 {
-	mUnallocatedPoints = val;
+    mUnallocatedPoints = val;
 }
 
 int CharacterAttributes::getUnallocatedPoints() const
 {
-	return mUnallocatedPoints;
+    return mUnallocatedPoints;
 }

@@ -1,59 +1,101 @@
 #include "Creature.h"
 #include "Constants.h"
+#include "Goals.h"
+#include <SFML/System/Time.hpp>
 
 Creature::Creature(const std::string &textureName, const sf::Vector2i & startTile, Map* currentMap) :
-	Entity(textureName, startTile, currentMap),
-	mFSMAction(&mCurrentState, this), mFSMIdle(&mCurrentState),
-	mMovementComponent(this, Constants::Entities::DefaultTraversalSpeed, &mCurrentState)
+    Entity(textureName, startTile, currentMap), mGoapAgent(this),
+    mMovementComponent(this, Constants::Entities::DefaultTraversalSpeed),
+    mOverrideAI(false), mPlayerController(this)
 {
-	mCurrentState = &mMovementComponent;
-	mMovementComponent.setFSMAction(&mFSMAction);
-	mMovementComponent.setFSMIdle(&mFSMIdle);
-	mFSMAction.setFSMIdle(&mFSMIdle);
-	mFSMAction.setFSMMove(&mMovementComponent);
-	mFSMIdle.setFSMMove(&mMovementComponent);
-	mFSMIdle.setFSMAction(&mFSMAction);
-	moveToTile(startTile, currentMap);
+    moveToTile(startTile, currentMap);
 }
 
 Creature::~Creature()
 {
-
+    if (mGoals)
+        delete mGoals;
 }
 
 void Creature::update(const sf::Time & deltaTime)
 {
-	if (getGarbage()) return;
-	Entity::update(deltaTime);
-	mCurrentState->update(deltaTime);
+    if (getGarbage()) return;
+    Entity::update(deltaTime);
+    if (mOverrideAI)
+        mPlayerController.update(deltaTime);
+    else
+        mGoapAgent.update(this, deltaTime);
 }
 
-FSMMove * Creature::getMovementComponent()
+void Creature::overrideAI(bool doOverride)
 {
-	return &mMovementComponent;
+    mOverrideAI = doOverride;
 }
 
-FSMAction * Creature::getFSMActionComponent()
+void Creature::setGoals(Goals * goals)
 {
-	return &mFSMAction;
+    mGoals = goals;
 }
 
-FSMIdle * Creature::getFSMIdleComponent()
+Movement * Creature::getMovementComponent()
 {
-	return &mFSMIdle;
+    return &mMovementComponent;
 }
 
-FSM * Creature::getCurrentFSMState()
+GoapAgent * Creature::getGoapAgent()
 {
-	return mCurrentState;
+    return &mGoapAgent;
 }
 
 CharacterAttributes * Creature::getCharacterAttributes()
 {
-	return &mCharacterAttributes;
+    return &mCharacterAttributes;
 }
 
 Inventory * Creature::getInventory()
 {
-	return &mInventory;
+    return &mInventory;
+}
+
+PairSet Creature::getWorldState()
+{
+    if (mGoals) return mGoals->getWorldState();
+
+    return PairSet();
+}
+
+PairSet Creature::createGoalState()
+{
+    if (mGoals) return mGoals->getGoalState();
+
+    return PairSet();
+}
+
+void Creature::planFailed(PairSet failedGoal)
+{
+}
+
+void Creature::planFound(PairSet goal, std::queue<Action*> actions)
+{
+
+}
+
+void Creature::actionsFinished()
+{
+    if (mGoals) mGoals->onFinished();
+}
+
+void Creature::planAborted(Action * aborter)
+{
+    aborter->doReset();
+}
+
+bool Creature::moveAgent(Action * nextAction, const sf::Time& deltaTime)
+{
+    //bool retVal = true;
+    return mMovementComponent.move(deltaTime);
+
+    //retVal = nextAction->getInRange(this);
+
+    //return !mMovementComponent.getMoving();
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "EventObserver.h"
 #include <SFML/Graphics/View.hpp>
 
 namespace sf
@@ -6,7 +7,7 @@ namespace sf
 	class RenderWindow;
 }
 
-class CameraController
+class CameraController: public EventObserver
 {
 public:
 	CameraController();
@@ -18,6 +19,8 @@ public:
 	sf::Vector2f getCenter() const;
 	void zoom(bool in);
 	void updateCamera();
+
+	virtual bool observe(const sf::Event& _event) override;
 
 private:
 	sf::RenderWindow* m_renderWindow;

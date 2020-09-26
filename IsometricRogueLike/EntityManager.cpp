@@ -69,20 +69,10 @@ std::vector<Entity*>* EntityManager::getEntities()
 
 void EntityManager::update(const sf::Time & deltaTime)
 {
-	if (mLightgiver)
-	{
 		for (auto e : mEntities)
 		{
 			e->update(deltaTime);
-
-			int distSq = (int)VectorFunctions::vectorMagnitudeSquared(mLightgiver->getPosition() - e->getPosition());
-			if (distSq <= TempDist * TempDist)
-				e->setFadeMax((float)TempTime);
 		}
-	}
-	else
-		for (auto e : mEntities)
-			e->update(deltaTime);
 }
 
 void EntityManager::drawPrep(DrawingManager * drawingMan)

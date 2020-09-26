@@ -6,16 +6,11 @@
 
 static const std::string GUI_BUTTON = Constants::Filepaths::ImagesFolder + "GUIButton.png";
 static const std::string FONT = Constants::Filepaths::DefaultFont;
-static const std::string STRING_EH = "White |cff0000|Red |c00ff00|Green |c0000ff|Blue\nNew line";
-static const std::string ANOTHER_STRING_YAH = "This is a |cff0000|sentance |cffffff|with many many words. Many |c00ff00|words |cffffff|indeed. Some short and some long altough mostly short.";
 
 GameStateMenu::GameStateMenu(Game* owner, GameState** currentGameState) :
-	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f)),
-	textText()
+	GameState(owner, currentGameState), mMainMenu(sf::Vector2f(250.0f, 300.0f))
 {
-	textText.setFontSize(20U);
-	textText.setConfines(500.0f);
-	textText.setString(ANOTHER_STRING_YAH);
+
 }
 
 GameStateMenu::~GameStateMenu()
@@ -41,7 +36,7 @@ void GameStateMenu::initalize(sf::RenderWindow * window, EventManager * eventMan
 	button->setPosition(buttonPos);
 	button->setTextSize(15);
 	button->setTextString("Play");
-	button->setTooltipText("Start a new game? Just click it, not like you have a choise of buttons.");
+	//button->setTooltipText("Start a new game? Just click it, not like you have a choise of buttons.");
 	//button->setActive(false);
 	mMainMenu.addButton(button);
 	mMainMenu.registerEvents();
@@ -93,8 +88,6 @@ void GameStateMenu::drawPrep(DrawingManager* drawingMan)
 {
 	mMainMenu.drawPrep(drawingMan);
 	mWindowManager.drawPrep(drawingMan);
-
-	textText.drawPrep(drawingMan);
 }
 
 void GameStateMenu::buttonAction(unsigned int action)

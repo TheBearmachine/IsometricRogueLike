@@ -12,102 +12,103 @@ static IInventoryslotListener* mListener = nullptr;
 static Tooltip* mTooptipPointer = nullptr;
 
 Inventoryslot::Inventoryslot() :
-	Inventoryslot(0U)
-{}
+    Inventoryslot(0U)
+{
+}
 
 Inventoryslot::Inventoryslot(size_t ID) :
-	mID(ID),
-	mItem(nullptr),
-	mInvRef(nullptr),
-	mTileRef(nullptr),
-	mSprite(ResourceManager::getInstance().getTexture(TEXTURE_FILE))
+    mID(ID),
+    mItem(nullptr),
+    mInvRef(nullptr),
+    mTileRef(nullptr),
+    mSprite(ResourceManager::getInstance().getTexture(TEXTURE_FILE))
 {
-	mSize = sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
+    mSize = sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
 }
 
 Inventoryslot::~Inventoryslot()
 {
-	unregisterEvents();
+    unregisterEvents();
 }
 
 void Inventoryslot::setListener(IInventoryslotListener * listener)
 {
-	mListener = listener;
+    mListener = listener;
 }
 
 void Inventoryslot::setTooltipPointer(Tooltip * tooltipPointer)
 {
-	mTooptipPointer = tooltipPointer;
+    mTooptipPointer = tooltipPointer;
 }
 
 void Inventoryslot::setID(size_t ID)
 {
-	mID = ID;
+    mID = ID;
 }
 
 size_t Inventoryslot::getID() const
 {
-	return mID;
+    return mID;
 }
 
 void Inventoryslot::setInventoryReference(Inventory * invRef)
 {
-	mInvRef = invRef;
+    mInvRef = invRef;
 }
 
 Inventory * Inventoryslot::getInventoryReference()
 {
-	return mInvRef;
+    return mInvRef;
 }
 
 void Inventoryslot::setTileReference(Tile * tileRef)
 {
-	mTileRef = tileRef;
+    mTileRef = tileRef;
 }
 
 Tile * Inventoryslot::getTileReference()
 {
-	return mTileRef;
+    return mTileRef;
 }
 
 void Inventoryslot::setItem(Item ** item)
 {
-	mItem = item;
+    mItem = item;
 }
 
 Item ** Inventoryslot::getItem()
 {
-	return mItem;
+    return mItem;
 }
 
 sf::Vector2f Inventoryslot::getSize() const
 {
-	return mSize;
+    return mSize;
 }
 
 
 void Inventoryslot::onMouseOver(bool mouseOver)
 {
-	if (mouseOver)
-	{
-		if (mItem && *mItem)
-		{
-			std::string temp = (*mItem)->getItemName() + "\n\n"
-				+ (*mItem)->getItemDescription();
-			mTooptipPointer->setTooltipText(temp);
-			mTooptipPointer->doDrawTooltip(true);
-		}
-	}
-	else
-	{
-		mTooptipPointer->doDrawTooltip(false);
-	}
+    if (mouseOver)
+    {
+        if (mItem && *mItem)
+        {
+            std::string temp = (*mItem)->getItemName() + "\n\n"
+                + (*mItem)->getItemDescription();
+            mTooptipPointer->setTooltipText(temp);
+            mTooptipPointer->doDrawTooltip(true);
+        }
+    }
+    else
+    {
+        mTooptipPointer->doDrawTooltip(false);
+    }
 }
 
 void Inventoryslot::onClickInside(const sf::Event& button)
 {
-	if (mListener && mItem)
-		mListener->buttonAction(*mItem, this);
+    if (mListener && mItem)
+        mListener->buttonAction(*mItem, this);
 }
 
 void Inventoryslot::onReleaseInside(const sf::Event& button)
@@ -122,14 +123,14 @@ void Inventoryslot::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vect
 
 void Inventoryslot::drawPrep(DrawingManager * drawingMan)
 {
-	drawingMan->addDrawable(this);
+    drawingMan->addDrawable(this);
 }
 
 void Inventoryslot::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.transform = getGlobalTransform();
-	target.draw(mSprite, states);
+    states.transform = getGlobalTransform();
+    target.draw(mSprite, states);
 
-	if (mItem && *mItem != nullptr)
-		(*mItem)->draw(target, states);
+    if (mItem && *mItem != nullptr)
+        (*mItem)->draw(target, states);
 }

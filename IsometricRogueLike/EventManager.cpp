@@ -47,7 +47,7 @@ void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) co
 
 	if (mObservers.find(_event.type) != mObservers.end())
 	{
-		bool onlyOneClick = false;
+		bool onlyOneReceiver = false;
 		const ObserverVec observers = mObservers.at(_event.type);
 		sf::View prevView = target->getView();
 		sf::View GUIView = target->getDefaultView();
@@ -57,11 +57,12 @@ void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) co
 		{
 			if ((*rit)->getStaticEventPosition())
 			{
-				onlyOneClick = (*rit)->observe(_event);
-				if (onlyOneClick && (
+				onlyOneReceiver = (*rit)->observe(_event);
+				if (onlyOneReceiver && (
 					_event.type == sf::Event::MouseButtonPressed ||
 					_event.type == sf::Event::MouseButtonReleased ||
-					_event.type == sf::Event::MouseMoved
+					_event.type == sf::Event::MouseMoved ||
+					_event.type == sf::Event::MouseWheelScrolled
 					))
 				{
 					target->setView(prevView);
@@ -75,8 +76,8 @@ void EventManager::notify(const sf::Event & _event, sf::RenderTarget* target) co
 		{
 			if (!(*rit)->getStaticEventPosition())
 			{
-				onlyOneClick = (*rit)->observe(_event);
-				if (onlyOneClick && (
+				onlyOneReceiver = (*rit)->observe(_event);
+				if (onlyOneReceiver && (
 					_event.type == sf::Event::MouseButtonPressed ||
 					_event.type == sf::Event::MouseButtonReleased))
 				{

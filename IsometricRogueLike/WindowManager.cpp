@@ -11,7 +11,8 @@ WindowManager::WindowManager()
 {
 	mInterestedEvents.push_back(sf::Event::EventType::MouseMoved);
 	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonPressed);
-	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonReleased);
+    mInterestedEvents.push_back(sf::Event::EventType::MouseButtonReleased);
+    mInterestedEvents.push_back(sf::Event::EventType::MouseWheelScrolled);
 }
 
 WindowManager::~WindowManager()
@@ -45,10 +46,17 @@ void WindowManager::onWindowClose(Window * window)
 
 bool WindowManager::observe(const sf::Event & _event)
 {
+	bool retVal = false;
 	for (auto w : mWindows)
-		if (w->getVisible() && w->observe(_event)) return true;
+		if (!retVal)
+		{
+			if (w->getVisible())
+				retVal = w->observe(_event);
+		}
+		else
+			w->resetState();
 
-	return false;
+	return retVal;
 }
 
 void WindowManager::registerEvents()
@@ -90,13 +98,21 @@ void WindowManager::arrangeWindows(Window * window)
 		{
 			if (i == 0) return;
 
-			// Swap the indices
-			Window* temp = mWindows[0];
-			mWindows[0] = mWindows[i];
-			mWindows[i] = temp;
+			while (i > 0)
+			{
 
-			mWindows[0]->setZBuffer(ZB);
-			mWindows[i]->setZBuffer(ZB - (int)i);
+				// Swap the indices
+				Window* temp = mWindows[i - 1];
+				mWindows[i - 1] = mWindows[i];
+				mWindows[i] = temp;
+
+				mWindows[i - 1]->setZBuffer(ZB - (int)i);
+				mWindows[i]->setZBuffer(ZB - (int)i - 1);
+
+				i--;
+			}
+
+			return;
 		}
 	}
 }

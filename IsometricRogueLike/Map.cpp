@@ -6,6 +6,7 @@
 #include "DrawingManager.h"
 #include "VectorFunctions.h"
 #include "Item.h"
+#include "Entity.h"
 #include <queue>
 #include <SFML/System/Time.hpp>
 
@@ -40,12 +41,10 @@ bool containsElement(const std::vector<T*> &vector, T* element)
 }
 
 Map::Map()
-{
-}
+{}
 
 Map::~Map()
-{
-}
+{}
 
 void Map::setupMap(const int * tiles, unsigned int width, unsigned int height)
 {
@@ -106,7 +105,9 @@ void Map::updateVertexArray(const sf::Vector2f worldPos, int distance, int durat
 				mDarkFloorIndices.push_back(std::make_pair(floorTiles, &mTiles[i]));
 			}
 			else
+			{
 				mTiles[i].setFadeMax((float)duration);
+			}
 
 
 			floorTiles++;
@@ -367,10 +368,11 @@ size_t Map::findPath(const sf::Vector2i & startIndex, const sf::Vector2i & endIn
 			{
 				if (neighbor->mTile->getOccupant() != nullptr)
 				{
+					// Path found, but last tile was preoccupied
 					if (neighbor->mTile->getArrayIndex() == endIndex)
 					{
 						neighbor->mParent = currentTile;
-						finalTile = neighbor;
+						finalTile = currentTile;
 						done = true;
 						pathExists = 2;
 					}

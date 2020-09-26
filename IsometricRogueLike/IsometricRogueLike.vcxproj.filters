@@ -25,6 +25,9 @@
     <Filter Include="Engine\Graphical\TransformAlgorithms">
       <UniqueIdentifier>{c4cd5d47-ffb4-45d7-9119-bcca401340b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GOAP/FSM">
+      <UniqueIdentifier>{8c36ba89-5b82-470b-a717-ec8570a9a36b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -126,24 +129,6 @@
     <ClCompile Include="ItemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Action.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FSMAction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FSMIdle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ActionPickUpItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EnhancedText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ActionMeleeAttack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tooltip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -189,14 +174,47 @@
     <ClCompile Include="EntityFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FSMMove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationTextureBased.cpp">
       <Filter>Engine\Graphical</Filter>
     </ClCompile>
     <ClCompile Include="AnimationTransformBased.cpp">
       <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="EnhancedText.cpp">
+      <Filter>Engine\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentRegionTextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionMeleeAttack.cpp">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionPickUpItem.cpp">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalsControllable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GoapPlanner.cpp">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="GoapAgent.cpp">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionGotoTile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,33 +335,6 @@
     <ClInclude Include="Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Action.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSMAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSMIdle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionPickUpItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnhancedText.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoalPlanner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionMeleeAttack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionPatrol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Tooltip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -401,11 +392,65 @@
     <ClInclude Include="EntityFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FSMMove.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationTextureBased.h">
       <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="EnhancedText.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentRegionTextBox.h">
+      <Filter>Engine\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionMeleeAttack.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionPatrol.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionPickUpItem.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="IGoap.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="GoapPlanner.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="GoapAgent.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="FSMHandler.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Goals.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalsControllable.h">
+      <Filter>Engine\GOAP/FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionGotoTile.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

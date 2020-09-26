@@ -15,10 +15,17 @@ struct AnimationTextureSetup
 {
 public:
 	std::string textureName;
-	unsigned int framesX;
-	unsigned int framesY;
-	unsigned short nrFrames;
+	size_t framesX = 0;
+	size_t framesY = 0;
+	size_t nrFrames = 0;
 	float timePerFrame = 0.3f;
+
+	AnimationTextureSetup() {}
+	AnimationTextureSetup(const std::string& _textureName, size_t _framesX, size_t _framesY,
+						  size_t _nrFrames, float _timePerFrame) :
+		textureName(_textureName), framesX(_framesX), framesY(_framesY),
+		nrFrames(_nrFrames), timePerFrame(_timePerFrame)
+	{}
 
 	static AnimationTextureSetup DefaultButtonSetup()
 	{
@@ -37,14 +44,13 @@ public:
 	AnimationTextureBased();
 	~AnimationTextureBased();
 
-	void setup(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timerPerFrame = 0.3f);
-	void setup(const AnimationTextureSetup& animSetup);
+	void setNewTexture(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timePerFrame = 0.3f);
+	void setNewTexture(const AnimationTextureSetup& animSetup);
 	void setFrame(unsigned short frame);
 
 	sf::Vector2f getSize() const;
 
 	void tickAnimation(const sf::Time& deltaTime);
-	void setSpriteTexture(const std::string &texName);
 
 	void setAnimationListener(IAnimationListener* animationListener);
 	sf::Sprite* getSprite();

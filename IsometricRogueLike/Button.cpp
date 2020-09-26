@@ -22,7 +22,7 @@ Button::Button(IButtonListener * listener, const std::string &textureName, size_
 {
 	AnimationTextureSetup animSetup = AnimationTextureSetup::DefaultButtonSetup();
 	animSetup.textureName = textureName;
-	mSprite.setup(animSetup);
+	mSprite.setNewTexture(animSetup);
 	mSize = mSprite.getSize();
 	mSprite.setParentTransform(this);
 }
@@ -32,12 +32,12 @@ Button::~Button()
 
 }
 
-void Button::setSpriteTexture(const std::string &texName)
-{
-	mSprite.setSpriteTexture(texName);
-	mSize = mSprite.getSize();
-	adjustTextPosition();
-}
+//void Button::setSpriteTexture(const std::string &texName)
+//{
+//	mSprite.setSpriteTexture(texName);
+//	mSize = mSprite.getSize();
+//	adjustTextPosition();
+//}
 
 void Button::setTextString(const std::string &text)
 {
@@ -133,6 +133,12 @@ void Button::onReleaseInside(const sf::Event& button)
 		else
 			mSprite.setFrame(0);
 	}
+}
+
+void Button::resetState()
+{
+	Clickable::resetState();
+	mSprite.setFrame(0);
 }
 
 void Button::setActive(bool active)

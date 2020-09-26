@@ -1,9 +1,8 @@
 #pragma once
 #include "Inventoryslot.h"
-#include <set>
-#include <stack>
+#include "Item.h"
+#include <vector>
 
-class Item;
 class MousePointer;
 
 class ItemManager
@@ -17,5 +16,5 @@ public:
 	Item* makeItem(size_t ID);
 
 private:
-	std::set<Item*> mItems;
+	std::vector<Item*> mItems;
 };

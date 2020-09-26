@@ -16,6 +16,9 @@ namespace Constants
 		static const sf::Color WindowFillColor(0, 0, 170);
 		static const sf::Color WindowTopBorderColor(0, 40, 200);
 		static const sf::Color WindowTopFillColor(0, 20, 170);
+		static const float ContentRegionBorderThickness = 2.0f;
+		static const sf::Color ContentRegionFillColor(200, 200, 200, 100);
+		static const sf::Color ContentRegionBorderColor(230, 230, 230, 200);
 	}
 
 	namespace World

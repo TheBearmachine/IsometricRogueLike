@@ -18,16 +18,16 @@ AnimationTextureBased::~AnimationTextureBased()
 		delete[m_frames] m_spriteRects;
 }
 
-void AnimationTextureBased::setup(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timerPerFrame)
+void AnimationTextureBased::setNewTexture(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timePerFrame)
 {
 	m_sprite.setTexture(ResourceManager::getInstance().getTexture(textureName));
 	if (m_spriteRects)
 		delete[m_frames] m_spriteRects;
 	m_frames = nrFrames;
-	m_currentFrame = 0;
 	m_spriteRects = new sf::IntRect[m_frames];
 	m_framesX = framesX;
 	m_framesY = framesY;
+	m_timePerFrame = timePerFrame;
 
 	m_hasLooped = false;
 
@@ -41,13 +41,12 @@ void AnimationTextureBased::setup(std::string textureName, unsigned int framesX,
 		m_spriteRects[i].width = width;
 		m_spriteRects[i].height = height;
 	}
-	m_remainingTime = m_timePerFrame = timerPerFrame;
-	m_sprite.setTextureRect(m_spriteRects[0]);
+	setFrame(0);
 }
 
-void AnimationTextureBased::setup(const AnimationTextureSetup& animSetup)
+void AnimationTextureBased::setNewTexture(const AnimationTextureSetup& animSetup)
 {
-	setup(animSetup.textureName, animSetup.framesX, animSetup.framesY, animSetup.nrFrames, animSetup.timePerFrame);
+	setNewTexture(animSetup.textureName, animSetup.framesX, animSetup.framesY, animSetup.nrFrames, animSetup.timePerFrame);
 }
 
 void AnimationTextureBased::setFrame(unsigned short frame)
@@ -76,11 +75,6 @@ void AnimationTextureBased::tickAnimation(const sf::Time & deltaTime)
 		if (m_AnimationListener)
 			m_AnimationListener->onFrame(m_currentFrame);
 	}
-}
-
-void AnimationTextureBased::setSpriteTexture(const std::string & texName)
-{
-	m_sprite.setTexture(ResourceManager::getInstance().getTexture(texName));
 }
 
 void AnimationTextureBased::setAnimationListener(IAnimationListener * animationListener)

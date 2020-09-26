@@ -35,7 +35,7 @@ private:
 	};
 
 	void parseString();
-	void updateVertexArray() const; //TODO: Make run on separate thread
+	void updateVertexArray() const;
 	void doUpdateVertexArray() const;
 
 	float mMaxWidth;

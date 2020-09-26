@@ -7,14 +7,17 @@ CameraController::CameraController() :
 	m_center(0.0f, 0.0f), m_zoomLevel(1.0f),
 	m_desiredZoomLevel(m_zoomLevel), m_controllable(true)
 {
+	mInterestedEvents.push_back(sf::Event::EventType::Resized);
 }
 
 CameraController::~CameraController()
 {
+	unregisterEvents();
 }
 
 void CameraController::initalize(sf::FloatRect size, sf::RenderWindow* window)
 {
+	registerEvents();
 	m_renderWindow = window;
 	m_center.x = (size.width + size.left) / 2.0f;
 	m_center.y = (size.height + size.top) / 2.0f;
@@ -61,4 +64,19 @@ void CameraController::updateCamera()
 {
 	if (m_renderWindow)
 		m_renderWindow->setView(m_cameraView);
+}
+
+bool CameraController::observe(const sf::Event& _event)
+{
+	if (_event.type == sf::Event::Resized)
+	{
+		sf::FloatRect r(0.0f, 0.0f, (float)_event.size.width, (float)_event.size.height);
+		m_cameraView.setSize(r.width, r.height);
+		m_center.x = (r.width + r.left) / 2.0f;
+		m_center.y = (r.height + r.top) / 2.0f;
+		m_cameraView.reset(r);
+		updateCamera();
+	}
+
+	return false;
 }

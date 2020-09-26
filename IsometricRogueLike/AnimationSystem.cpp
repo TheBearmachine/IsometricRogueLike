@@ -19,6 +19,10 @@ AnimationSystem::~AnimationSystem()
 
 AnimationNode * AnimationSystem::addNode(AnimationTransformBased::AnimationTransformType animType, sf::Sprite* sprite)
 {
+    // Don't allow duplicates and return ptr to existing
+    for (auto a: mAnimationNodes)
+        if (a->getType() == animType) return a;
+
 	AnimationNode* node = new AnimationNode(animType, sprite);
 	if (mAnimationNodes.empty())
 		mActiveNode = node;

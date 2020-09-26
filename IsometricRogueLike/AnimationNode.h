@@ -83,6 +83,7 @@ public:
 	void setAnimationListener(IAnimationListener* animationListener);
 	void setSprite(sf::Sprite* sprite);
 	AnimationTransformBased* getAnimation();
+    AnimationTransformBased::AnimationTransformType getType() const;
 
 	void setAnimationMagnitude(float magnitude);
 	void setAnimationPeriod(float period);
@@ -100,5 +101,6 @@ private:
 	AnimationTransformBased mAnimation;
 	AnimationNode** mCurrentSystemNode;
 
+    AnimationTransformBased::AnimationTransformType mType;
 	float mHasLooped;
 };

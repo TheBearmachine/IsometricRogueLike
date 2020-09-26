@@ -14,27 +14,31 @@ ItemManager::ItemManager()
 
 ItemManager::~ItemManager()
 {
-
+    while (!mItems.empty())
+    {
+        delete mItems.back();
+        mItems.pop_back();
+    }
 }
 
 void ItemManager::setMousePointer(MousePointer * mouseP)
 {
-	mMousePointer = mouseP;
+    mMousePointer = mouseP;
 }
 
 Item * ItemManager::makeItem(size_t ID)
 {
-	ItemDatabase::ItemContents temp = ItemDatabase::getInstance().getItem(ID);
-	Item* item = new Item();
-	item->setItemTyp((Item::ItemTypes)temp.iType);
-	item->setEquipmentSlot((Item::EquipmentSlot)temp.eqSlot);
-	item->setItemName(temp.name);
-	item->setItemDescription(temp.desc);
-	item->setItemTex(Constants::Filepaths::ImagesFolder + "Items/" + temp.texFile + ".png");
-	for (size_t i = 0; i < Item::NrProperties; i++)
-		item->setProperty(temp.prop[i], i);
+    ItemDatabase::ItemContents idb = ItemDatabase::getInstance().getItem(ID);
+    Item *item = new Item();
+    item->setItemTyp((Item::ItemTypes)idb.iType);
+    item->setEquipmentSlot((Item::EquipmentSlot)idb.eqSlot);
+    item->setItemName(idb.name);
+    item->setItemDescription(idb.desc);
+    item->setItemTex(Constants::Filepaths::ImagesFolder + "Items/" + idb.texFile + ".png");
+    for (size_t i = 0; i < Item::NrProperties; i++)
+        item->setProperty(idb.prop[i], i);
 
-	mItems.insert(item);
+    mItems.push_back(item);
 
-	return item;
+    return mItems.back();
 }

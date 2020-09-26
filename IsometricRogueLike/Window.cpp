@@ -22,7 +22,6 @@ static Tooltip* mTooptipPointer = nullptr;
 Window::Window() :
 	Window("Window", sf::Vector2f(), DEFAULT_WINDOW_SIZE)
 {
-
 }
 
 Window::Window(const std::string &windowName, const sf::Vector2f & position, const sf::Vector2f & size) :
@@ -58,7 +57,7 @@ Window::Window(const std::string &windowName, const sf::Vector2f & position, con
 
 	setSize(size);
 
-	// Shorten strings that are too long
+    // Shorten strings that are too long
 	restructureText();
 }
 
@@ -86,7 +85,6 @@ void Window::registerEvents()
 void Window::unregisterEvents()
 {
 	Clickable::unregisterEvents();
-	mTopDragable.resetState();
 	resetState();
 }
 
@@ -94,7 +92,7 @@ bool Window::observe(const sf::Event & _event)
 {
 	bool retVal = Clickable::observe(_event);
 
-	mCloseButton.observe(_event);
+	if( mCloseButton.observe(_event)) return true;
 	if (mTopDragable.observe(_event)) return true;
 
 	for (auto cr : mContentRegions)
@@ -137,6 +135,8 @@ void Window::setVisibility(bool visible)
 	else
 	{
 		mCloseButton.resetState();
+		if (mMouseInside && mTooptipPointer)
+			mTooptipPointer->doDrawTooltip(false);
 		resetState();
 	}
 }
@@ -188,6 +188,17 @@ void Window::setWindowListener(IWindowListener * windowListener)
 	mWindowListener = windowListener;
 }
 
+void Window::resetState()
+{
+	Clickable::resetState();
+	mTopDragable.resetState();
+	mCloseButton.resetState();
+	for (auto cr : mContentRegions)
+	{
+		cr->resetState();
+	}
+}
+
 void Window::setup(sf::RenderTarget * window)
 {
 	mRenderTarget = window;
@@ -235,7 +246,7 @@ void Window::onClose()
 {
 	if (mWindowListener)
 	{
-		mTopDragable.resetState();
+		resetState();
 		mWindowListener->onWindowClose(this);
 	}
 }

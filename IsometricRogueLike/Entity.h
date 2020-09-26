@@ -4,81 +4,83 @@
 #include "IEntityManager.h"
 #include "Action.h"
 #include "AnimationSystem.h"
+#include "IGoap.h"
 #include <vector>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
 
 class Map;
 class Action;
-class FSM;
-class FSMAction;
-class FSMIdle;
-class FSMMove;
+class GoapAgent;
+class FSMHandler;
+class Movement;
 class CharacterAttributes;
 class Inventory;
 namespace sf
 {
-	class Time;
+    class Time;
 }
 
-class Entity : public DrawThis, public Transformabetter
+class Entity : public DrawThis, public Transformabetter, public IGoap
 {
 public:
-	//Entity(const std::string &textureName);
-	Entity(const std::string &textureName, const sf::Vector2i & startTile, Map* currentMap);
-	~Entity();
+    //Entity(const std::string &textureName);
+    Entity(const std::string &textureName, const sf::Vector2i & startTile, Map* currentMap);
+    ~Entity();
 
-	virtual void update(const sf::Time &deltaTime);
+    virtual void update(const sf::Time &deltaTime);
 
-	void setDoesTick(bool tick);
-	bool getDoesTick() const;
+    void setDoesTick(bool tick);
+    bool getDoesTick() const;
 
-	void moveToTile(const sf::Vector2i & startTile, Map* currentMap);
+    void moveToTile(const sf::Vector2i & startTile, Map* currentMap);
 
-	virtual AnimationSystem* getAnimationsystemComponent();
-	virtual FSMMove* getMovementComponent();
-	virtual FSMAction* getFSMActionComponent();
-	virtual FSMIdle* getFSMIdleComponent();
-	virtual FSM* getCurrentFSMState();
+    virtual AnimationSystem* getAnimationsystemComponent();
+    virtual Movement* getMovementComponent();
 
-	virtual CharacterAttributes* getCharacterAttributes();
-	virtual Inventory* getInventory();
+    virtual CharacterAttributes* getCharacterAttributes();
+    virtual Inventory* getInventory();
 
-	sf::Sprite* getSprite();
+    sf::Sprite* getSprite();
 
-	void remove();
-	bool getGarbage() const;
+    void remove();
+    bool getGarbage() const;
 
-	void setAlive(bool isAlive);
-	bool getAlive() const;
+    void setAlive(bool isAlive);
+    bool getAlive() const;
 
-	void setFadeMax(float val);
-	void reduceFadeCurrent(float deltaVal);
-	float getFadeRatio() const;
+    void setFadeMax(float val);
+    void reduceFadeCurrent(float deltaVal);
+    float getFadeRatio() const;
 
-	AnimationNode* addAnimationNode(AnimationTransformBased::AnimationTransformType type);
+    AnimationNode* addAnimationNode(AnimationTransformBased::AnimationTransformType type);
 
-	void addAvailableAction(Action::ActionTypes actionType);
-	const std::vector<Action::ActionTypes>& getAvailableActions() const;
+    virtual void drawPrep(DrawingManager* drawingMan);
+    virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-	void setWorldState(const std::string &key, size_t val);
-	const Action::WorldState& getWorldState() const;
+    static void setup(IEntityManager* entityManager);
+    IEntityManager* getEntityManager();
 
-	virtual void drawPrep(DrawingManager* drawingMan);
-	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+    virtual PairSet getWorldState() override;
+    virtual PairSet createGoalState() override;
+    virtual void addToGoalState(Condition goal) override;
 
-	static void setup(IEntityManager* entityManager);
-	IEntityManager* getEntityManager();
+    virtual void planFailed(PairSet failedGoal) override;
+    virtual void planFound(PairSet goal, std::queue<Action*> actions) override;
+    virtual void actionsFinished() override;
+    virtual void planAborted(Action* aborter) override;
+    virtual bool moveAgent(Action* nextAction, const sf::Time& deltaTime) override;
+
+    virtual GoapAgent* getGoapAgent();
 
 protected:
-	sf::Sprite mSprite;
-	AnimationSystem mAnimationSystem;
+    sf::Sprite mSprite;
+    AnimationSystem mAnimationSystem;
 
 private:
-	std::vector<Action::ActionTypes> mAvailableActions;
-	Action::WorldState mWorldState;
-	bool mGarbage;
-	bool mAlive;
-	bool mTick;
-	float mFadeMax, mFadeCurrent;
+    //PairSet mGoalState;
+    bool mGarbage;
+    bool mAlive;
+    bool mTick;
+    float mFadeMax, mFadeCurrent;
 };

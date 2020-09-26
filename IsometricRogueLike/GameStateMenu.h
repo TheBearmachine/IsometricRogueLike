@@ -51,7 +51,6 @@ private:
 	EventManager* mEventManager;
 
 	Menu mMainMenu;
-	EnhancedText textText;
 
 	GameStateSimulation* mGameStateSimulation;
 };

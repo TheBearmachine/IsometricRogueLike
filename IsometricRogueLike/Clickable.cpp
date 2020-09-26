@@ -16,6 +16,7 @@ Clickable::Clickable(const sf::Vector2f &size) :
 	mInterestedEvents.push_back(sf::Event::EventType::MouseMoved);
 	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonPressed);
 	mInterestedEvents.push_back(sf::Event::EventType::MouseButtonReleased);
+	mInterestedEvents.push_back(sf::Event::EventType::MouseWheelScrolled);
 }
 
 Clickable::~Clickable()
@@ -26,6 +27,11 @@ Clickable::~Clickable()
 void Clickable::setSize(const sf::Vector2f & size)
 {
 	mSize = size;
+}
+
+const sf::Vector2f& Clickable::getSize() const
+{
+	return mSize;
 }
 
 void Clickable::unregisterEvents()
@@ -66,7 +72,6 @@ bool Clickable::observe(const sf::Event & _event)
 			if (mMouseInside)
 			{
 				mMouseInside = false;
-				//mDrag = false;
 				onMouseOver(false);
 			}
 		}
@@ -93,6 +98,14 @@ bool Clickable::observe(const sf::Event & _event)
 		}
 		mDrag = false;
 		break;
+
+	case sf::Event::MouseWheelScrolled:
+		if (mMouseInside)
+		{
+			onScrollInside(_event);
+		}
+
+		break;
 	}
 	return retVal;
 }
@@ -113,6 +126,11 @@ void Clickable::onReleaseInside(const sf::Event& button)
 }
 
 void Clickable::onDragInside(const sf::Vector2f & mouseDelta, const sf::Vector2f & mousePos, const sf::Event& button)
+{
+
+}
+
+void Clickable::onScrollInside(const sf::Event & button)
 {
 
 }

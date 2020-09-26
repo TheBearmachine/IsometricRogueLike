@@ -1,53 +1,80 @@
 #pragma once
-#include "Transformabetter.h"
 #include <map>
+#include <vector>
+#include "Transformabetter.h"
+#include "Typedefs.h"
 
 class Entity;
+class Item;
 class Map;
 namespace sf
 {
-	class Time;
+    class Time;
 }
 
 class Action
 {
 public:
-	typedef std::map<std::string, size_t> WorldState;
 
-	enum ActionTypes
-	{
-		PickUpItem,
-		AttackTarget
-	};
+    enum ActionTypes
+    {
+        GotoTile,
+        PickUpItem,
+        MeleeAttack,
+    };
 
-	enum Goals
-	{
+    enum Goals
+    {
 
-	};
+    };
 
-	Action();
-	~Action();
+    Action(ActionTypes actionType);
+    ~Action();
 
-	virtual bool isDone() = 0;
-	virtual bool inRange() = 0;
-	virtual bool checkProceduralPrecondition(Entity* agent) = 0;
-	virtual bool update(const sf::Time& deltaTime) = 0;
-	void setCost(float newCost);
-	float getCost() const;
-	void addPrecondition(const std::string &key, size_t val);
-	void removePrecondition(const std::string &key);
-	const WorldState& getPreconditions() const;
-	void addEffect(const std::string &key, size_t val);
-	void removeEffect(const std::string &key);
-	const WorldState& getEffects() const;
+    virtual bool isDone() = 0;
+    virtual bool requiresinRange() = 0;
+    virtual bool checkProceduralPrecondition(Entity* agent) = 0;
+    virtual bool perform(Entity* self, const sf::Time& deltaTime) = 0;
+    virtual bool planPath(Entity* self);
+    void setCost(float newCost);
+    float getCost() const;
+    void setInRange(bool inRange);
+    virtual bool getInRange(Entity* self) const;
+    void addPrecondition(const std::string &key, size_t val);
+    void addPrecondition(const Condition& cond);
+    void removePrecondition(const std::string &key, size_t val);
+    const PairSet& getPreconditions() const;
+    void addEffect(const std::string &key, size_t val);
+    void addEffect(const Condition& cond);
+    void removeEffect(const std::string &key, size_t val);
+    const PairSet& getEffects() const;
+    ActionTypes getActionType() const;
+    void setTargetEntity(Entity* target);
+    Entity* getTargetEntity() const;
+    void setTargetItem(Item* target);
+    Item* getTargetItem() const;
+    virtual void doReset();
 
-	static void setCurrentMap(Map* currentMap);
+    static void setCurrentMap(Map* currentMap);
 
 protected:
-	static Map* getCurrentMap();
+    static Map* getCurrentMap();
 
 private:
-	WorldState mPreconditions;
-	WorldState mEffects;
-	float mCost;
+    Entity* mTargetEntity;
+    Item* mTargetItem;
+    bool mInRange;
+    PairSet mPreconditions;
+    PairSet mEffects;
+    float mCost;
+    ActionTypes mActionType;
 };
+
+////std::set<Action*, ActionptrComp> derp;
+//struct ActionptrComp
+//{
+//    bool operator()(const Action* lhs, const Action* rhs) const
+//    {
+//        return lhs->getActionType() == rhs->getActionType();
+//    }
+//};

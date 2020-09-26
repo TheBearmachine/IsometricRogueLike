@@ -4,8 +4,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 Item::Item() :
-	mItemType(ItemTypes(0)),
-	mEqSlot(EquipmentSlot(0))
+    mItemType(ItemTypes(0)),
+    mEqSlot(EquipmentSlot(0))
 {
 
 }
@@ -15,107 +15,97 @@ Item::~Item()
 
 }
 
-void Item::setAttachment(Transformabetter * attachment)
-{
-	mAttachment = attachment;
-}
-
-Transformabetter * Item::getAttachment()
-{
-	return mAttachment;
-}
-
 void Item::setProperty(int value, int arrayIndex)
 {
-	mProperties[arrayIndex] = value;
+    mProperties[arrayIndex] = value;
 }
 
 int Item::getProperty(int arrayIndex) const
 {
-	return mProperties[arrayIndex];
+    return mProperties[arrayIndex];
 }
 
 void Item::setID(size_t ID)
 {
-	mID = ID;
+    mID = ID;
 }
 
 size_t Item::getID() const
 {
-	return mID;
+    return mID;
 }
 
 void Item::setValue(int value)
 {
-	mValue = value;
+    mValue = value;
 }
 
 int Item::getValue() const
 {
-	return mValue;
+    return mValue;
 }
 
 void Item::setItemTyp(ItemTypes type)
 {
-	mItemType = type;
+    mItemType = type;
 }
 
 Item::ItemTypes Item::getItemType() const
 {
-	return mItemType;
+    return mItemType;
 }
 
 void Item::setEquipmentSlot(EquipmentSlot eqSlot)
 {
-	mEqSlot = eqSlot;
+    mEqSlot = eqSlot;
 }
 
 Item::EquipmentSlot Item::getEquipmentSlot() const
 {
-	return mEqSlot;
+    return mEqSlot;
 }
 
 void Item::setItemName(const std::string & iName)
 {
-	mItemName = iName;
+    mItemName = iName;
 }
 
 const std::string & Item::getItemName() const
 {
-	return mItemName;
+    return mItemName;
 }
 
 void Item::setItemDescription(const std::string & desc)
 {
-	mItemDesc = desc;
+    mItemDesc = desc;
 }
 
 const std::string & Item::getItemDescription() const
 {
-	return mItemDesc;
+    return mItemDesc;
 }
 
 void Item::drawPrep(DrawingManager * drawingMan)
 {
-	drawingMan->addDrawable(this);
+    //drawingMan->addDrawable(this);
 }
 
 void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	target.draw(mSprite, states);
+    target.draw(mSprite, states);
 }
 
 void Item::setItemTex(const std::string & texFile)
 {
-	mSprite.setTexture(ResourceManager::getInstance().getTexture(texFile));
+    mSprite.setTexture(ResourceManager::getInstance().getTexture(texFile));
 }
 
 sf::Sprite * Item::getSprite()
 {
-	return &mSprite;
+    return &mSprite;
 }
 
 sf::Sprite * Item::getMapSprite()
 {
-	return &mMapSprite;
+    return &mMapSprite;
 }

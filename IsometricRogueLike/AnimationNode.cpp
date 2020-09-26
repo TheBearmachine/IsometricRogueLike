@@ -7,7 +7,7 @@ AnimationNode::AnimationNode()
 }
 
 AnimationNode::AnimationNode(AnimationTransformBased::AnimationTransformType animType, sf::Sprite* sprite) :
-	mAnimation(animType, sprite)
+	mAnimation(animType, sprite), mType(animType)
 {}
 
 AnimationNode::~AnimationNode()
@@ -32,6 +32,11 @@ void AnimationNode::setSprite(sf::Sprite * sprite)
 AnimationTransformBased * AnimationNode::getAnimation()
 {
 	return &mAnimation;
+}
+
+AnimationTransformBased::AnimationTransformType AnimationNode::getType() const
+{
+    return mType;
 }
 
 void AnimationNode::setAnimationMagnitude(float magnitude)

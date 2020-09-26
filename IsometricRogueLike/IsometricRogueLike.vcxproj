@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionGotoTile.cpp" />
     <ClCompile Include="ActionMeleeAttack.cpp" />
     <ClCompile Include="ActionPickUpItem.cpp" />
     <ClCompile Include="AnimationNode.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="ContentRegionCharacterAttributes.cpp" />
     <ClCompile Include="ContentRegionInventory.cpp" />
     <ClCompile Include="ContentRegionMenu.cpp" />
+    <ClCompile Include="ContentRegionTextBox.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Dragable.cpp" />
     <ClCompile Include="DrawingManager.cpp" />
@@ -148,12 +150,15 @@
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="EventObserver.cpp" />
-    <ClCompile Include="FSMAction.cpp" />
-    <ClCompile Include="FSMIdle.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameStateMenu.cpp" />
     <ClCompile Include="GameStateSimulation.cpp" />
+    <ClCompile Include="GoalsControllable.cpp" />
+    <ClCompile Include="GoapAgent.cpp" />
+    <ClCompile Include="GoapPlanner.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Tooltip.cpp" />
     <ClCompile Include="Inventoryslot.cpp" />
     <ClCompile Include="IsometricConversion.cpp" />
@@ -166,7 +171,7 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MousePointer.cpp" />
-    <ClCompile Include="FSMMove.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -184,10 +189,19 @@
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionGotoTile.h" />
+    <ClInclude Include="ActionHelper.h" />
     <ClInclude Include="ActionMeleeAttack.h" />
     <ClInclude Include="ActionPatrol.h" />
+    <ClInclude Include="Goals.h" />
+    <ClInclude Include="GoalsControllable.h" />
     <ClInclude Include="AnimationTextureBased.h" />
+    <ClInclude Include="ContentRegionTextBox.h" />
     <ClInclude Include="EntityFactory.h" />
+    <ClInclude Include="FSM.h" />
+    <ClInclude Include="FSMHandler.h" />
+    <ClInclude Include="GoapAgent.h" />
+    <ClInclude Include="GoapPlanner.h" />
     <ClInclude Include="IAnimationListener.h" />
     <ClInclude Include="AnimationTransformBased.h" />
     <ClInclude Include="AnimationNode.h" />
@@ -206,10 +220,9 @@
     <ClInclude Include="EntityEvent.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="ExtendedEvent.h" />
-    <ClInclude Include="FSM.h" />
-    <ClInclude Include="FSMAction.h" />
-    <ClInclude Include="FSMIdle.h" />
-    <ClInclude Include="GoalPlanner.h" />
+    <ClInclude Include="IGoap.h" />
+    <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Tooltip.h" />
     <ClInclude Include="IEntityManager.h" />
     <ClInclude Include="Item.h" />
@@ -218,7 +231,7 @@
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="MousePointer.h" />
-    <ClInclude Include="FSMMove.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Action.h" />
     <ClInclude Include="SimulationController.h" />
@@ -249,6 +262,7 @@
     <ClInclude Include="TransAlgWalk.h" />
     <ClInclude Include="Transformabetter.h" />
     <ClInclude Include="TransformAlgorithm.h" />
+    <ClInclude Include="Typedefs.h" />
     <ClInclude Include="VectorFunctions.h" />
     <ClInclude Include="VectorRotation.h" />
     <ClInclude Include="Window.h" />
